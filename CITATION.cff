@@ -5,7 +5,7 @@ authors:
   given-names: "Peter"
   orcid: "https://orcid.org/0000-0001-5430-1456 "
 title: "TagTool_WiZArd"
-version: 1.0.0
-doi: 10.5281/zenodo.####
+version: 1.0.1
+doi: 10.5281/zenodo.5846851
 date-released: 2022-01-13
 url: "https://github.com/pBxr/TagTool_WiZArd"
