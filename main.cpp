@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]){
 
     cout << "\n\n********************************************************************************************************\n" << endl;
-    cout << "   Welcome to TagTool_WiZArD application"<< endl;
+    cout << "   Welcome to TagTool_WiZArD application (Version 1.0.0)"<< endl;
     cout << "\n\n********************************************************************************************************\n" << endl;
 
     
