@@ -15,12 +15,21 @@ void create_target_file_and_folder_names(fileInformations &fileInfo) {
     int pos1;
     pos1=fileInfo.fileNameArticleFile_.find(".html");
     string counter = std::to_string(fileInfo.lapCounter_);
-    string suffix = "_edited_"+counter+"_.html";
+    string suffix;
+	
+	if(htmlSelected==true){
+		suffix = "_edited_"+counter+"_.html";
+		}
+	
+	if(htmlSelected==false){
+		suffix = "_edited_"+counter+"_.xml";
+		}	
+		
 
     fileInfo.fileNameArticleFile_.replace(pos1, 5, suffix);
     
        
-    //for ressources folder...
+    //for  folder...
     
     int pos2;
 
@@ -32,14 +41,14 @@ void create_target_file_and_folder_names(fileInformations &fileInfo) {
     appendix.erase(pos2, 5);
     appendix = appendix + "_ress";
     
-    fileInfos.newFileNameForRessources_= appendix;
+    fileInfos.newFileNameFor_= appendix;
     	
-	fileInfos.folderWritingRessources_ = fileInfos.workingPath_ + "/" + appendix;
+	fileInfos.folderWriting_ = fileInfos.workingPath_ + "/" + appendix;
 
     
 }
 
-string get_current_path(fileInformations &fileInfo){
+void get_current_path(fileInformations &fileInfo){
 	
 	fs::path workingPathTemp;
 	
@@ -57,118 +66,6 @@ string get_current_path(fileInformations &fileInfo){
 	fileInfos.workingPath_.replace(pos, 1, "/");
 	pos=fileInfos.workingPath_.find("\\");
 	}
-	
-}
-
-vector<authorYearListClass> load_authorYearList(string fileName, vector<authorYearListClass> authorYearList){
-
-    vector<string> RefListFile;
-
-    RefListFile=loadFileContent(fileName);
-
-    size_t numberOfLines;
-    int pos1=0;
-    int pos2=0;
-    int index=0;
-    int posA=0;
-    int posB=0;
-    int counter=0;
-    
-    string toCheck;
-    string authorYear;
-    string fullCitation;
-    string zenonID;
-
-    numberOfLines=RefListFile.size();
-
-    string::iterator endLine;
-    string iteratorContent;
-    bool rowOneDetected=false;
-    
-    for(size_t i=0; i<numberOfLines-1; i++){
-
-        //Erase spaces...
-
-        toCheck=RefListFile[i][0];
-
-        if(toCheck==" "){
-        while(toCheck==" "){
-        RefListFile[i].erase(0,1);
-        toCheck=RefListFile[i][0];
-        }
-
-        }
-
-        posA=RefListFile[i].find(" %");
-
-        while(posA>=0){
-            RefListFile[i].replace(posA, 2, "%");
-            posA=RefListFile[i].find(" %");
-            }
-
-        posB=RefListFile[i].find("% ");
-
-        while(posB>=0){
-            RefListFile[i].replace(posB, 2, "%");
-            posB=RefListFile[i].find("% ");
-            }
-
-        endLine=RefListFile[i].end();
-
-        for(string::iterator it=RefListFile[i].begin(); it!=endLine; ++it){
-
-            iteratorContent = *it;
-
-            if(iteratorContent=="%"){
-                counter++;
-				if(rowOneDetected==false){
-                    pos1=index;
-                    rowOneDetected=true;
-                }
-
-                if(rowOneDetected==true){
-                    pos2=index;
-                }
-            }
-
-            index++;
-        }
-
-		if(counter==1){
-			cout << "\nWARNING: A component of the list of references is missing. Follwing dummy entry was created: \"###_CHECK_ENTRY_###" << endl;
-			pos2=RefListFile[i].size()-1;
-			RefListFile[i].pop_back();
-			RefListFile[i] = RefListFile[i] + "%###_CHECK_ENTRY_###";
-			cout << RefListFile[i] << "\n" <<  endl;
-		}
-
-        for(int x=0; x<pos1; x++){
-            authorYear=authorYear+RefListFile[i][x];
-
-        }
-
-        for(int y=(pos1+1); y<pos2; y++){
-            fullCitation=fullCitation+RefListFile[i][y];
-        }
-
-        for(size_t z=(pos2+1); z<RefListFile[i].size(); z++){
-            zenonID=zenonID+RefListFile[i][z];
-        }
-
-        authorYearList.push_back( authorYearListClass { i, authorYear, fullCitation, zenonID });
-
-        authorYear.clear();
-        fullCitation.clear();
-        zenonID.clear();
-        index=0;
-        pos1=0;
-        pos2=0;
-        counter=0;
-        rowOneDetected=false;
-       
-    }
-
-    return authorYearList;
 
 }
 
@@ -193,17 +90,19 @@ return workingFile_;
 
 }
 
-void load_ressources(){
+void load_resources(){
 	
-	fileInfos.fileNameTemplMetadBegin_= fileInfos.workingPath_ + "/ressources/" + "MetadataTextBegin.txt";
- 	fileInfos.fileNameTemplMetadEnd_= fileInfos.workingPath_ + "/ressources/" + "MetadataTextEnd.txt";
-	fileInfos.fileNameNewHtmlHead_ = fileInfos.workingPath_ + "/ressources/" +  "New_Html_Head.html";
-	fileInfos.fileNameColorschememapping_ = fileInfos.workingPath_ + "/ressources/" +  "colorschememapping.xml";
-	fileInfos.fileNameFilelist_ = fileInfos.workingPath_ + "/ressources/" + "filelist.xml";
-	fileInfos.fileNameHeader_ = fileInfos.workingPath_ + "/ressources/" + "header.html";
-	fileInfos.fileNameItem0001_ = fileInfos.workingPath_ + "/ressources/" + "item0001.xml";
+	fileInfos.fileNameTemplMetadBegin_= fileInfos.workingPath_ + "/resources/" + "MetadataTextBegin.txt";
+ 	fileInfos.fileNameTemplMetadEnd_= fileInfos.workingPath_ + "/resources/" + "MetadataTextEnd.txt";
+	fileInfos.fileNameNewHtmlHead_ = fileInfos.workingPath_ + "/resources/" + "New_Html_Head.html";
+	fileInfos.fileNameNewXMLHead_ = fileInfos.workingPath_ + "/resources/" + "New_XML_Head.xml";
+	fileInfos.fileNameColorschememapping_ = fileInfos.workingPath_ + "/resources/" + "colorschememapping.xml";
+	fileInfos.fileNameFilelist_ = fileInfos.workingPath_ + "/resources/" + "filelist.xml";
+	fileInfos.fileNameHeader_ = fileInfos.workingPath_ + "/resources/" + "header.html";
+	fileInfos.fileNameItem0001_ = fileInfos.workingPath_ + "/resources/" + "item0001.xml";
 	
-	
+	fileInfos.fileNameHTML_XML_valueList_ = fileInfos.workingPath_ + "/resources/" + "html2xmlValueList.csv";
+		
 	fileInfos.metadataBegin = loadFileContent(fileInfos.fileNameTemplMetadBegin_);
 	fileInfos.metadataEnd = loadFileContent(fileInfos.fileNameTemplMetadEnd_);
 	
@@ -211,6 +110,341 @@ void load_ressources(){
 	fileInfos.filelist=loadFileContent(fileInfos.fileNameFilelist_);
 	fileInfos.header=loadFileContent(fileInfos.fileNameHeader_);
 	fileInfos.item0001=loadFileContent(fileInfos.fileNameItem0001_);	
+	
+}
+
+vector<reducedValueClass> load_reduced_value_list(string fileName, vector<reducedValueClass> valueList){
+	
+	vector<string> valueListFile;
+	
+	valueListFile=loadFileContent(fileName);
+
+    size_t numberOfLines;
+    
+    int posA=0;
+    int posB=0;
+        
+    string toCheck;
+    string entry1;
+    string entry2;
+    
+    numberOfLines=valueListFile.size();
+
+    for(size_t i=0; i<numberOfLines-1; i++){
+
+        //Erase spaces...
+
+        toCheck=valueListFile[i][0];
+
+        if(toCheck==" "){
+        while(toCheck==" "){
+        valueListFile[i].erase(0,1);
+        toCheck=valueListFile[i][0];
+        }
+
+        }
+
+        posA=valueListFile[i].find(" %");
+
+        while(posA>=0){
+            valueListFile[i].replace(posA, 2, "%");
+            posA=valueListFile[i].find(" %");
+            }
+
+        posB=valueListFile[i].find("% ");
+
+        while(posB>=0){
+            valueListFile[i].replace(posB, 2, "%");
+            posB=valueListFile[i].find("% ");
+            }
+
+        
+        
+        //Get addresses... 
+        
+        vector<int> positions;
+        
+        for(int y=0; y<valueListFile[i].size(); ++y){
+            
+            string toCheck; 
+            toCheck = valueListFile[i][y];
+             		
+             		
+            if(toCheck=="%"){
+                positions.push_back(y);
+                }
+			}
+				
+		
+		for(int x=0; x<positions[0]; x++){
+            entry1=entry1+valueListFile[i][x];
+			}
+
+        for(size_t zz=(positions[0]+1); zz<valueListFile[i].size(); zz++){
+            entry2=entry2+valueListFile[i][zz];
+            }
+		
+		
+		if (!entry2.empty() && entry2[entry2.length()-1] == '\n') {
+    		entry2.erase(entry2.length()-1);
+			}
+		
+		valueList.push_back(reducedValueClass {entry1, entry2});
+			
+		entry1.clear();
+        entry2.clear();
+                
+        positions.clear();
+         
+	}
+	
+	return valueList;
+			
+}
+
+vector<authorYearListClass> load_value_list(string fileName, vector<authorYearListClass> authorYearList){
+
+    vector<string> valueListFile;
+
+    valueListFile=loadFileContent(fileName);
+    
+    size_t numberOfLines;
+    
+    int posA=0;
+    int posB=0;
+    vector<int> positions;
+         
+    string toCheck;
+    string entry1;
+    string entry2;
+    string entry3;
+
+    numberOfLines=valueListFile.size();
+    
+    for(size_t i=0; i<numberOfLines-1; i++){
+
+        //Erase spaces...
+
+        toCheck=valueListFile[i][0];
+
+        if(toCheck==" "){
+        while(toCheck==" "){
+        valueListFile[i].erase(0,1);
+        toCheck=valueListFile[i][0];
+        }
+
+        }
+
+        posA=valueListFile[i].find(" %");
+
+        while(posA>=0){
+            valueListFile[i].replace(posA, 2, "%");
+            posA=valueListFile[i].find(" %");
+            }
+
+        posB=valueListFile[i].find("% ");
+
+        while(posB>=0){
+            valueListFile[i].replace(posB, 2, "%");
+            posB=valueListFile[i].find("% ");
+            }
+
+        //Get addresses... 
+        
+        
+        for(int y=0; y<valueListFile[i].size(); ++y){
+            
+            string toCheck; 
+            toCheck = valueListFile[i][y];
+             		
+             		
+            if(toCheck=="%"){
+                positions.push_back(y);
+                }
+			}
+		
+		
+		//Check for missing entries and create dummy entries
+		
+		int vecSize = positions.size();
+				
+		
+		if(vecSize<2){
+		valueListFile[i].pop_back();
+		
+		cout << "\nWARNING: A component of the list " << fileName << " is missing. Follwing dummy entry was created: \"###_CHECK_ENTRY_###\"\n" << endl;	
+		
+			for(int y=0; y<(2-vecSize); y++){
+			
+			valueListFile[i].append("%###_CHECK_ENTRY_###");
+			
+						
+				positions.clear();
+				
+				for(int y=0; y<valueListFile[i].size(); ++y){
+            
+            	string toCheck; 
+            	toCheck = valueListFile[i][y];
+             		if(toCheck=="%"){
+                	positions.push_back(y);
+                	}
+			}
+			}
+			}
+
+		
+				
+
+        for(int x=0; x<positions[0]; x++){
+            entry1=entry1+valueListFile[i][x];
+            }
+
+        for(int y=(positions[0]+1); y<positions[1]; y++){
+            entry2=entry2+valueListFile[i][y];
+            }
+
+
+		for(size_t zz=(positions[1]+1); zz<valueListFile[i].size(); zz++){
+            entry3=entry3+valueListFile[i][zz];
+            }
+
+
+        authorYearList.push_back( authorYearListClass { i, entry1, entry2, entry3 });
+
+        entry1.clear();
+        entry2.clear();
+        entry3.clear();
+        
+       positions.clear();
+    }
+
+    return authorYearList;
+
+}
+
+vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustrationCreditsClass> illustrationCreditList){
+	
+	vector<string> valueListFile;
+
+    valueListFile=loadFileContent(fileName);
+
+    size_t numberOfLines;
+    
+    int posA=0;
+    int posB=0;
+        
+    string toCheck;
+    string entry1;
+    string entry2;
+    string entry3;
+    string entry4;
+
+    numberOfLines=valueListFile.size();
+
+    for(size_t i=0; i<numberOfLines-1; i++){
+
+        //Erase spaces...
+
+        toCheck=valueListFile[i][0];
+
+        if(toCheck==" "){
+        	while(toCheck==" "){
+        	valueListFile[i].erase(0,1);
+        	toCheck=valueListFile[i][0];
+        	}
+
+        }
+
+        posA=valueListFile[i].find(" %");
+
+        while(posA>=0){
+            valueListFile[i].replace(posA, 2, "%");
+            posA=valueListFile[i].find(" %");
+            }
+
+        posB=valueListFile[i].find("% ");
+
+        while(posB>=0){
+            valueListFile[i].replace(posB, 2, "%");
+            posB=valueListFile[i].find("% ");
+            }
+
+        
+        
+        //Get addresses... 
+        
+        vector<int> positions;
+        for(int y=0; y<valueListFile[i].size(); ++y){
+            
+            string toCheck; 
+            toCheck = valueListFile[i][y];
+             		
+             		
+            if(toCheck=="%"){
+                positions.push_back(y);
+                }
+			}
+		
+		//Check for missing entries and create dummy entries
+		
+		int vecSize = positions.size();
+		if(vecSize<3){
+		valueListFile[i].pop_back();
+		
+		cout << "\nWARNING: A component of the list " << fileName << " is missing. Follwing dummy entry was created: \"###_CHECK_ENTRY_###\"\n" << endl;	
+		
+			for(int y=0; y<(3-vecSize); y++){
+			
+				valueListFile[i].append("%###_CHECK_ENTRY_###");	
+				
+			}
+			
+				positions.clear();
+				
+				for(int y=0; y<valueListFile[i].size(); ++y){
+            
+            	string toCheck; 
+            	toCheck = valueListFile[i][y];
+             		if(toCheck=="%"){
+                	positions.push_back(y);
+                	}
+			}
+		
+		}
+		
+
+        for(int x=0; x<positions[0]; x++){
+            entry1=entry1+valueListFile[i][x];
+			}
+
+        for(int y=(positions[0]+1); y<positions[1]; y++){
+            entry2=entry2+valueListFile[i][y];
+        	}
+
+        for(size_t z=(positions[1]+1); z<positions[2]; z++){
+            entry3=entry3+valueListFile[i][z];
+        	}
+        
+        for(size_t zz=(positions[2]+1); zz<valueListFile[i].size(); zz++){
+            entry4=entry4+valueListFile[i][zz];
+        }
+		
+			if (!entry4.empty() && entry4[entry4.length()-1] == '\n') {
+    		entry4.erase(entry4.length()-1);
+			}
+		
+        illustrationCreditList.push_back( illustrationCreditsClass { i, entry1, entry2, entry3, entry4 });
+
+        entry1.clear();
+        entry2.clear();
+        entry3.clear();
+        entry4.clear();
+        
+        positions.clear();
+       
+    }
+
+    return illustrationCreditList;
 	
 }
 
@@ -230,33 +464,26 @@ void saveFile(vector<string> &articleFile, fileInformations &fileInfos){
      
 }
 
-
-
-
-
-
-
-void write_ressources(fileInformations &fileInfos){
-
+void write_resources(fileInformations &fileInfos){
 	
-    search_replace(fileInfos.filelist, fileInfos.toReplaceInRessources_, fileInfos.newFileNameForRessources_);
-    search_replace(fileInfos.header, fileInfos.toReplaceInRessources_, fileInfos.newFileNameForRessources_);
-    search_replace(fileInfos.item0001, fileInfos.toReplaceInRessources_, fileInfos.newFileNameForRessources_);
+    search_replace(fileInfos.filelist, fileInfos.toReplaceIn_, fileInfos.newFileNameFor_);
+    search_replace(fileInfos.header, fileInfos.toReplaceIn_, fileInfos.newFileNameFor_);
+    search_replace(fileInfos.item0001, fileInfos.toReplaceIn_, fileInfos.newFileNameFor_);
 
-    size_t charlength=fileInfos.folderWritingRessources_.size();
-    char folderNameRessources_[charlength];
+    size_t charlength=fileInfos.folderWriting_.size();
+    char folderName_[charlength];
     for(size_t i=0; i<charlength; i++){
-        folderNameRessources_[i]=fileInfos.folderWritingRessources_[i];
+        folderName_[i]=fileInfos.folderWriting_[i];
     }
-    folderNameRessources_[charlength]='\0';
+    folderName_[charlength]='\0';
 
-    mkdir(folderNameRessources_); 
+    mkdir(folderName_); 
 
-    //write ressources
-    string pathToWrite1=fileInfos.folderWritingRessources_+"/"+"filelist.xml";
-    string pathToWrite2=fileInfos.folderWritingRessources_+"/"+"header.html";
-    string pathToWrite3=fileInfos.folderWritingRessources_+"/"+"item0001.xml";
-    string pathToWrite4=fileInfos.folderWritingRessources_+"/"+"colorschememapping.xml";
+    //write 
+    string pathToWrite1=fileInfos.folderWriting_+"/"+"filelist.xml";
+    string pathToWrite2=fileInfos.folderWriting_+"/"+"header.html";
+    string pathToWrite3=fileInfos.folderWriting_+"/"+"item0001.xml";
+    string pathToWrite4=fileInfos.folderWriting_+"/"+"colorschememapping.xml";
 
     ofstream fileOut1(pathToWrite1);
     for(string &p:fileInfos.filelist) {
@@ -282,10 +509,8 @@ void write_ressources(fileInformations &fileInfos){
     }
     fileOut4.close();
     
-    fileInfos.toReplaceInRessources_ = fileInfos.fileNameArticleFile_;
+    fileInfos.toReplaceIn_ = fileInfos.fileNameArticleFile_;
     
 }
-
-
 
 #endif // TTWFILEFUNCTIONS_H
