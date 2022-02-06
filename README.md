@@ -21,7 +21,9 @@ The use for the aricles of the _Archäologischer Anzeiger_ is the reason for som
 - setting hyperlink references to external bibliographical resources by a value list (list of references/bibliography)
 - setting tags for figure references
 - and so on
-  Although the use case and the implemented features for annotations and semi-automatic formatting seems to be very specific for one journal, the application can be customized for other purposes since the design allows to alterate element tags or add functions for new kind of value lists and so on.
+Beginning with version 1.1.0 the application allows to export not only `.html` but also `.xml` files although it needs to be stressed that the `.xml` version is a non-valid intermediate product that will need minor manual finishing.  
+
+Although the use case and the implemented features for annotations and semi-automatic formatting seems to be very specific for one journal, the application can be customized for other purposes since the design allows to alterate element tags or add functions for new kind of value lists and so on.
 
 ## Mode of operation
 
@@ -33,9 +35,11 @@ Before starting the application the `.docx` file has to be converted by using pa
 - An elaborate error/exception handling is not implemented yet
 - The feature to import the article metadata from json is still in progress
 - Explicitly no efforts were made yet to clear up the extensive html head that Microsoft Word needs to re-read the `.html` file correctly. With the provided head the file is readable although minor errors may occur.
+- Implementing the possibility to reload and re-process files that were converted with the application already.
 
 ## Technical remarks and requirements
 
 - Windows only (Windows 10)
 - TDM-GCC 9.2.0 32/64bit
 - Tested with following IDE: Embarcadero Dev-C++ 6.3. If using Embarcadero Dev-C++ 6.3 add "`-std=c++17`" in Project Options -> Parameter s -> C++ compilers.
+- Tested with pandoc version 2.16.2
