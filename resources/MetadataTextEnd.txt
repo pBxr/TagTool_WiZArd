@@ -1,0 +1,42 @@
+<p class=DAIauthor><span class=DAIauthor-title><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert academic title here (e. g. Prof.)_###</span></span><span style='mso-ansi-language:EN-US'> </span>
+<span class=DAIauthor-given-name><span style='font-family:"Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert first name here_###</span></span><span style='mso-ansi-language:EN-US'> </span>
+<span class=DAIauthor-name><span style='font-family:"Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert last name here_###<</span></span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
+<p class=DAIauthor><span class=DAIauthor-institution><span style='font-family: "Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert affiliation here_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-address><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: street_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-city><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: postal code_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-country><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: country_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-mail><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: e-mail_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-identification><span style='font-family: "Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert Persistent Identifyer (e. g. ORCID)_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span lang=EN-US style='mso-ansi-language:EN-US'><o:p>&nbsp;</o:p></span></p>
+
+<p class=DAIauthor><span class=DAIauthor-title><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert academic title here (e. g. Prof.)_###</span></span><span style='mso-ansi-language:EN-US'> </span>
+<span class=DAIauthor-given-name><span style='font-family:"Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert first name here_###</span></span><span style='mso-ansi-language:EN-US'> </span>
+<span class=DAIauthor-name><span style='font-family:"Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert last name here_###<</span></span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
+<p class=DAIauthor><span class=DAIauthor-institution><span style='font-family: "Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert affiliation here_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-address><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: street_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-city><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: postal code_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-country><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: country_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-mail><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: e-mail_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-identification><span style='font-family: "Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert Persistent Identifyer (e. g. ORCID)_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span lang=EN-US style='mso-ansi-language:EN-US'><o:p>&nbsp;</o:p></span></p>
+
+<p class=DAIauthor><span class=DAIauthor-title><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert academic title here (e. g. Prof.)_###</span></span><span style='mso-ansi-language:EN-US'> </span>
+<span class=DAIauthor-given-name><span style='font-family:"Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert first name here_###</span></span><span style='mso-ansi-language:EN-US'> </span>
+<span class=DAIauthor-name><span style='font-family:"Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert last name here_###<</span></span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
+<p class=DAIauthor><span class=DAIauthor-institution><span style='font-family: "Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert affiliation here_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-address><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: street_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-city><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: postal code_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-country><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: country_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-mail><span style='font-family:"Noto Serif",serif; mso-bidi-font-family:"Times New Roman"'>###_Insert here address: e-mail_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span class=DAIauthor-identification><span style='font-family: "Noto Serif",serif;mso-bidi-font-family:"Times New Roman"'>###_Insert Persistent Identifyer (e. g. ORCID)_###<o:p></o:p></span></span></p>
+<p class=DAIauthor><span lang=EN-US style='mso-ansi-language:EN-US'><o:p>&nbsp;</o:p></span></p>
+
+<p class=DAIarticle-meta>Titel/<span class=DAIbody-italic>Title</span>: ###_Insert titel an subtitle here (German)_###<span class=DAIbody-italic>/###_Insert title and subtitle here (English)_###</span><span lang=EN-GB style='mso-ansi-language:EN-GB'><o:p></o:p></span></p>
+<p class=DAIarticle-meta><span lang=EN-GB style='mso-ansi-language:EN-GB'>Band/<span class=DAIbody-italic>Issue</span>: ###Insert journal name and journal number here_###<o:p></o:p></span></p>
+<p class=DAIarticle-meta><span lang=EN-GB style='mso-ansi-language:EN-GB'>Bitte zitieren Sie diesen Beitrag folgenderweise/<span class=DAIbody-italic>Please cite the article as follows</span>: ###_Insert way of citation_###<span style='mso-bidi-font-size:12.0pt;line-height:115%'> AA 2020/1, §</span>&nbsp;<span style='mso-bidi-font-size:12.0pt;line-height:115%'>1–1</span>31<span style='mso-bidi-font-size:12.0pt;line-height:115%'>, </span>https://doi.org/10.34780/aa.v0i1.1018</p>
+<p class=DAIarticle-meta>Copyright: Alle Rechte vorbehalten/<span class=DAIbody-italic>All rights reserved</span>.</p>
+<p class=DAIarticle-meta>Online veröffentlicht am/<span class=DAIbody-italic>Online published on</span>: ##.##.####</p>
+<p class=DAIarticle-meta><span lang=FR style='mso-ansi-language:FR'>DOI: </span>https://doi.org/##.#####/########<span lang=EN-GB style='mso-ansi-language:EN-GB'><o:p></o:p></span></p>
+<p class=DAIarticle-meta><span lang=EN-GB style='mso-ansi-language:EN-GB'>URN: https://nbn-resolving.org/urn:nbn:##.#####/########<o:p></o:p></span></p>
+<p class=DAIarticle-meta><span lang=EN-GB style='mso-ansi-language:EN-GB'>Schlagworte/<span class=DAIbody-italic>Keywords</span></span>: ###_Insert keywords (German)_###, ###_Insert keywords (German)_###, ###_Insert keywords (German)_###, ###_Insert keywords (German)_###, ###_Insert keywords (German)_###<span class=DAIbody-italic>/###_Insert keywords (English)_###, ###_Insert keywords (English)_###, ###_Insert keywords (English)_###, ###_Insert keywords (English)_###, ###_Insert keywords (English)_###</span></p>
+<p class=DAIarticle-meta>Bibliographischer Datensatz/<span class=DAIbody-italic>Bibliographic reference</span>: https://zenon.dainst.org/Record/########</p>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><article article-type="research-article" dtd-version="1.2" xml:lang="de-DE">
+    <front>
+		<journal-meta>
+        <!-- Main metadata -->
+        <journal-id journal-id-type="publisher-id">###_Insert abbreviation of the journal here_###</journal-id>
+        <journal-title-group>
+            <journal-title>###_Insert journal title here_###</journal-title>
+        </journal-title-group>
+    <!-- Editors -->
+        <contrib-group content-type="Editors">
+            <role>Editor:</role>
+            <contrib contrib-type="Editor">
+                <name>
+                    <surname>###_Insert editor surname here_###</surname>
+                    <given-names>###_Insert editor given name here_###</given-names>
+                </name>
+            </contrib>
+        </contrib-group>
+    <!-- ISSN/ISBN -->
+       <issn publication-format="online">###_Insert ISSN here_###</issn>
+    <!-- Publisher -->
+    <publisher>
+        <publisher-name>###_Insert publisher here_###</publisher-name>
+        <publisher-loc>
+            <addr-line>###_Insert publisher adress line here_###</addr-line>
+            <city>###_Insert publisher postal code and city here_###</city>
+            <country>###_Insert publisher country_###</country>
+            <ext-link ext-link-type="uri">###_Insert publisher url here_###</ext-link>
+        </publisher-loc>
+    </publisher>
+    <!-- Custom metadata -->
+    <custom-meta-group>
+        <custom-meta>
+            <meta-name>publishing-history</meta-name>
+            <meta-value>published since ###_Insert date "published since" here_###</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-label</meta-name>
+            <meta-value>Editing and Typesetting</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-publishing-editor</meta-name>
+            <meta-value>Publishing editor: ###_Insert name and address publishing editor here_###</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-editing</meta-name>
+            <meta-value>Editing: ###_Insert name copy editor here_###</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-layout</meta-name>
+            <meta-value>Corporate Design: ###_Insert company or name corporate design here_###</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-webdesign</meta-name>
+            <meta-value>Webdesign: ###_Insert company or name webdesign here_###</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-webdesign-url</meta-name>
+            <meta-value>###_Insert url webdesign here_###</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-development</meta-name>
+            <meta-value>Programming Viewer: ###_Insert company or name programming viewer here_###</meta-value>
+        </custom-meta>
+        <custom-meta>
+            <meta-name>editing-notice-development-url</meta-name>
+            <meta-value>###_Insert url company programming viewer here_###</meta-value>
+        </custom-meta>
+    </custom-meta-group>
+    </journal-meta>
+    <article-meta>
+    <article-id pub-id-type="doi">###_Insert DOI here_###
+	</article-id>
+    <title-group>
+		<article-title>###_Insert title here_###</article-title>
+		<subtitle>###_Insert subtitle here_###</subtitle>
+	</title-group>
+	<contrib-group>
+	    <contrib contrib-type="author"><contrib-id contrib-id-type="orcid">###_Insert ORCID author 1 here_###</contrib-id><name><surname>###_Insert surname author 1 here_###</surname><given-names>###_Insert given names author 1 here_###</given-names><prefix>###_Insert academic author 1 title_###</prefix></name><aff><institution-wrap><institution-id institution-id-type="gnd">###_Insert institutional PID (e. g. GND) author 1_###</institution-id><institution>###_Insert name of institution author 1_###</institution></institution-wrap><addr-line>###_Insert address line author 1_###</addr-line><city>###_Insert postal code and city author 1_###</city><country>###_Insert country author 1_###</country><email>###_Insert e-mail author 1_###</email></aff></contrib>
+	    <contrib contrib-type="author"><contrib-id contrib-id-type="orcid">###_Insert ORCID author 2 here_###</contrib-id><name><surname>###_Insert surname author 2 here_###</surname><given-names>###_Insert given names author 2 here_###</given-names><prefix>###_Insert academic author 2 title_###</prefix></name><aff><institution>###_Insert name of institution author 2_###</institution><addr-line>###_Insert address line author 2_###</addr-line><city>###_Insert postal code and city author 2_###</city><country>###_Insert country author 2_###</country><email>###_Insert e-mail author 2_###</email></aff></contrib>
+	    <contrib contrib-type="author"><contrib-id contrib-id-type="orcid">###_Insert ORCID author 3 here_###</contrib-id><name><surname>###_Insert surname author 3 here_###</surname><given-names>###_Insert given names author 3 here_###</given-names><prefix>###_Insert academic author 3 title_###</prefix></name><aff><institution>###_Insert name of institution author 3_###</institution><addr-line>###_Insert address line author 3_###</addr-line><city>###_Insert postal code and city author 3_###</city><country>###_Insert country author 3_###</country><email>###_Insert e-mail author 3_###</email></aff></contrib>
+	</contrib-group>
+	<pub-date pub-type="collection"><year>###_Insert year of publication_###</year><month>###_Insert month_###</month><day>###_Insert day_###</day>
+	</pub-date>
+	<volume>###_Insert volume_###</volume>
+	<permissions><copyright-statement content-type="online">###_Insert copyright statement_###</copyright-statement>
+		<license license-type="online"><license-p content-type="terms-of-use">###_Insert url terms of use_###</license-p></license>
+	</permissions>
+	<self-uri content-type="pdf-urn">###_Insert self urn_###</self-uri><self-uri content-type="online-url">###_Insert self url_###</self-uri>
+		
+	<abstract xml:lang="en-GB">
+            <title>Abstract</title>
+            <p><styled-content style-type="abstract-title">###_Insert title abstract_###</styled-content></p>
+	    <p><styled-content style-type="abstract-author">###_Insert all authors abstract_###</styled-content></p>
+            <p><styled-content style-type="abstract-text">###_Insert abstract text_###</styled-content></p>
+    </abstract>
+	<custom-meta-group><custom-meta><meta-name>citation-guideline</meta-name><meta-value>###_Insert guideline for citation_###</meta-value></custom-meta><custom-meta><meta-name>issue-bibliography</meta-name><meta-value>###_Insert bibliographic record ID_###</meta-value></custom-meta><custom-meta><meta-name>cover-illustration</meta-name><meta-value>###_Insert source of illustrations cover_###</meta-value></custom-meta>
+	</custom-meta-group>
+	</article-meta>
+	</front>    
