@@ -33,7 +33,7 @@ public:
     
 	string folderWriting_;
 
-	string toReplaceIn_;
+	string toReplaceInResources_;
 	string toReplaceInHtmlHead_;
 
     string fileNameTemplMetadBegin_;
@@ -59,7 +59,7 @@ public:
     fileInformations(){
     lapCounter_=0;
     fileNameArticleFile_ = "";
-    toReplaceIn_ = "###Name_of_the_edited_file###";
+    toReplaceInResources_ = "###Name_of_the_edited_file###";
     toReplaceInHtmlHead_ = "###Name__folder###";
     }
     
@@ -112,6 +112,7 @@ class lineClass {
     vector<tagClass> tagContainerLine_;
     string plainTextLine_;
     string lineCategory_;
+    bool toBeNumbered;
 
     lineClass(size_t nr, vector<tagClass> tagContainerLine, string lineContent, string lineCategory){
     lineNumber_=nr;
@@ -152,15 +153,20 @@ struct documentSectionsClass {
     int lineNrBodyTextBegin_=0;
     bool lineNrBodyTextIsSet = false;
 
+	int lineNrReferencesBegin_=0;
+	bool lineNrReferencesBeginIsSet = false;
+
     int lineNrBodyTextEnd_=0;
     bool lineNrBodyTextEndIsSet = false;
 
     int lineNrTextEnd_;
     bool lineNrTextEndIsSet= false;
+    
+    int lineNrImageContainerXML_=0;
 
     size_t lineNrFootnotesBegin_=0;
     bool lineNrFootnotesBeginIsSet = false;
-
+    
     static vector<string> checkStringAbstract;
     static vector<string> checkStringAbbreviations;
     static vector<string> checkStringAddress;
@@ -196,12 +202,17 @@ struct documentSectionsClass {
 
     lineNrBodyTextBegin_=0;
     lineNrBodyTextIsSet  = false;
-
+    
+    lineNrReferencesBegin_=0;
+	lineNrReferencesBeginIsSet = false;
+    
     lineNrBodyTextEnd_=0;
     lineNrBodyTextEndIsSet=false;
 
     lineNrTextEnd_=0;
     lineNrTextEndIsSet= false;
+
+	lineNrImageContainerXML_=0;
 
     lineNrFootnotesBegin_=0;
     lineNrFootnotesBeginIsSet=false;
@@ -408,7 +419,13 @@ public:
 	
 	//html ...
 	static string figNumberLabelTagBegin_;
-	static string figNumberLabelTagEnd_;
+	static string figNumberLabelTagEnd_; 
+	
+	static string figNumberCaptionTagBegin_;
+	static string figNumberCaptionTagEnd_; 
+	
+	static string figNumberCreditLabelTagBegin_;
+	static string figNumberCreditLabelTagEnd_;
 	
 	static string figCreditTagBegin_;
 	static string figCreditTagEnd_;
@@ -446,8 +463,15 @@ public:
 };
 
 //html...
-string illustrationCreditsClass::figNumberLabelTagBegin_ = "<p class=DAIabbildungsverz><span class=DAIabbildungsverz-nummer>";
-string illustrationCreditsClass::figNumberLabelTagEnd_ = "</span>";
+string illustrationCreditsClass::figNumberLabelTagBegin_ = "<p class=DAIbildunterschrift><span class=DAIbu-nummer><span style='font-family: \"Noto Sans\",sans-serif'>";
+string illustrationCreditsClass::figNumberLabelTagEnd_ = "</span></span>: ";
+
+string illustrationCreditsClass::figNumberCaptionTagBegin_ = "<span class=DAIbu-text>";
+string illustrationCreditsClass::figNumberCaptionTagEnd_ = "</span></p>";
+
+
+string illustrationCreditsClass::figNumberCreditLabelTagBegin_ = "<p class=DAIabbildungsverz><span class=DAIabbildungsverz-nummer>";
+string illustrationCreditsClass::figNumberCreditLabelTagEnd_ = "</span>: ";
 	
 string illustrationCreditsClass::figCreditTagBegin_ = "<span class=DAIabbildungsverz-text><span style='font-family:\"Noto Sans\",sans-serif; mso-bidi-font-family:\"Times New Roman\"'>";
 string illustrationCreditsClass::figCreditTagEnd_ = "</span></span></p>";
@@ -472,8 +496,8 @@ string head3TagBegin="<p class=DAIbody-h3>";
 string head1_3TagEnd="</p>";
 
 string head1TagBeginXML_="<sec id=\"s-#1#\"><title>";
-string head2TagBeginXML_="</sec>\n<sec id=\"s-#1#.#2#\"><title>";
-string head3TagBeginXML_="</sec>\n<sec id=\"s-#1#.#2#.#3#\"><title>";
+string head2TagBeginXML_="<sec id=\"s-#1#.#2#\"><title>";
+string head3TagBeginXML_="<sec id=\"s-#1#.#2#.#3#\"><title>";
 string head1_3TagEndXML="</title>";
 
 vector<string> newHeadlineTags = {head1TagBegin, head2TagBegin, head3TagBegin, head1_3TagEnd};
