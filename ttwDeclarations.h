@@ -18,7 +18,7 @@ void detect_footnotes(string, size_t, unsigned int, unsigned int, vector<footNot
 
 void detect_footnoteBacklinks(string, unsigned int, unsigned int, vector<footNoteClass>&);
 
-string detect_numberable_paragraphs(vector<tagClass>, string, struct documentSectionsClass&, int);
+void detect_numberable_paragraphs(vector<string> articleFile);
 
 void get_lineNumbers_documentSections(string, size_t, struct documentSectionsClass&);
 
@@ -31,10 +31,6 @@ void insert_image_credit_list(vector<string> &articleFile);
 void insert_metadataTemplates(vector<string> &articleFile, fileInformations &fileInfo);
 
 void insert_MSWordFootnoteTags(vector<string>&, vector<footNoteClass>&);
-
-void insert_XML_FootnoteTags(vector<string>&, vector<footNoteClass>&);
-
-void insert_XML_HeadlineTags(vector<string>&);
 
 string isolate_plainText(string);
 
@@ -85,6 +81,5 @@ void show_options();
 void structure_xml_output_file(vector<string> &articleFile);
 
 void write_resources(fileInformations &fileInfo);
-
 
 #endif // TTWDECLARATIONS_H
