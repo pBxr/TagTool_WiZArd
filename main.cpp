@@ -72,9 +72,11 @@ int main(int argc, char *argv[]){
         
     }
 
+
+
     analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
  
-
+	
     //Remove dispensable formattings/tags?____________________________________________
     if (removeDispensableTagsSelected==true && dispensableTagsRemoved==false){
 
@@ -131,7 +133,7 @@ int main(int argc, char *argv[]){
             if(containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "paragraphBegin" && containerLines.at(i).lineCategory_!="noTextParagraph") {
                 posA=containerLines.at(i).tagContainerLine_.at(0).addressTagBegin_;
                 posB=containerLines.at(i).tagContainerLine_.at(0).addressTagEnd_;
-
+				
                 articleFile.at(i) = set_custom_bodyTag(articleFile.at(i), posA, posB, newParagraphTag);
 
             }
@@ -166,13 +168,7 @@ int main(int argc, char *argv[]){
 
             for(size_t i=0; i<numberOfLines-1; i++){
                 
-                if(
-				(containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "paragraphBegin" 
-				&& containerLines.at(i).lineCategory_!="blankLine" 
-				&& containerLines.at(i).lineCategory_!="noTextParagraph") 
-				|| (containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "countedTextParagraphHTML")
-				|| (containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "countedTextParagraphXML")
-				) {
+                if(containerLines.at(i).toBeNumbered==true) {
                     posA=containerLines.at(i).tagContainerLine_.at(0).addressTagBegin_;
                     posB=containerLines.at(i).tagContainerLine_.at(0).addressTagEnd_;
                     articleFile.at(i) = set_paragraphNumbers(articleFile.at(i), posA, posB, newParagraphTag, paragraphNumberTagBegin, paragraphNumberTagEnd, pointerParagrNumber);
@@ -202,19 +198,17 @@ int main(int argc, char *argv[]){
     }
     
     
-    if(htmlSelected==false){  //Implementation for .html target format needs to be done...
-    	
     //insert tagged illustration creditsvalue list?______________________________________________
-		if(insertCreditListSelected==true && imageContainerInserted==false){
+	if(insertCreditListSelected==true && imageContainerInserted==false){
 		
-			insert_image_credit_list(articleFile);
+		insert_image_credit_list(articleFile);
 		
-			//After alterating the file analyze again
-        	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
-			cout << "Illustration credit tags set successfully..." << endl;	
-			figureReferenceTagsSet=true;
-		}	
-    }
+		//After alterating the file analyze again
+        analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
+		cout << "Illustration credit tags set successfully..." << endl;	
+		figureReferenceTagsSet=true;
+	}	
+    
 	
 
     //Convert footnotes to MS WORD or xml_____________________________________________________________
