@@ -369,8 +369,7 @@ vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustr
             posB=valueListFile[i].find("% ");
             }
 
-        
-        
+                
         //Get addresses... 
         
         vector<int> positions;
@@ -466,9 +465,9 @@ void saveFile(vector<string> &articleFile, fileInformations &fileInfos){
 
 void write_resources(fileInformations &fileInfos){
 	
-    search_replace(fileInfos.filelist, fileInfos.toReplaceIn_, fileInfos.newFileNameFor_);
-    search_replace(fileInfos.header, fileInfos.toReplaceIn_, fileInfos.newFileNameFor_);
-    search_replace(fileInfos.item0001, fileInfos.toReplaceIn_, fileInfos.newFileNameFor_);
+    search_replace(fileInfos.filelist, fileInfos.toReplaceInResources_, fileInfos.newFileNameFor_);
+    search_replace(fileInfos.header, fileInfos.toReplaceInResources_, fileInfos.newFileNameFor_);
+    search_replace(fileInfos.item0001, fileInfos.toReplaceInResources_, fileInfos.newFileNameFor_);
 
     size_t charlength=fileInfos.folderWriting_.size();
     char folderName_[charlength];
@@ -509,7 +508,7 @@ void write_resources(fileInformations &fileInfos){
     }
     fileOut4.close();
     
-    fileInfos.toReplaceIn_ = fileInfos.fileNameArticleFile_;
+    fileInfos.toReplaceInResources_ = fileInfos.fileNameArticleFile_;
     
 }
 
