@@ -1,12 +1,10 @@
 Tag html%Replace in xml (no entry= delete)
-<em>%<italic>
-</em>%</italic>
-<strong>%<bold>
-</strong>%</bold>
 <ol>%
+<ul>%
 </html>%
 </body>%
 </ol>%
+</ul>%
 <section class="footnotes" role="doc-endnotes">%
 <hr />%
 </section>%
