@@ -8,13 +8,13 @@
 
 namespace fs = std::filesystem;
 
-void create_target_file_and_folder_names(fileInformations &fileInfo) {
+void create_target_file_and_folder_names(fileInformations &fileInfos) {
 
-    fileInfo.fileNameArticleFile_ = fileInfo.fileNameSourceFile_;
+    fileInfos.fileNameArticleFile_ = fileInfos.fileNameSourceFile_;
 
     int pos1;
-    pos1=fileInfo.fileNameArticleFile_.find(".html");
-    string counter = std::to_string(fileInfo.lapCounter_);
+    pos1=fileInfos.fileNameArticleFile_.find(".html");
+    string counter = std::to_string(fileInfos.lapCounter_);
     string suffix;
 	
 	if(htmlSelected==true){
@@ -26,7 +26,7 @@ void create_target_file_and_folder_names(fileInformations &fileInfo) {
 		}	
 		
 
-    fileInfo.fileNameArticleFile_.replace(pos1, 5, suffix);
+    fileInfos.fileNameArticleFile_.replace(pos1, 5, suffix);
     
        
     //for  folder...
@@ -48,7 +48,7 @@ void create_target_file_and_folder_names(fileInformations &fileInfo) {
     
 }
 
-void get_current_path(fileInformations &fileInfo){
+void get_current_path(fileInformations &fileInfos){
 	
 	fs::path workingPathTemp;
 	
@@ -90,7 +90,7 @@ return workingFile_;
 
 }
 
-void load_resources(){
+void load_resources(fileInformations& fileInfos){
 	
 	fileInfos.fileNameTemplMetadBegin_= fileInfos.workingPath_ + "/resources/" + "MetadataTextBegin.txt";
  	fileInfos.fileNameTemplMetadEnd_= fileInfos.workingPath_ + "/resources/" + "MetadataTextEnd.txt";
@@ -451,8 +451,9 @@ void saveFile(vector<string> &articleFile, fileInformations &fileInfos){
 
      ofstream fileOut(fileInfos.fileNameArticleFile_, std::ios::trunc);
      if(!fileOut){
-         std::cerr << "Error writing " << fileInfos.fileNameArticleFile_ << ". Check filename or path"<< endl;
-         }
+         std::cerr << "\n****ERROR WRITING " << fileInfos.fileNameArticleFile_ << ". Check filename or path or if file ist opened****\n"<< endl;
+         return;
+		 }
 
      for(string &p:articleFile) {
      fileOut << p;
@@ -460,7 +461,7 @@ void saveFile(vector<string> &articleFile, fileInformations &fileInfos){
 
      fileOut.close();
 
-     
+     cout << "Article successfully written..." << endl;
 }
 
 void write_resources(fileInformations &fileInfos){
