@@ -6,8 +6,17 @@
 int main(int argc, char *argv[]){
 
     cout << "\n\n********************************************************************************************************\n" << endl;
-    cout << "   Welcome to TagTool_WiZArD application (v1.1.0)"<< endl;
+    cout << "   Welcome to TagTool_WiZArD application (v1.2.0)"<< endl;
     cout << "\n\n********************************************************************************************************\n" << endl;
+
+
+fileInformations fileInfos;
+vector<tagClass> containerTags{};
+vector<lineClass> containerLines{};
+vector<footNoteClass> footnoteAdressContainer{};
+documentSectionsClass documentSections;
+vector<string> articleFile{};
+vector<string> litListeVector;
 
     
     while(nextRunIsSet) {
@@ -40,7 +49,7 @@ int main(int argc, char *argv[]){
      }
 
     //Process parameters and set functions...
-    terminationFlag=processParameter(parameterVector);
+    terminationFlag=processParameter(parameterVector, fileInfos);
 
     if(terminationFlag==0){
         cout << "\n";
@@ -59,28 +68,25 @@ int main(int argc, char *argv[]){
     
 	if(firstRun==true){
         
-		//Get article and 
+		//Get article and path...
         fileInfos.fileNameArticleFile_ = fileInfos.fileNameSourceFile_;
 
         articleFile=loadFileContent(fileInfos.fileNameArticleFile_);
         
         get_current_path(fileInfos);
                 
-        load_resources();
+        load_resources(fileInfos);
         
         firstRun=false;
         
     }
 
-
-
     analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
- 
-	
+  	 	
     //Remove dispensable formattings/tags?____________________________________________
     if (removeDispensableTagsSelected==true && dispensableTagsRemoved==false){
 
-        articleFile=remove_disp_formattings(articleFile, containerLines);
+        articleFile=remove_disp_formattings(articleFile, containerLines, documentSections);
 
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
@@ -97,17 +103,16 @@ int main(int argc, char *argv[]){
         vector<authorYearListClass> authorYearList;
 
         authorYearList=load_value_list(fileInfos.fileNameAuthorYearList_, authorYearList);
-                
-        
-		if(htmlSelected==true){
+              
+        if(htmlSelected==true){
 		set_authorYearTags(articleFile, authorYearList, documentSections);	
 		}
 		
 		if(htmlSelected==false){
-		set_authorYearTags_XML(articleFile, authorYearList, documentSections);		
+	    set_authorYearTags_XML(articleFile, authorYearList, documentSections, 
+		footnoteAdressContainer, containerTags, containerLines);		
 		}
-		
-        
+		        
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
         cout << "Author year tags set successfully..." << endl;
@@ -134,22 +139,41 @@ int main(int argc, char *argv[]){
                 posA=containerLines.at(i).tagContainerLine_.at(0).addressTagBegin_;
                 posB=containerLines.at(i).tagContainerLine_.at(0).addressTagEnd_;
 				
-                articleFile.at(i) = set_custom_bodyTag(articleFile.at(i), posA, posB, newParagraphTag);
+                articleFile.at(i) = set_custom_bodyTag(articleFile.at(i), posA, posB);
 
             }
         }
         
 		
 		//After alterating the file analyze again
-        analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+       	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
 
-	
 		//Insert headlines tags
-        set_custom_HeadlineTags(articleFile, containerLines, documentSections);
-            
+        set_custom_HeadlineTags(articleFile, containerLines, documentSections, containerTags, footnoteAdressContainer);
+        
+		    
+        //After alterating the file analyze again
+       	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+				        
+        //Convert ordered and unordered lists
+        convert_lists(articleFile, containerLines, documentSections);
+                        
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-		cout << "Custom journal body tags set successfully..." << endl;
+		        
+        //Convert italic passages
+        convert_selected_tags("emphasizedBegin", articleFile, containerLines, documentSections);
+       	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+        
+        //Convert bold passages
+        convert_selected_tags("strongBegin", articleFile, containerLines, documentSections);
+      	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+        
+        //Convert subscript passages
+        convert_selected_tags("subscriptBegin", articleFile, containerLines, documentSections);
+        analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+      
+       	cout << "Custom journal body tags set successfully..." << endl;
         customBodyTagsSet=true;
 
     }
@@ -201,7 +225,7 @@ int main(int argc, char *argv[]){
     //insert tagged illustration creditsvalue list?______________________________________________
 	if(insertCreditListSelected==true && imageContainerInserted==false){
 		
-		insert_image_credit_list(articleFile);
+	    insert_image_credit_list(articleFile, fileInfos, documentSections);
 		
 		//After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
@@ -212,9 +236,9 @@ int main(int argc, char *argv[]){
 	
 
     //Convert footnotes to MS WORD or xml_____________________________________________________________
-    if(footnoteTagsSet==false){
+    if(footnoteTagsSet==false && documentSections.lineNrFootnotesBeginIsSet==true){
 		
-		insert_MSWordFootnoteTags(articleFile, footnoteAdressContainer);
+		insert_FootnoteTags(articleFile, footnoteAdressContainer);
 	
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
@@ -222,6 +246,20 @@ int main(int argc, char *argv[]){
         footnoteTagsSet=true;
     }
 
+
+	//After having the footnotes converted, convert superscript passages...
+	//(needs to be done after converting the footnotes and the <sup>-tags)
+	if(customBodyTagsSelected==true && superscriptTagsSet==false){
+		
+		convert_selected_tags("superscriptBegin", articleFile, containerLines, documentSections);
+		
+		cout << "Superscript passages converted successfully..." << endl;
+		superscriptTagsSet=true;
+		
+		//After alterating the file analyze again
+        analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+	}
+	
 	
     //Prepare to write file an folder target names and save article and ___________________________________
     
@@ -230,7 +268,7 @@ int main(int argc, char *argv[]){
     if(customBodyTagsSet==true){
 		
 		if(htmlSelected==true){
-			replace_HtmlHead(articleFile, fileInfos.fileNameNewHtmlHead_);
+			replace_HtmlHead(articleFile, fileInfos, documentSections);
         	htmlHeadReplaced=true;
         	
         	search_replace(articleFile, fileInfos.toReplaceInHtmlHead_, fileInfos.newFileNameFor_);	
@@ -238,29 +276,32 @@ int main(int argc, char *argv[]){
         	//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
         
-        	insert_metadataTemplates(articleFile, fileInfos);
+        	insert_metadataTemplates(articleFile, fileInfos, documentSections);
         
         	//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-        }
+        
+			documentSections.log(articleFile);
+		}
         
         if(htmlSelected==false){
         	
-			structure_xml_output_file(articleFile);
-						
+			structure_xml_output_file(articleFile, fileInfos, documentSections);
+									
+			articleFile=remove_blankLines(articleFile);
+			
 			//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
-        	articleFile=remove_blankLines(articleFile);
+			
+			documentSections.log(articleFile);
 		}
-        
-	
     }
+
+	
 
    	saveFile(articleFile, fileInfos);
     
-    cout << "Article successfully written..." << endl;
-
-	if(htmlSelected==true){
+    if(htmlSelected==true){
 		write_resources(fileInfos);
     	}
     
@@ -291,7 +332,7 @@ int main(int argc, char *argv[]){
     }
 
     }
-
+	
     cout << "TagTool_WiZArD terminated successfully" << endl;
 
     return 0;
