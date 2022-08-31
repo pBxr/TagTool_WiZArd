@@ -17,7 +17,8 @@ using std::cout; using std::cin; using std::vector; using std::string; using std
 using std::endl; using std::stringstream; using std::ostringstream;
 
 
-void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containerTags, vector<lineClass> &containerLines, struct documentSectionsClass &documentSections, vector<footNoteClass> &footnoteAdressContainer) {
+void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containerTags, vector<lineClass> &containerLines, 
+		struct documentSectionsClass &documentSections, vector<footNoteClass> &footnoteAdressContainer) {
 
 	containerTags.clear();
 	containerLines.clear();
@@ -30,12 +31,10 @@ void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containe
 
 	bool footnoteBeginDetected=false;
 	
-	documentSections.lineNrFootnotesBeginIsSet=false;
-
 	for(size_t i=0; i<articleFile.size(); i++) {
 
-		string tagType;
 		string tagContent;
+		string tagType;
 		string lineContent;
 		string lineType;
 
@@ -85,11 +84,9 @@ void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containe
 						tagContent=tagContent+articleFile.at(i).at(ii);
 					}
 
-					
-
 					tagType=classify_tag(tagContent, i, documentSections);
 
-					containerTags.push_back( tagClass {i,tagNr, pos1, pos2, tagContent, tagType});
+					containerTags.push_back( tagClass {i, tagNr, pos1, pos2, tagContent, tagType});
 
 					//Save pandoc footnote references and their line numbers
 
@@ -128,22 +125,54 @@ void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containe
 	}
 
 	//Detect section beginnings...
+		
 	for(size_t i=0; i<articleFile.size(); i++) {
-		if(i>=documentSections.lineNrBodyTextBegin_) {
+		if(i>=documentSections.lineNrBodyBegin_ ) {
 			get_lineNumbers_documentSections(containerLines[i].plainTextLine_, i, documentSections);
+			}
 		}
-	}
 	
-	
+		
 	//In case article contains no different sections
-	if(documentSections.lineNrTextEnd_==0){
-		documentSections.lineNrTextEnd_=documentSections.lineNrBodyTextEnd_;
+	if(documentSections.lineNrTextEndIsSet==false){
+		documentSections.lineNrTextEnd_=documentSections.lineNrBodyEnd_;
 	}
 	
 	//Check if paragraph is to be flagged as numerable
-	detect_numberable_paragraphs(articleFile);
+	detect_numberable_paragraphs(articleFile, containerLines, documentSections);
+	
+	//Detect lists...
+	int lineBegin;
+	int lineEnd;
+	int serialNumber=1;
+	string typeOfList;
 		
+	for(size_t i=0; i<articleFile.size(); i++) {
+		if(i>=documentSections.lineNrBodyBegin_ && i<documentSections.lineNrTextEnd_){
+								
+			if(containerLines[i].tagContainerLine_[0].typeOfTag_=="listUnorderedBegin" 
+				|| containerLines[i].tagContainerLine_[0].typeOfTag_=="listOrderedBegin"){
+				lineBegin=i;
+							
+				if(containerLines[i].tagContainerLine_[0].typeOfTag_=="listUnorderedBegin"){
+						typeOfList = "unordered";
+					}
+				if(containerLines[i].tagContainerLine_[0].typeOfTag_=="listOrderedBegin"){
+						typeOfList = "ordered";
+					}
+			}
+				
+			if(containerLines[i].tagContainerLine_[0].typeOfTag_=="listUnorderedEnd" 
+				|| containerLines[i].tagContainerLine_[0].typeOfTag_=="listOrderedEnd"
+				|| containerLines[i].tagContainerLine_[0].typeOfTag_=="listEndXML"){
+				lineEnd=i;
+				documentSections.containerLists.push_back(listClass { serialNumber, lineBegin, lineEnd, typeOfList });
+				serialNumber++;
+				}
+		}
+	}
 }
+			
 
 string classify_tag(string tagContent, size_t i, documentSectionsClass &documentSections) {
 
@@ -186,16 +215,23 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 	}
 	
 	if((checkPos1=tagContent.find("<body"))==0) {
-		documentSections.lineNrBodyTextBegin_=i;
-		documentSections.lineNrBodyTextIsSet=true;
+		documentSections.lineNrBodyBegin_=i;
+		documentSections.lineNrBodyIsSet=true;
 		return "bodyBegin";
 	}
 	
 	if((checkPos1=tagContent.find("/body>"))>0) {
-		if(documentSections.lineNrBodyTextEndIsSet==false){
-			documentSections.lineNrBodyTextEnd_=i;
+		if(documentSections.lineNrBodyEndIsSet==false){
+			documentSections.lineNrBodyEnd_=i;
+			documentSections.lineNrBodyEndIsSet=true;
 			}
 		return "bodyEnd";
+	}
+	
+	if((checkPos1=tagContent.find("<!-- CHECK POSITION OF CLOSING TAG-->"))==0) { // This marker will be set by set_custom_HeadlineTags
+		documentSections.lineNrTextEnd_=i;
+		documentSections.markerEndOfTextIsSet=true;
+		return "markerEndOfText";
 	}
 	
 	if((checkPos1=tagContent.find("<ref id=\"ref"))==0) {
@@ -205,7 +241,6 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 		}
 		return "bibReference";
 	}
-	
 		
 	if((checkPos1=tagContent.find("<fn-group content-type=\"footnotes\">"))==0){
 		documentSections.lineNrFootnotesBegin_=i;
@@ -218,6 +253,13 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 		documentSections.lineNrFootnotesBeginIsSet=true;
 		return "beginnFootnoteGroupPandoc";
 	}
+	
+	if((checkPos1=tagContent.find("<section class=\"footnotes footnotes-end-of-document\" role=\"doc-endnotes\">"))==0){
+		documentSections.lineNrFootnotesBegin_=i;
+		documentSections.lineNrFootnotesBeginIsSet=true;
+		return "beginnFootnoteGroupPandoc";
+	}
+	
 			
 	if((checkPos1=tagContent.find("/section>"))>0) {
 		return "sectionEndHtml";
@@ -292,9 +334,8 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 	if((checkPos1=tagContent.find("/h5>"))>0) {
 		return "head5End";
 	}
-	
-	
-	//numberes text paragraohs
+		
+	//numbered text paragraphs
 	if((checkPos1=tagContent.find("<p id="))==0) {
 		return "countedTextParagraphXML";
 	}
@@ -302,13 +343,64 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 	if((checkPos1=tagContent.find("<p class=DAIbody-text>"))==0) {
 		return "countedTextParagraphHTML";
 	}
+	
+	
+	//lists....
+
+	if((checkPos1=tagContent.find("<ul"))==0) {
+		return "listUnorderedBegin";
+	}
+	
+	if((checkPos1=tagContent.find("<list list-type=\"bullet\">"))==0) {
+		return "listUnorderedBegin";
+	}
+
+	if((checkPos1=tagContent.find("/ul>"))>0) {
+		return "listUnorderedEnd";
+	}
+
+	if((checkPos1=tagContent.find("<ol"))==0) {
+		return "listOrderedBegin";
+	}
+	
+	if((checkPos1=tagContent.find("<list list-type=\"ordered\">"))==0) {
+		return "listOrderedBegin";
+	}
+
+	if((checkPos1=tagContent.find("/ol>"))>0) {
+		return "listOrderedEnd";
+	}
 		
-		
+	if((checkPos1=tagContent.find("</list>"))==0) {
+		return "listEndXML";
+	}
+
+	if((checkPos1=tagContent.find("<li>"))==0) {
+		return "listElementBegin";
+	}
+	
+	if((checkPos1=tagContent.find("<p class=DAIbody-text-list-bulleted"))==0) {
+		return "listElementBeginConverted";
+	}
+	
+	if((checkPos1=tagContent.find("/li>"))>0) {
+		return "listElementEnd";
+	}
+	
+	if((checkPos1=tagContent.find("</list-item>"))>0) {
+		return "listElementEnd";
+	}
+
+	if((checkPos1=tagContent.find("<p class=DAIbody-text-list-numbered"))==0) {
+		return "listElementBeginOrderedListConverted";
+	}
+	
 	//xml images container
 	if((checkPos1=tagContent.find("<sec id=\"images-container\">"))==0) {
 		documentSections.lineNrImageContainerXML_=i;
-			if(documentSections.lineNrBodyTextEndIsSet==false){
-			documentSections.lineNrBodyTextEnd_=i;
+			if(documentSections.lineNrBodyEndIsSet==false){
+				documentSections.lineNrBodyEnd_=i;
+				documentSections.lineNrBodyEndIsSet=true;
 			}
 		return "imageContainerXMLBegin";
 	}	
@@ -425,18 +517,41 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 		return "strongEnd";
 	}
 
+	if((checkPos1=tagContent.find("<span class=DAIbody-medium>"))==0) {
+		return "strongBeginConverted";
+	}
+
 	if((checkPos1=tagContent.find("<em>"))==0) {
 		return "emphasizedBegin";
 	}
-	if((checkPos1=tagContent.find("</em>"))>0) {
+	if((checkPos1=tagContent.find("/em>"))>0) {
 		return "emphasizedEnd";
 	}
 
-	if((checkPos1=tagContent.find("<sup"))==0) {
+	if((checkPos1=tagContent.find("<span class=DAIitalic>"))==0) {
+		return "emphasizedBeginConverted";
+	}
+
+	if((checkPos1=tagContent.find("<sup>"))==0) {
 		return "superscriptBegin";
 	}
 	if((checkPos1=tagContent.find("/sup>"))>0) {
 		return "superscriptEnd";
+	}
+	
+	if((checkPos1=tagContent.find("<span class=DAIbody-subscript>"))==0) {
+		return "superscriptBeginConverted";
+	}
+		
+	if((checkPos1=tagContent.find("<sub"))==0) {
+		return "subscriptBegin";
+	}
+	if((checkPos1=tagContent.find("/sub>"))>0) {
+		return "subscriptEnd";
+	}
+	
+	if((checkPos1=tagContent.find("<span class=DAIbody-superscript>"))==0) {
+		return "subscriptBegin";
 	}
 
 	if((checkPos1=tagContent.find("<br/>"))==0) {
@@ -464,27 +579,6 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 		return "row2End";
 	}
 
-	if((checkPos1=tagContent.find("<li"))==0) {
-		return "listBegin";
-	}
-	if((checkPos1=tagContent.find("/li>"))>0) {
-		return "listEnd";
-	}
-
-	if((checkPos1=tagContent.find("<ul"))==0) {
-		return "list2Begin";
-	}
-	if((checkPos1=tagContent.find("/ul>"))>0) {
-		return "list2End";
-	}
-
-	if((checkPos1=tagContent.find("<ol"))==0) {
-		return "list3Begin";
-	}
-	if((checkPos1=tagContent.find("/ol>"))>0) {
-		return "list3End";
-	}
-
 	if((checkPos1=tagContent.find("<a href"))==0) {
 		return "linkBegin";
 	}
@@ -503,6 +597,168 @@ string classify_tag(string tagContent, size_t i, documentSectionsClass &document
 
 	return "toDelete";
 }
+
+
+void convert_selected_tags(string typeOfTagBegin, vector<string> &articleFile, vector<lineClass> &containerLines, struct documentSectionsClass &documentSections) {
+	
+	string typeOfTagEnd;
+	string newTagBegin;
+	string newTagEnd;
+	
+	if(typeOfTagBegin=="emphasizedBegin"){
+		typeOfTagEnd = "emphasizedEnd";
+		
+		if(htmlSelected==true){
+		newTagBegin = italicTagBegin_;
+		newTagEnd = variousSpanTagEnd_;
+		}
+		if(htmlSelected==false){
+		newTagBegin = italicBeginXML_;
+		newTagEnd = italicEndXML_;	
+		}
+	}
+	
+	if(typeOfTagBegin=="strongBegin"){
+		typeOfTagEnd="strongEnd";
+		
+		if(htmlSelected==true){
+		newTagBegin = strongBegin_;
+		newTagEnd = variousSpanTagEnd_;	
+		}
+		
+		if(htmlSelected==false){
+		newTagBegin = strongBeginXML_;
+		newTagEnd = strongEndXML_;	
+		}
+	}
+	
+	if(typeOfTagBegin=="superscriptBegin"){
+		typeOfTagEnd="superscriptEnd";
+		
+		if(htmlSelected==true){
+		newTagBegin = superscriptBegin_;
+		newTagEnd = variousSpanTagEnd_;
+		}
+	}
+	
+	if(typeOfTagBegin=="subscriptBegin"){
+		typeOfTagEnd="subscriptEnd";
+		
+		if(htmlSelected==true){
+		newTagBegin = subscriptBegin_;
+		newTagEnd = variousSpanTagEnd_;
+		}
+	}
+	
+	for(int i=documentSections.lineNrTextEnd_; i>=documentSections.lineNrBodyBegin_; i--){
+		
+		for(int y=containerLines[i].tagContainerLine_.size()-1; y>=0; y--){
+	
+			if(containerLines[i].tagContainerLine_[y].typeOfTag_== typeOfTagEnd){
+			
+				articleFile[i].replace(containerLines[i].tagContainerLine_[y].addressTagBegin_, containerLines[i].tagContainerLine_[y].tagContent_.size(), newTagEnd);
+			
+			}	
+			
+			if(containerLines[i].tagContainerLine_[y].typeOfTag_==typeOfTagBegin){
+			
+				articleFile[i].replace(containerLines[i].tagContainerLine_[y].addressTagBegin_, containerLines[i].tagContainerLine_[y].tagContent_.size(), newTagBegin);
+			
+			}
+		}
+	}
+}
+
+
+void convert_lists(vector<string> &articleFile, vector<lineClass> &containerLines, documentSectionsClass &documentSections){
+	
+	if(documentSections.containerLists.size()<=0){
+		return;
+	}
+	
+	string toInsertUnorderedBegin;
+	string toInsertOrderedBegin;
+	string toInsertOrderedEnd;
+	string toInsertStartTagListXML;
+	
+	if(htmlSelected==true){
+		toInsertUnorderedBegin = listClass::unorderedListTagItemBegin_;
+		toInsertOrderedBegin = listClass::orderedListTagItemBegin_;
+	}
+	
+	if(htmlSelected==false){
+		toInsertUnorderedBegin = listClass::unorderedListTagItemBeginXML_;
+		toInsertOrderedBegin = listClass::unorderedListTagItemBeginXML_;
+		toInsertOrderedEnd = listClass::unorderedListTagItemEndXML_;
+	}
+		
+	for(int i=documentSections.containerLists.size()-1; i>=0; i--){
+	
+		if(documentSections.containerLists[i].listType_=="unordered"){
+			toInsertStartTagListXML=listClass::unorderedListTagBeginXML_;
+		}
+		
+		if(documentSections.containerLists[i].listType_=="ordered"){
+			toInsertStartTagListXML=listClass::orderedListTagBeginXML_;
+		}
+		
+		for(int y=documentSections.containerLists[i].lineEnd_-1; y>documentSections.containerLists[i].lineBegin_; y--){	
+			int paragrBegin;
+			int listBegin;
+			int listEnd;
+						
+			listBegin=articleFile[y].find("<li><p>");
+		
+			if(listBegin==0){
+				if(htmlSelected==false){
+					articleFile[y].erase(listBegin, 4);	
+				}
+				if(htmlSelected==true){
+					articleFile[y].erase(listBegin, 7);	
+				}
+			}
+		
+			listEnd=articleFile[y].find("</li>");	
+					
+			if(listEnd>=3){
+					
+				if(htmlSelected==true){
+					articleFile[y].erase(listEnd, 5);
+				}
+			
+				if(htmlSelected==false){
+					articleFile[y].replace(listEnd, 5, toInsertOrderedEnd);
+				}
+			}
+					
+			if(documentSections.containerLists[i].listType_=="unordered"){
+				articleFile[y].insert(0, toInsertUnorderedBegin);	
+				}
+		
+			if(documentSections.containerLists[i].listType_=="ordered"){
+				articleFile[y].insert(0, toInsertOrderedBegin);
+				}
+		}
+	
+		if(htmlSelected==false){
+			int a;
+			int b;
+			a=articleFile[documentSections.containerLists[i].lineBegin_].find("<ul>");
+			b=articleFile[documentSections.containerLists[i].lineEnd_].find("</ul>");
+			
+			if(a>=0){
+				articleFile[documentSections.containerLists[i].lineBegin_].erase(a, 4);
+				articleFile[documentSections.containerLists[i].lineBegin_].insert(a, toInsertStartTagListXML);	
+			}
+		
+			if(b>=0){
+				articleFile[documentSections.containerLists[i].lineEnd_].erase(b, 5);
+				articleFile[documentSections.containerLists[i].lineEnd_].insert(b, listClass::listTagEndXML_);	
+			}
+		}
+	}	
+}
+
 
 void detect_footnotes(string tagContent, size_t lineNumber, unsigned int pos1, unsigned int pos2, vector<footNoteClass> &footnoteAdressContainer) {
 
@@ -549,7 +805,7 @@ void detect_footnoteBacklinks(string tagContent, unsigned int pos1, unsigned int
 
 }
 
-void detect_numberable_paragraphs(vector<string> articleFile){
+void detect_numberable_paragraphs(vector<string> articleFile, vector<lineClass> &containerLines, documentSectionsClass &documentSections){
 	
 	//Categorize line categories
 	for(int i=0; i<articleFile.size(); i++){
@@ -573,6 +829,7 @@ void detect_numberable_paragraphs(vector<string> articleFile){
 		else{
 		containerLines[i].lineCategory_ = "other";
 		}
+				
 	}
 
 	//detect numberable paragraphs
@@ -594,7 +851,7 @@ void get_lineNumbers_documentSections(string articleFileLine, size_t i, struct d
 
 	//If one of the following elements is detected (more than 10 lines from the beginning of the text body)
 	//the flag for the end of the body text will be set
-	//The footnote section will be detected separately
+	//The footnote section is flagged during the classification of the tags
 
 	bool abstract=false;
 	bool abbreviations=false;
@@ -605,7 +862,7 @@ void get_lineNumbers_documentSections(string articleFileLine, size_t i, struct d
 
 	for(string toCheck : documentSections.checkStringAbstract) {
 		y=articleFileLine.find(toCheck);
-		if((i>documentSections.lineNrBodyTextBegin_+10) && y>=0 && y<5) {
+		if((i>documentSections.lineNrBodyBegin_+10) && y>=0 && y<5) {
 			abstract=true;
 			documentSections.lineNrAbstractBeginIsSet_=true;
 			documentSections.lineNrAbstractBegin_=i;
@@ -615,7 +872,7 @@ void get_lineNumbers_documentSections(string articleFileLine, size_t i, struct d
 
 	for(string toCheck : documentSections.checkStringAbbreviations) {
 		y=articleFileLine.find(toCheck);
-		if((i>documentSections.lineNrBodyTextBegin_+10) && y>=0 && y<10) {
+		if((i>documentSections.lineNrBodyBegin_+10) && y>=0 && y<10) {
 			abbreviations=true;
 			documentSections.lineNrAbbreviationsBeginIsSet=true;
 			documentSections.lineNrAbbreviationsBegin_ =i;
@@ -624,7 +881,7 @@ void get_lineNumbers_documentSections(string articleFileLine, size_t i, struct d
 
 	for(string toCheck : documentSections.checkStringAddress) {
 		y=articleFileLine.find(toCheck);
-		if((i>documentSections.lineNrBodyTextBegin_+10) && y>=0 && y<5) {
+		if((i>documentSections.lineNrBodyBegin_+10) && y>=0 && y<5) {
 			address=true;
 			documentSections.lineNrAddressIsSet=true;
 			documentSections.lineNrAddressBegin_ =i;
@@ -633,7 +890,7 @@ void get_lineNumbers_documentSections(string articleFileLine, size_t i, struct d
 
 	for(string toCheck : documentSections.checkStringKeywords) {
 		y=articleFileLine.find(toCheck);
-		if((i>documentSections.lineNrBodyTextBegin_+10) && y>=0 && y<5) {
+		if((i>documentSections.lineNrBodyBegin_+10) && y>=0 && y<5) {
 			keywords=true;
 			documentSections.lineNrKeywordsBegin_ =i;
 			documentSections.lineNrKeywordsBeginIsSet =true;
@@ -642,7 +899,7 @@ void get_lineNumbers_documentSections(string articleFileLine, size_t i, struct d
 
 	for(string toCheck : documentSections.checkStringSourcesIllustrations) {
 		y=articleFileLine.find(toCheck);
-		if((i>documentSections.lineNrBodyTextBegin_+10) && y>=0 && y<5) {
+		if((i>documentSections.lineNrBodyBegin_+10) && y>=0 && y<5) {
 			documentSections.lineNrSourcesIllustrationsBegin_ =i;
 			illusCredits=true;
 			documentSections.lineNrSourcesIllustrationsIsSet =true;
@@ -709,7 +966,7 @@ vector<string> identifyParameters(string inputLine) {
 
 }
 
-void insert_image_credit_list(vector<string> &articleFile){
+void insert_image_credit_list(vector<string> &articleFile, fileInformations &fileInfos, struct documentSectionsClass &documentSections){
 	
 	vector<illustrationCreditsClass> illustrationCreditList;
 	
@@ -718,7 +975,7 @@ void insert_image_credit_list(vector<string> &articleFile){
 	string nr;
 
 	int number;
-	int offset;
+		
 	string figNumberLabelTagBeginXML;
 	string pathFilenameSourcesXML;
 	string toInsert;
@@ -731,7 +988,6 @@ void insert_image_credit_list(vector<string> &articleFile){
 		
 		for(int i=1; i<illustrationCreditList.size(); i++){
 		
-		
 		//extract fig.number....
 		std::regex r("[0-9]{1,3}");
 		std::smatch m;
@@ -742,7 +998,7 @@ void insert_image_credit_list(vector<string> &articleFile){
 		pathFilenameSourcesXML = illustrationCreditsClass::pathFilenameSourcesXML_;
 		pathFilenameSourcesXML.replace(64, 32, illustrationCreditList[i].creditVector_[2]);
 		
-		//insert container into article
+		//prepare insert container into article
 		toInsert=figNumberLabelTagBeginXML + 
 			illustrationCreditList[i].creditVector_[0] + 			//=label
 			illustrationCreditsClass::figNumberLabelTagEndXML_ +
@@ -762,8 +1018,11 @@ void insert_image_credit_list(vector<string> &articleFile){
 	}
 	
 	else{
-		//html needs two runs because of the different tags for credit label an figure number label
+		//html-Version needs two runs resp. two lists because of the different tags 
+		//for the credit label and the figure number label
+				
 		insertVector.push_back("<p class=DAIabbildungsverz-h>Abbildungsnachweis</p>\n");	
+		
 		for(int i=1; i<illustrationCreditList.size(); i++){
 		toInsert=illustrationCreditsClass::figNumberCreditLabelTagBegin_+
 			illustrationCreditList[i].creditVector_[0] + 			//=label
@@ -780,7 +1039,7 @@ void insert_image_credit_list(vector<string> &articleFile){
 			illustrationCreditList[i].creditVector_[0] + 			//=label
 			illustrationCreditsClass::figNumberLabelTagEnd_+
 			illustrationCreditsClass::figNumberCaptionTagBegin_+
-			illustrationCreditList[i].creditVector_[1] + 			//=credits	
+			illustrationCreditList[i].creditVector_[1] + 			//=caption	
 			illustrationCreditsClass::figNumberCaptionTagEnd_+ "\n";
 			insertVector2.push_back(toInsert);
 			toInsert.clear();
@@ -788,11 +1047,24 @@ void insert_image_credit_list(vector<string> &articleFile){
 		
 	}
 	
+	//offset defines the end of the article where the lists are to be inserted
+	//i. e. before the footnotes or at the end of the body text
+	
+	int offset; 
+	
 	if(documentSections.lineNrFootnotesBeginIsSet==true){
-	offset = documentSections.lineNrFootnotesBegin_;	
+		offset = documentSections.lineNrFootnotesBegin_;	
 	}	
+	
 	if(documentSections.lineNrFootnotesBeginIsSet==false){
-	offset = documentSections.lineNrBodyTextEnd_;	
+		
+		if(documentSections.markerEndOfTextIsSet==true){
+			offset = documentSections.lineNrTextEnd_+1;
+			}
+		else{
+			offset = documentSections.lineNrBodyEnd_;		
+		}	
+	
 	}
 		
 	articleFile.insert(articleFile.begin()+offset, insertVector.begin(), insertVector.end());
@@ -803,21 +1075,27 @@ void insert_image_credit_list(vector<string> &articleFile){
 	
 }
 
-void insert_metadataTemplates(vector<string> &articleFile, fileInformations &fileInfos) {
+void insert_metadataTemplates(vector<string> &articleFile, fileInformations &fileInfos, struct documentSectionsClass &documentSections) {
 	
-	articleFile.insert(articleFile.begin()+documentSections.lineNrBodyTextBegin_+1, fileInfos.metadataBegin.begin(), fileInfos.metadataBegin.end());
+	vector<reducedValueClass> newMetadataHTML;
+	
+	newMetadataHTML=load_reduced_value_list(fileInfos.fileNameMetadataList_, newMetadataHTML);
+		
+	articleFile.insert(articleFile.begin()+documentSections.lineNrBodyBegin_+1, fileInfos.metadataBegin.begin(), fileInfos.metadataBegin.end());
 	
 	if(documentSections.lineNrFootnotesBeginIsSet == true){
 		articleFile.insert(articleFile.begin()+fileInfos.metadataBegin.size()+documentSections.lineNrFootnotesBegin_, fileInfos.metadataEnd.begin(), fileInfos.metadataEnd.end());	
 	}
+	
 	else{
-		articleFile.insert(articleFile.begin()+fileInfos.metadataBegin.size()+documentSections.lineNrBodyTextEnd_, fileInfos.metadataEnd.begin(), fileInfos.metadataEnd.end());	
+		articleFile.insert(articleFile.begin()+fileInfos.metadataBegin.size()+documentSections.lineNrBodyEnd_, fileInfos.metadataEnd.begin(), fileInfos.metadataEnd.end());	
 	}
 	
+   search_replace(articleFile, newMetadataHTML);
 
 }
 
-void insert_MSWordFootnoteTags(vector<string> &articleFile, vector<footNoteClass> &footnoteAddressContainer) {
+void insert_FootnoteTags(vector<string> &articleFile, vector<footNoteClass> &footnoteAddressContainer) {
 
 	string footnoteBeginNew;
 	string referenceFootnoteBeginNEW;
@@ -855,7 +1133,6 @@ void insert_MSWordFootnoteTags(vector<string> &articleFile, vector<footNoteClass
 
 	for(int i=containerSize; i>=1; --i) {
 		footnoteNumberString.clear();
-
 
 		if(htmlSelected==true){
 			referenceFootnoteBeginNEW = footNoteClass::referenceFootnoteBeginNEW_;
@@ -895,7 +1172,7 @@ void insert_MSWordFootnoteTags(vector<string> &articleFile, vector<footNoteClass
 		posEnd=footnoteAddressContainer[i].adressFNReferenceEnd_;
 
 		if(htmlSelected==true){
-			lengthReplacingTag=posEnd-posBegin+1;	
+			lengthReplacingTag=posEnd-posBegin+6; //+6 because the "<sup>" hast to be overwritten.	
 			}
 		else{
 			lengthReplacingTag=posEnd-posBegin+6; //+6 because the "<sup>" hast to be overwritten.	
@@ -927,6 +1204,10 @@ void insert_MSWordFootnoteTags(vector<string> &articleFile, vector<footNoteClass
 		}
 	}
 
+	if (htmlSelected==false){
+		articleFile.push_back("</fn-group>\n");
+	}
+
 }
 
 string isolate_plainText(string articleFileLine) {
@@ -949,7 +1230,7 @@ string isolate_plainText(string articleFileLine) {
 	return articleFileLine;
 }
 
-int processParameter(vector<string> &parameterVector) {
+int processParameter(vector<string> &parameterVector, fileInformations &fileInfos) {
 
 	bool fileNameEntered=false;
 	bool referenceListEntered=false;
@@ -1151,13 +1432,18 @@ int processParameter(vector<string> &parameterVector) {
 				cout << "\nEntered filename: " << fileInfos.fileNameCreditList_;
 				cout << "\n" << endl;	
 			}
+			
+			if(metadataListEntered==false){
+				cout << "Metadata value list is missing." << endl;
+				cout << "Please enter now: (CAUTION: .csv file with special separating character \"%\" only): ";
+				getline(cin, fileInfos.fileNameMetadataList_);
+				cout << "\nEntered filename: " << fileInfos.fileNameMetadataList_;
+				cout << "\n" << endl;	
+			}
+			
+			
 		}		
 	
-	//MetadataValueList ist not optional.
-	fileInfos.fileNameMetadataList_ = "MetadataValueList.csv";
-	metadataListEntered=true;
- 
- 
 	bool confirmed=false; 
 
 	while(!confirmed) {
@@ -1193,7 +1479,7 @@ vector<string> remove_blankLines(vector<string> articleFile) {
 	return articleFile;
 }
 
-vector<string> remove_disp_formattings(vector<string> articleFile, vector<lineClass> &containerLines) {
+vector<string> remove_disp_formattings(vector<string> articleFile, vector<lineClass> &containerLines, struct documentSectionsClass &documentSections) {
 
 	unsigned int posA=0;
 	unsigned int posB=0;
@@ -1265,14 +1551,19 @@ vector<string> remove_disp_formattings(vector<string> articleFile, vector<lineCl
 	return articleFile;
 }
 
-void replace_HtmlHead(vector<string>& articleFile, string fileNameNewHead) {
+void replace_HtmlHead(vector<string>& articleFile, fileInformations &fileInfos, struct documentSectionsClass &documentSections) {
 
 	vector<string> newHead;
 	vector<reducedValueClass> valueList;
 	int insertPoint = documentSections.lineNrHtmlHeadEnd_;
 	
-	newHead=loadFileContent(fileNameNewHead);
-		
+		if(htmlSelected==true){
+		newHead=loadFileContent(fileInfos.fileNameNewHtmlHead_);	
+		}
+	
+		if(htmlSelected==false){
+		newHead=loadFileContent(fileInfos.fileNameNewXMLHead_);	
+		}	
 	
 	if(htmlSelected==false){  
 		valueList=load_reduced_value_list(fileInfos.fileNameMetadataList_, valueList);
@@ -1379,21 +1670,28 @@ void search_replace(vector<string> &articleFile, string termSearch, string termR
 
 }
 
-void search_replace(vector<string> &articleFile, vector<reducedValueClass> valueList) {
+
+void search_replace(vector<string> &textVector, vector<reducedValueClass> valueList) {
 
 	int pos1;
-	for(size_t i=0; i<articleFile.size(); i++) {
+	
+	for(size_t i=0; i<textVector.size(); i++) {
 		
 		for(int y=0; y<valueList.size(); y++){
-		pos1=articleFile[i].find(valueList[y].values_[0]);
+		
+		pos1=textVector[i].find(valueList[y].values_[0]);
+		
 			if(pos1>=0) {
-				std::regex r(valueList[y].values_[0]);
-				articleFile[i] = regex_replace(articleFile[i], r, valueList[y].values_[1]);
+				
+			textVector[i].replace(pos1, valueList[y].values_[0].size(), valueList[y].values_[1] );	
+			
 			}
 		}
 	}
 	
 }
+
+
 
 void set_authorYearTags(vector<string> &articleFile, vector<authorYearListClass> &authorYearList, documentSectionsClass &documentSections) {
 
@@ -1474,7 +1772,9 @@ void set_authorYearTags(vector<string> &articleFile, vector<authorYearListClass>
 
 }
 
-void set_authorYearTags_XML(vector<string> &articleFile, vector<authorYearListClass> &authorYearList, documentSectionsClass &documentSections) {
+void set_authorYearTags_XML(vector<string> &articleFile, 
+	vector<authorYearListClass> &authorYearList, documentSectionsClass &documentSections, 
+	vector<footNoteClass>& footnoteAdressContainer, vector<tagClass>& containerTags, vector<lineClass>& containerLines) {
 
 	int z;
 	z=authorYearList.size();
@@ -1519,6 +1819,10 @@ void set_authorYearTags_XML(vector<string> &articleFile, vector<authorYearListCl
 				articleFile[i].insert(0, authorYearTagBeginXML);
 												
 				authorYearTagBeginXML = authorYearListClass::authorYearTagBeginXML_; //reset
+				
+				int pos30;
+				pos30=articleFile[i].find("</p>");
+				articleFile[i].replace(pos30, 5, "\n");
 			}
 
 			if(pos1>3 && documentSections.lineNrFootnotesBegin_<i) {
@@ -1563,20 +1867,57 @@ void set_authorYearTags_XML(vector<string> &articleFile, vector<authorYearListCl
 				articleFile[i].insert(pos10, fullCitationTag1LinkBeginXML);
 				fullCitationTag1LinkBeginXML = authorYearListClass::fullCitationTag1LinkBeginXML_; //reset
 				
+				int pos30;
+				pos30=articleFile[i].find("</p>");
+				articleFile[i].replace(pos30, 5, "\n");
+				int pos40;
+				pos40=articleFile[i].find("<p>");
+				articleFile[i].erase(pos40, pos40+3);
+								
 			}
 		}
 	}
 
+	//Setting the start and the end tag of the list
+	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+	
+	if (documentSections.lineNrReferencesBeginIsSet==true){
+		
+		int lineNr;
+		string toInsert;
+		
+		lineNr = documentSections.lineNrReferencesBegin_ + (authorYearList.size()*2);	
+		toInsert = authorYearListClass::referencesListTagEndXML_ + "\n";
+		articleFile[lineNr].insert(0, toInsert);
+		
+		toInsert = authorYearListClass::referencesListTagBeginXML_ + "\n";
+		articleFile[documentSections.lineNrReferencesBegin_].insert(0, toInsert);
+		
+	}
+	 
+
 }
 
-string set_custom_bodyTag(string articleFileLine, int posA, int posB, string newParagraphTag) {
+string set_custom_bodyTag(string articleFileLine, int posA, int posB) {
+	string toInsert;
+	
+	if(htmlSelected==true){
+		toInsert=newParagraphTag;
+		}
+	
+	if(htmlSelected==false){
+		toInsert=newParagraphTagSimpleXML_;
+		}
+	
 	posB++;
-	articleFileLine.insert(posB, newParagraphTag);
+	articleFileLine.insert(posB, toInsert);
 	articleFileLine.erase(posA, (posB-posA));
 	return articleFileLine;
 }
 
-void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &containerLines, documentSectionsClass &documentSections) {
+
+void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &containerLines, 
+	documentSectionsClass &documentSections, vector<tagClass> &containerTags, vector<footNoteClass> &footnoteAdressContainer) {
 
 	int numberOfLines=articleFile.size();
 	
@@ -1594,9 +1935,9 @@ void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &con
 	std::regex h3("#3#");
     
     string prefixH1="</sec>\n"; 
-    //string prefixH2;
-    //string prefixH3;
-    
+    string prefixH2="</sec>\n"; 
+    string prefixH3="</sec>\n"; 
+        
 	string nrHead1Str;
 	string nrHead2Str;
 	string nrHead3Str;
@@ -1620,29 +1961,30 @@ void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &con
 				if(containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "head1Begin"){
            	 		y=0; //= first record in vector
            	 		
-					//check for previous headlines to get the number of required section end tags
+					//check if section end tag for the previsous headline is needed
 					if(nrHead1==0){
            	 			prefixH1 = "";
 						}
-					else{
+					if(nrHead1>0){
 						prefixH1 = "</sec>\n";
 					}
-					
-					if(nrSubHeads>0){
-						for(int v=0; v<(nrSubHeads); v++){
+					if(nrHead2>0){
 						prefixH1 = prefixH1 + "</sec>\n";
-						}
+					}
+					
+					if(nrHead3>0){
+						prefixH1 = prefixH1 + "</sec>\n";
 					}
 					
 					nrHead1++; nrHead2=0; nrHead3=0;
            	 		
            	 		if(htmlSelected==true){
-           	 			toInsert=newHeadlineTags[0];	
+           	 			toInsert=newHeadlineTags[y];	
 						}
 						
 					else{
 												
-						head1TagBeginXML=newHeadlineTagsXML[0];
+						head1TagBeginXML=newHeadlineTagsXML[y];
 						nrHead1Str = std::to_string(nrHead1);
 						
 						head1TagBeginXML=regex_replace(head1TagBeginXML, h1, nrHead1Str);
@@ -1656,67 +1998,65 @@ void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &con
            	 	
 				//Head 2...	
           		if(containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "head2Begin"){
-            		y=1; // s. o.
-            		/*
+            		y=1; // see above
+            		
             		if(nrHead2==0){
            	 			prefixH2 = "";
 						}
-						else{
+					if(nrHead2>0){
 						prefixH2 = "</sec>\n";	
-						} */
+						}
+					if(nrHead3>0){
+						prefixH2 = prefixH2 + "</sec>\n";
+					}	 
             		
                		nrHead2++; nrHead3=0; nrSubHeads++;
             		
             		if(htmlSelected==true){
-           	 			toInsert=newHeadlineTags[1];	
+           	 			toInsert=newHeadlineTags[y];	
 						}
             		
             		else{
-						head2TagBeginXML=newHeadlineTagsXML[1];
+						head2TagBeginXML=newHeadlineTagsXML[y];
 						nrHead2Str = std::to_string(nrHead2);
 						
 						head2TagBeginXML=regex_replace(head2TagBeginXML, h1, nrHead1Str);
 						head2TagBeginXML=regex_replace(head2TagBeginXML, h2, nrHead2Str);
 						
+						toInsert = prefixH2 + head2TagBeginXML;
 						
-						//head2TagBeginXML.replace(15, 3, nrHead2Str);
-						//head2TagBeginXML.replace(11, 3, nrHead1Str);
-						
-						toInsert = /*prefixH2 + */head2TagBeginXML;
+						prefixH2="</sec>\n"; //reset
 						}
             		}
           		
 				  
 				//Head3...
 				if(containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "head3Begin"){
-           			y=2; // s. o.
-           			/*
+           			y=2; // see above
+           			
            			if(nrHead3==0){
-          	 				prefixH3 = "";
+          	 			prefixH3 = "";
 						}
 						else{
 						prefixH3 = "</sec>\n";	
-						}*/
+						}
            			
            			nrHead3++; nrSubHeads++;
            			
            			if(htmlSelected==true){
-          	 			toInsert=newHeadlineTags[2];	
+          	 			toInsert=newHeadlineTags[y];	
 						}
            			
 					else{
-						head3TagBeginXML=newHeadlineTagsXML[2];
+						head3TagBeginXML=newHeadlineTagsXML[y];
 						nrHead3Str = std::to_string(nrHead3);
 					
 						head3TagBeginXML=regex_replace(head3TagBeginXML, h1, nrHead1Str);
 						head3TagBeginXML=regex_replace(head3TagBeginXML, h2, nrHead2Str);
 						head3TagBeginXML=regex_replace(head3TagBeginXML, h3, nrHead3Str);
 					
-						//head3TagBeginXML.replace(19, 3, nrHead3Str);
-						//head3TagBeginXML.replace(15, 3, nrHead2Str);
-						//head3TagBeginXML.replace(11, 3, nrHead1Str);
-					
-					toInsert = /*prefixH3 + */head3TagBeginXML;
+					toInsert = prefixH3 + head3TagBeginXML;
+					prefixH3="</sec>\n"; //reset
 					}
            		}
 		
@@ -1727,33 +2067,7 @@ void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &con
       		}
 	}
 	
-	//Set closing section tags
-	if(htmlSelected==false){
-	
-		int finalParagraph;
-		
-		for(int i=containerLines.size(); i>0; i--){
-			if(containerLines[i].toBeNumbered==true){
-			finalParagraph=i;
-			break;	
-			}
-		}
-		
-		
-		
-		vector<string> closingTags;
-		for(int i=0; i<=nrSubHeads; i++){
-			closingTags.push_back("</sec>\n");
-		}
-			for(string v : closingTags){
-				cout << v;
-			}
-		cout << "Inserted in " << finalParagraph << endl;
-		articleFile.insert(articleFile.begin()+finalParagraph+1, closingTags.begin(), closingTags.end());	
-		
-	}
-
-		
+			
 	//After alterating the file analyze again
     analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
 
@@ -1773,7 +2087,7 @@ void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &con
 
                 posA=containerLines.at(i).tagContainerLine_.at(z).addressTagBegin_;
                 posB=(containerLines.at(i).tagContainerLine_.at(z).addressTagEnd_);
-                y=3;
+                y=3; //= last record in vector
 
                 posB++;
                 
@@ -1789,9 +2103,21 @@ void set_custom_HeadlineTags(vector<string> &articleFile, vector<lineClass> &con
 				articleFile[i].erase(posA, (posB-posA));
 	           	}
         	}
-        	}
-	
+        }
+
+	//After alterating the file analyze again
+    analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+
+
+	//Now check if opening section tags are not closed properly at the end of the article
+		
+	if(htmlSelected==false){
+		if(nrHead1>0 || nrHead2 > 0 || nrHead3>0){
+			articleFile[documentSections.lineNrTextEnd_].insert(0, "</sec>\n<!-- CHECK POSITION OF CLOSING TAG-->\n");
+		}	
+	}
 }
+
 
 void set_figureReferencesTags(vector<string> &articleFile) {
 
@@ -1997,7 +2323,7 @@ string set_new_tags(string articleFileLine, unsigned int posA,  unsigned int pos
 
 string set_paragraphNumbers(string articleFileLine, int posA, int posB, string newParagraphTag, string paragraphNumberTagBegin, string paragraphNumberTagEnd, int * pointerParagrNumber) {
 
- 	string newParagraphTagXML=newParagraphTagXML_;
+ 	string newParagraphTagXML=newParagraphTagNumberXML_;
  	string paragraphNumberTagEndXML=paragraphNumberTagEndXML_;
 
 	int pos2=0;
@@ -2043,29 +2369,34 @@ void show_help() {
 	cout << "-------- Help: How to use TagTool_WiZArD application -------- \n" << endl;
 	cout << "STEP 1:\nConvert the .docx article file by using pandoc into an .html-file (https://pandoc.org/)." << endl;
 	cout << "(pandoc command: pandoc -s -o target.html source.docx)" << endl;
-	cout << "(Tested with version pandoc 2.16.2)" << endl;
-	cout << "Make sure that the .docx file was generated and prepared with MS Word. Otherwise the file will not be processed successfully." << endl;
-	cout << "\nSTEP 2:\nCopy the list of references/bibliography and the illustration credits from the article and convert them into two separate .csv-files (see below)." << endl;
-	cout <<	"This can be easily done by using LibeOffice Calc (\"Save as .csv\")" << endl;
-	cout << "\nIMPORTANT: Be sure that 1.) the character encoding ist set to \"Unicode (UTF-8)\" and the separating character is set to \"%\"." << endl;
-	cout << "(Examples: See AuthorYearList_EXAMPLE.csv and IllustrationCreditList_EXAMPLE.csv in the folder \"\")\n" << endl;	
-	cout << "In case you name the files \"AuthorYearList.csv\" and \"IllustrationCreditList.csv\" you will not need to enter the filenames explicitly when starting the application." << endl;
-	cout << "If you enter a different filename for .csv-file the application will ask you to specify the required files." << endl;
-	cout << "\nSTEP 3:\nBe sure that the source article file and the required .csv-files are saved in the SAME FOLDER together with the tagtool.exe application and its  folder." << endl;
-	cout << "\nSTEP 4:\nStart the application by typing \"tagtool.exe articlename.html\"" << endl;
+	cout << "IMPORTANT:\n- Tested with version pandoc 2.16.2, higher versions may cause problems." << endl;
+	cout << "- Make sure that the .docx file was generated and prepared with MS Word. Otherwise the file will not be processed successfully." << endl;
+	cout << "\nSTEP 2:\nCopy the list of references/bibliography and the illustration credits from the article and convert them into two separate .csv-files." << endl;
+	cout << "This can be easily done by using LibeOffice Calc:" << endl;
+	cout << "- Prepare each file concerning the categories and so on like in the following examples: See AuthorYearList_EXAMPLE.csv and IllustrationCreditList_EXAMPLE.csv in the folder \\resources." << endl;	
+	cout <<	"- Finally use the option \"Save as .csv\" for the conversion." << endl;
+	cout << "IMPORTANT: Be sure that \n- the character encoding (\"character set\"/\"Zeichensatz\") is set to \"Unicode (UTF-8)\",\n- the separating character (\"field delimiter\"/\"Feldtrenner\") is set to \"%\",\n- that no \"string delimiter\"/\"Zeichenketten-Trenner\" is entered (to avoid possible conflicts with similar characters)." << endl;
+	cout << "\nIn case you name the files \"AuthorYearList.csv\" and \"IllustrationCreditList.csv\" you will not need to enter the filenames explicitly when starting the application." << endl;
+	cout << "If you enter different filenames for .csv-files the application will ask you to specify the required files (not recommended)." << endl;
+	cout << "\nStep 3:\nInsert the metadata of the journal and the article into the template (MetadataValueList.csv). *CAUTION*: MetadataValueList.csv is *REQUIRED* \n"; 
+	cout << "(Example: See MetadataVaulueList_Example.csv in the folder \\resources and see the procedure in step 2 for preparing the .csv-list)\n";
+	cout << "\nSTEP 4:\nBe sure that the source article file and the 3 required .csv-files are saved in the SAME FOLDER together with the tagtool.exe application and its \\resources folder." << endl;
+	cout << "\nSTEP 5:\nStart the application by typing \"tagtool.exe articlename.html\"" << endl;
 	cout << "\nFunctions:" << endl;
 	cout << "If no explicit parameters are entered in the command line, the following functions will be chosen automatically (*RECOMMENDED*): " << endl;
 	cout << "- Set customized journal body tags\n- Set figure references tags\n- Set author year tags. *CAUTION*: AuthorYearList.csv *REQUIRED*\n- Set paragraph numbers\n- Insert tagged illustration credits section. *CAUTION*: IllustrationCreditList.csv *REQUIRED*\n- Output format will be HTML." << endl;
-	cout << "- Note: If you want to choose the default functions in combination with an xml output enter \"tagtool.exe articlename.html --toXML\" when starting the application" << endl;
-	cout << "- Note: The application will load by default the files named \"AuthorYearList.csv\" and \"IllustrationCreditList.csv\" to set author year and illustration credit tags, see above \n"<< endl;
-	cout << "Alternatively you can combine the functions by entering following notations when starting the application in your command line (*NOT RECOMMENDED*)" << endl;
+	cout << "- Note: If you want to choose the default functions in combination with an (raw and non-valid) xml output enter \"tagtool.exe articlename.html --toXML\" when starting the application." << endl;
+	cout << "- Note: The application will load by default the file named \"MetadataValueList.csv\" to insert the metadata and the files named \"AuthorYearList.csv\" and \"IllustrationCreditList.csv\" to set author year and illustration credit tags, see above."<< endl;
+	cout << "- Note: The references will be tagged in the manuscript while the metadata and the image credits will be inserted into the article additionally. In this case you need to delete the untagged versions." << endl;
+	cout << "\nAlternatively you can combine the functions by entering following notations when starting the application in your command line (*NOT RECOMMENDED*)." << endl;
 	
 	show_options();
 	
-	cout << "\nStep 5:\nThe application writes an edited file with the ending \"_edited_1_.html\" respectively \"_edited_1_.xml\"" << endl;
-	cout << "In case of html output fotmat it also writes a folder with data that are important for the correct conversion to MS Word (with the ending \"__ress\")" << endl;
-	cout << "\nSTEP 6:\nOpen MS Word and open the edited .html-file. Save it immediately as a .docx-file" << endl;
-	cout << "Important: For a correct represantation in MS Word the .html-file and the  folder need to be in the same folder" << endl;
+	cout << "\nStep 6:\nThe application writes an edited file with the ending \"_edited_1_.html\" respectively \"_edited_1_.xml\"" << endl;
+	cout << "In case of html output format it also writes a folder with data that are important for the correct conversion to MS Word (with the ending \"__ress\")." << endl;
+	cout << "In case of xm output the tool generates only a raw and non-valid xml version. Manual completion is necessary." << endl;
+	cout << "\nSTEP 7:\nOpen MS Word and open the edited .html-file. Save it immediately as a .docx-file" << endl;
+	cout << "Important: For a correct represantation in MS Word the .html-file, the \\resources folder and the folder \"\\__ress\" need to be in the same folder." << endl;
 }
 
 void show_options(){
@@ -2083,7 +2414,8 @@ void show_options(){
     
 }
 
-void structure_xml_output_file(vector<string> &articleFile){
+void structure_xml_output_file(vector<string> &articleFile, fileInformations& fileInfos, 
+	struct documentSectionsClass &documentSections){
 	
 	vector<string> insertVector {"</body>\n", "<back>\n"};
 		
@@ -2093,16 +2425,24 @@ void structure_xml_output_file(vector<string> &articleFile){
 			
 	search_replace(articleFile, xml2htmlList);
 	
+	
 	if(documentSections.lineNrFootnotesBeginIsSet==false){
-		articleFile.insert(articleFile.begin()+documentSections.lineNrBodyTextEnd_, insertVector.begin(), insertVector.end());	
+					
+		if(documentSections.markerEndOfTextIsSet==true){
+			articleFile.insert(articleFile.begin()+documentSections.lineNrTextEnd_, insertVector.begin(), insertVector.end());	
+		}
+		else{
+			articleFile.insert(articleFile.begin()+documentSections.lineNrBodyEnd_, insertVector.begin(), insertVector.end());
+		}
 	}
-	if(documentSections.lineNrFootnotesBeginIsSet==false){
+	if(documentSections.lineNrFootnotesBeginIsSet==true){
 		articleFile.insert(articleFile.begin()+documentSections.lineNrFootnotesBegin_, insertVector.begin(), insertVector.end());	
 	}	
-		
+			
 	articleFile.push_back("</back>\n");		
 	articleFile.push_back("</article>");
-	replace_HtmlHead(articleFile, fileInfos.fileNameNewXMLHead_);
+	
+	replace_HtmlHead(articleFile, fileInfos, documentSections);
 	
 }
 
