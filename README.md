@@ -35,7 +35,8 @@ Before starting the application the `.docx` file has to be converted by using pa
 - An elaborate error/exception handling is not implemented yet
 - The feature to import the article metadata from json is still in progress
 - Explicitly no efforts were made yet to clear up the extensive html head that Microsoft Word needs to re-read the `.html` file correctly. With the provided head the file is readable although minor errors may occur.
-- Implementing the possibility to reload and re-process files that were converted with the application already.
+- Implementing the possibility to reload and re-process files that were converted with the application already
+- Dealing correctly with different article languages.
 
 ## Technical remarks and requirements
 
