@@ -60,7 +60,7 @@ public:
     lapCounter_=0;
     fileNameArticleFile_ = "";
     toReplaceInResources_ = "###Name_of_the_edited_file###";
-    toReplaceInHtmlHead_ = "###Name__folder###";
+    toReplaceInHtmlHead_ = "###Name_ressources_folder###";
     }
     
 	void set_lapCounter(){
@@ -128,8 +128,47 @@ class lineClass {
         plainTextLine_={};
         lineCategory_={};
     }
-
 };
+
+class listClass{
+	public:
+		int serialNumber_;
+		int lineBegin_;
+		int lineEnd_;
+		string listType_ ;
+		
+		listClass(int number, int firstLine, int lastLine, string typeOfList){
+		serialNumber_ = number;
+		lineBegin_ = firstLine;
+		lineEnd_ = lastLine;
+		listType_ = typeOfList;
+		}
+		
+		//html
+		static string unorderedListTagItemBegin_;
+		static string orderedListTagItemBegin_;
+		
+		//xml
+		static string orderedListTagBeginXML_;
+		static string unorderedListTagBeginXML_;
+						
+		static string unorderedListTagItemBeginXML_;
+		static string unorderedListTagItemEndXML_;
+		
+		static string listTagEndXML_;
+				
+};
+
+string listClass::unorderedListTagItemBegin_ = "<p class=DAIbody-text-list-bulleted>";
+string listClass::orderedListTagItemBegin_ = "<p class=DAIbody-text-list-numbered>";
+
+string listClass::unorderedListTagBeginXML_ = "<list list-type=\"bullet\">";
+string listClass::orderedListTagBeginXML_ = "<list list-type=\"ordered\">";
+string listClass::listTagEndXML_ = "</list>";
+
+string listClass::unorderedListTagItemBeginXML_ = "<list-item>";
+string listClass::unorderedListTagItemEndXML_ = "</list-item>";
+
 
 struct documentSectionsClass {
 
@@ -150,17 +189,18 @@ struct documentSectionsClass {
     int lineNrSourcesIllustrationsBegin_=0;
     bool lineNrSourcesIllustrationsIsSet = false;
 
-    int lineNrBodyTextBegin_=0;
-    bool lineNrBodyTextIsSet = false;
+    int lineNrBodyBegin_=0;
+    bool lineNrBodyIsSet = false;
 
 	int lineNrReferencesBegin_=0;
 	bool lineNrReferencesBeginIsSet = false;
 
-    int lineNrBodyTextEnd_=0;
-    bool lineNrBodyTextEndIsSet = false;
+    int lineNrBodyEnd_=0;
+    bool lineNrBodyEndIsSet = false;
 
     int lineNrTextEnd_;
-    bool lineNrTextEndIsSet= false;
+    bool lineNrTextEndIsSet = false;
+    bool markerEndOfTextIsSet = false;
     
     int lineNrImageContainerXML_=0;
 
@@ -172,24 +212,40 @@ struct documentSectionsClass {
     static vector<string> checkStringAddress;
     static vector<string> checkStringKeywords;
     static vector<string> checkStringSourcesIllustrations;
+    
+    vector<listClass> containerLists;
 
-	void log(){
-	cout << "lineNrAbstractBegin_: " << lineNrAbstractBegin_ << endl;
-	cout << "lineNrKeywordsBegin_: " << lineNrKeywordsBegin_ << endl;
-	cout << "lineNrAbbreviationsBegin_: " << lineNrAbbreviationsBegin_ << endl;
-	cout << "lineNrSourcesIllustrationsBegin_: " << lineNrSourcesIllustrationsBegin_ << endl;
-	cout << "lineNrBodyTextBegin_: " << lineNrBodyTextBegin_ << endl;
-	cout << "lineNrBodyTextEnd_: " << lineNrBodyTextEnd_ << endl;
-	cout << "lineNrFootnotesBegin_: " << lineNrFootnotesBegin_ << endl;
+	void log(vector<string> articleFile){
+	
+	cout << "\nOutput documentSections.log:" << endl;
+	cout << "detected lineNrAbstractBegin_: " << lineNrAbstractBegin_ << endl;
+	cout << "detected lineNrKeywordsBegin_: " << lineNrKeywordsBegin_ << endl;
+	cout << "detected lineNrAbbreviationsBegin_: " << lineNrAbbreviationsBegin_ << endl;
+	cout << "detected lineNrSourcesIllustrationsBegin_: " << lineNrSourcesIllustrationsBegin_ << endl;
+	cout << "detected lineNrBodyBegin_: " << lineNrBodyBegin_ << endl;
+	cout << "detected lineNrTextEnd_: " << lineNrTextEnd_ << " and content: " << articleFile[lineNrTextEnd_] << endl;
+	cout << "detected lineNrBodyEnd_: " << lineNrBodyEnd_ << endl;
+	cout << "Zeileninhalt BodyEnd: " << articleFile[lineNrBodyEnd_-1] << endl;
+	cout << "detected lineNrFootnotesBegin_: " << lineNrFootnotesBegin_ << endl;
+	cout << "\nNow the lists:" << endl;
+			
+	for (int i=0; i<containerLists.size(); i++){
+		cout << "containerLists[i].serialNumber_: " << containerLists[i].serialNumber_ << endl;
+		cout << "containerLists[i].lineBegin_: " << containerLists[i].lineBegin_ << endl; 
+		cout << "containerLists[i].lineEnd_: " << containerLists[i].lineEnd_ << endl;
+		cout << "containerLists[i].listType_: " << containerLists[i].listType_ << endl;
+		cout << "\n" << endl;
+	}
+	
 			
 	}
 
     void clear(){
     lineNrAbstractBegin_=0;
-    lineNrAbstractBeginIsSet_ =false;
+    lineNrAbstractBeginIsSet_=false;
 
     lineNrKeywordsBegin_=0;
-    lineNrKeywordsBeginIsSet = false;
+    lineNrKeywordsBeginIsSet=false;
 
     lineNrAbbreviationsBegin_=0;
     lineNrAbbreviationsBeginIsSet=false;
@@ -198,24 +254,27 @@ struct documentSectionsClass {
     lineNrAddressIsSet=false;
 
     lineNrSourcesIllustrationsBegin_=0;
-    lineNrSourcesIllustrationsIsSet =false;
+    lineNrSourcesIllustrationsIsSet=false;
 
-    lineNrBodyTextBegin_=0;
-    lineNrBodyTextIsSet  = false;
+    lineNrBodyBegin_=0;
+    lineNrBodyIsSet=false;
     
     lineNrReferencesBegin_=0;
-	lineNrReferencesBeginIsSet = false;
+	lineNrReferencesBeginIsSet=false;
     
-    lineNrBodyTextEnd_=0;
-    lineNrBodyTextEndIsSet=false;
+    lineNrBodyEnd_=0;
+    lineNrBodyEndIsSet=false;
 
     lineNrTextEnd_=0;
-    lineNrTextEndIsSet= false;
-
+    lineNrTextEndIsSet=false;
+    markerEndOfTextIsSet=false;
+    
 	lineNrImageContainerXML_=0;
 
     lineNrFootnotesBegin_=0;
     lineNrFootnotesBeginIsSet=false;
+    
+    containerLists.clear();
     }
 
 };
@@ -224,7 +283,8 @@ vector<string> documentSectionsClass::checkStringAbstract = {"Abstract", "Zusamm
 vector<string> documentSectionsClass::checkStringAbbreviations = {"rzungen", "rzungsverzeichnis", "Literaturverzeichnis", "Bibliographie", "Bibliography", "Abbreviations", "References", "Abbreviazioni"};
 vector<string> documentSectionsClass::checkStringAddress = {"Adresse", "Adressen", "Anschrift",  "Addres"};
 vector<string> documentSectionsClass::checkStringKeywords = {"Schlagworte", "Schlagw", "Keywords"};
-vector<string> documentSectionsClass::checkStringSourcesIllustrations = {"Abbildungsnachweis", "Sources of illustrations", "Sources of Illustrations", "Illustration Credits", "Illustration credits"};
+vector<string> documentSectionsClass::checkStringSourcesIllustrations = {"Abbildungsnachweis", "Sources of illustrations", "Sources of Illustrations", "Illustration Credits", "Illustration credits", "Abbildungsunterschriften"};
+
 
 class figureReferencesClass{
     public:
@@ -277,6 +337,9 @@ public:
     
     //xml
     
+    static string referencesListTagBeginXML_;
+    static string referencesListTagEndXML_;
+    
     static string authorYearTagBeginXML_;
     static string authorYearTagEndXML_;
     
@@ -312,6 +375,9 @@ string authorYearListClass::fullCitationTagLinkEnd_ = "</span></span></a><span l
 
 
 //xml
+string authorYearListClass::referencesListTagBeginXML_="<ref-list content-type=\"references\">";
+string authorYearListClass::referencesListTagEndXML_="</ref-list>";
+
 string authorYearListClass::authorYearTagBeginXML_="<ref id=\"ref-##author_year###\"><label>";
 string authorYearListClass::authorYearTagEndXML_="</label>";
 
@@ -332,8 +398,6 @@ public:
 	values_.push_back(value2);
 		
 	}
-	 
-	
 	
 };
 
@@ -505,13 +569,32 @@ vector<string> newHeadlineTags = {head1TagBegin, head2TagBegin, head3TagBegin, h
 vector<string> newHeadlineTagsXML = {head1TagBeginXML_, head2TagBeginXML_, head3TagBeginXML_, head1_3TagEndXML};
 
 //Other tags...
+
+//html
 string newParagraphTag="<p class=DAIbody-text>";
 string paragraphNumberTagBegin="<span class=DAItext-absatzzahlen>";
 string paragraphNumberTagEnd="<span style='mso-tab-count:1'>        </span></span>";
 
-string newParagraphTagXML_="<p id=\"p-#nr#\">";
+string newParagraphTagSimpleXML_="<p>";
+
+string newParagraphTagNumberXML_="<p id=\"p-#nr#\">";
 string paragraphNumberTagBeginXML="<named-content content-type=\"paragraph-counter\">";
 string paragraphNumberTagEndXML_="</named-content>";
+
+string italicTagBegin_ = "<span class=DAIitalic>";
+string strongBegin_ = "<span class=DAIbody-medium>";
+string superscriptBegin_ = "<span class=DAIbody-superscript>";
+string subscriptBegin_ = "<span class=DAIbody-subscript>";
+
+string variousSpanTagEnd_ = "</span>";
+
+
+//xml....
+string italicBeginXML_ = "<italic>";
+string italicEndXML_ = "</italic>";
+
+string strongBeginXML_ = "<bold>";
+string strongEndXML_ = "</bold>";
 
 
 //Global settings...
@@ -530,6 +613,8 @@ bool imageContainerInserted=false;
 bool customBodyTagsSet=false;
 bool figureReferenceTagsSet=false;
 bool reducedCreditListSelected=false; // Only Fig. number and credit line
+bool superscriptTagsSet=false;
+
 bool customBodyTagsSelected;
 bool figureReferenceTagsSelected;
 bool insertCreditListSelected;
@@ -539,12 +624,5 @@ bool removeDispensableTagsSelected;
 bool paragraphNumbersSelected; 
 bool fileNameEntered=false; 
 
-fileInformations fileInfos;
-vector<tagClass> containerTags{};
-vector<lineClass> containerLines{};
-vector<footNoteClass> footnoteAdressContainer{};
-documentSectionsClass documentSections;
-vector<string> articleFile{};
-vector<string> litListeVector;
 
 #endif // TTWCLASSES_H
