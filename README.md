@@ -2,45 +2,45 @@
 
 ## Preliminary remark
 
-Dealing with scientific articles in the humanities most of the actors (authors, copy editors) are still used to work with `.docx` format to write, process and edit scientific articles. This leads to the problem, that in the humanities the most parts of the editing process are still very often carried out in `.docx` and mostly by hand, because a `.docx` environment requires special skills to process semi-automatic alterations of the files.
-Reliable solutions for semi-automatic processing `.docx` files require specific knowledge that many of the institutions or actors do not have.
-The use case for this test application was a scientific archaeological journal (_Archäologischer Anzeiger_, see: https://publications.dainst.org/journals/aa).
-The articles are usually edited at first in `.docx`, then processed in `.indd/.idml` (for the print version) and finally in jats xml to be displayed in an instance of the eLife Lens 2.0.0.
-Due to this complex process chain it is very important to add annotations and main formatting tags ideally at the beginning of the process in the `.docx` version to keep it managable and reasonable.
+Dealing with scientific articles in the humanities most of the authors and copy editors are still used to work with `.docx` documents to write and edit text documents.
+Solutions to prepare `.docx` articles semi-automatically for complex and enhanced output formats require specific knowledge that many institutions or involved actors do not have.
+The use case for this test application is a scientific archaeological journal (_Archäologischer Anzeiger_, see: https://publications.dainst.org/journals/aa).
+The articles are usually edited at first in `.docx` before they are typeset in `.indd/.idml` (to create a `.pdf` in a complex layout for the print version) and finally converted from `.indd/.idml` to `jats xml` to be displayed in an instance of the eLife Lens 2.0.0.
+Due to this complex process it is reasonable to add preferably all annotations and main formatting tags ideally already at the beginning of the process in the `.docx` version to keep the conversion chain managable.
 
 ## Approach
 
-The approach was to find a way for semi-automatic manipulation of textfiles using a format which is less complicated and to which many actors are familiar with: `html`.
-The `.html` format as intermediate product ensures that even actors with non specific knowledge are able to retrace and understand the results of the alterations. Errors can be detected and corrected easily as well.
+The approach was to find a way for semi-automatic alterations of text documents using a format which is less complicated and - even more important - to which many actors are familiar with: `.html`.
+The `.html` format as intermediate product ensures that involved actors with even non specific knowledge are able to retrace and to understand the mechanism and the results of the alterations. Errors can be detected and mistakes corrected easily as well.
 
 ## Features
 
-The use for the aricles of the _Archäologischer Anzeiger_ is the reason for some specially implemented features in this test version like:
+The use of the application for the _Archäologischer Anzeiger_ and the special requirements are the reason for the features used in this test version like:
 
 - setting automatical paragraph numberings
 - setting hyperlink references to external bibliographical resources by a value list (list of references/bibliography)
 - setting tags for figure references
 - and so on
-Beginning with version 1.1.0 the application allows to export not only `.html` but also `.xml` files although it needs to be stressed that the `.xml` version is a non-valid intermediate product that will need minor manual finishing.  
+Beginning with version 1.1.0 the application allows to export not only `.html` but also `.xml` files although it needs to be stressed that the `.xml` file is a non-valid intermediate product that will need manual finishing.  
 
-Although the use case and the implemented features for annotations and semi-automatic formatting seems to be very specific for one journal, the application can be customized for other purposes since the design allows to alterate element tags or add functions for new kind of value lists and so on.
+Although the use case and the implemented features for the semi-automatic formatting seems to be specific for the journal mentioned above, the application can be customized for other purposes since the design allows to alterate element tags or add functions for new kind of value lists and so on.
 
 ## Mode of operation
 
-Before starting the application the `.docx` file has to be converted by using pandoc into an `.html` file (see `show_help()` function). The use of pandoc guarantees a uniform standardized and normalized `.html` structure. After finishing the modification by the application the `.html` file can be opened in Microsoft Word and converted into a standard `.docx` for further processing purposes by the copy editor and so on.
+Before starting the application the `.docx` file has to be converted by using pandoc into an `.html` file (see `show_help()` function). The use of pandoc guarantees a uniform standardized and normalized `.html` structure. After finishing the modification by the application the `.html` file can be opened in Microsoft Word and converted into a standard `.docx` for further processing purposes by the copy editor.
 
 ## To be done
 
 - Integrating the pandoc conversion
-- An elaborate error/exception handling is not implemented yet
-- The feature to import the article metadata from json is still in progress
-- Explicitly no efforts were made yet to clear up the extensive html head that Microsoft Word needs to re-read the `.html` file correctly. With the provided head the file is readable although minor errors may occur.
-- Implementing the possibility to reload and re-process files that were converted with the application already
-- Dealing correctly with different article languages.
+- Importing article metadata from json
+- Exception handling
+- Implementing the possibility to reload files that were converted with the application already
+- Article languages settings
+- Reducing the `.html` tags that Microsoft Word needs to open the converted file correctly to a minimum
 
 ## Technical remarks and requirements
 
 - Windows only (Windows 10)
 - TDM-GCC 9.2.0 32/64bit
 - Tested with following IDE: Embarcadero Dev-C++ 6.3. If using Embarcadero Dev-C++ 6.3 add "`-std=c++17`" in Project Options -> Parameter s -> C++ compilers.
-- Tested with pandoc version 2.16.2
+- Tested with pandoc version 2.16.2. Other versions may cause problems.
