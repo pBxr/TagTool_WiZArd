@@ -2369,8 +2369,8 @@ void show_help() {
 	cout << "-------- Help: How to use TagTool_WiZArD application -------- \n" << endl;
 	cout << "STEP 1:\nConvert the .docx article file by using pandoc into an .html-file (https://pandoc.org/)." << endl;
 	cout << "(pandoc command: pandoc -s -o target.html source.docx)" << endl;
-	cout << "IMPORTANT:\n- Tested with version pandoc 2.16.2, higher versions may cause problems." << endl;
-	cout << "- Make sure that the .docx file was generated and prepared with MS Word. Otherwise the file will not be processed successfully." << endl;
+	cout << "IMPORTANT:\n- Tested with version pandoc 2.16.2, other versions may cause problems." << endl;
+	cout << "- Make sure that the .docx file was generated and prepared with MS Word (NOT LibreOffice or a comparable application). Otherwise the file will not be processed successfully." << endl;
 	cout << "\nSTEP 2:\nCopy the list of references/bibliography and the illustration credits from the article and convert them into two separate .csv-files." << endl;
 	cout << "This can be easily done by using LibeOffice Calc:" << endl;
 	cout << "- Prepare each file concerning the categories and so on like in the following examples: See AuthorYearList_EXAMPLE.csv and IllustrationCreditList_EXAMPLE.csv in the folder \\resources." << endl;	
@@ -2378,8 +2378,10 @@ void show_help() {
 	cout << "IMPORTANT: Be sure that \n- the character encoding (\"character set\"/\"Zeichensatz\") is set to \"Unicode (UTF-8)\",\n- the separating character (\"field delimiter\"/\"Feldtrenner\") is set to \"%\",\n- that no \"string delimiter\"/\"Zeichenketten-Trenner\" is entered (to avoid possible conflicts with similar characters)." << endl;
 	cout << "\nIn case you name the files \"AuthorYearList.csv\" and \"IllustrationCreditList.csv\" you will not need to enter the filenames explicitly when starting the application." << endl;
 	cout << "If you enter different filenames for .csv-files the application will ask you to specify the required files (not recommended)." << endl;
-	cout << "\nStep 3:\nInsert the metadata of the journal and the article into the template (MetadataValueList.csv). *CAUTION*: MetadataValueList.csv is *REQUIRED* \n"; 
-	cout << "(Example: See MetadataVaulueList_Example.csv in the folder \\resources and see the procedure in step 2 for preparing the .csv-list)\n";
+	cout << "\nSTEP 3:\n- Insert the metadata of the journal and the article into the template \"MetadataValueList_TEMPLATE.csv\" that is found in the folder \\resources." << endl;
+	cout << "- Name it \"MetadataValueList.csv\" and save it in the root folder (i. e. where tagtool.exe application is located, NOT in in the folder \\resources). " << endl;
+	cout << "- *CAUTION*: MetadataValueList.csv is *REQUIRED*" << endl;
+	cout << "- (See also the procedure in step 2 for preparing a .csv-list)" << endl;
 	cout << "\nSTEP 4:\nBe sure that the source article file and the 3 required .csv-files are saved in the SAME FOLDER together with the tagtool.exe application and its \\resources folder." << endl;
 	cout << "\nSTEP 5:\nStart the application by typing \"tagtool.exe articlename.html\"" << endl;
 	cout << "\nFunctions:" << endl;
@@ -2387,7 +2389,7 @@ void show_help() {
 	cout << "- Set customized journal body tags\n- Set figure references tags\n- Set author year tags. *CAUTION*: AuthorYearList.csv *REQUIRED*\n- Set paragraph numbers\n- Insert tagged illustration credits section. *CAUTION*: IllustrationCreditList.csv *REQUIRED*\n- Output format will be HTML." << endl;
 	cout << "- Note: If you want to choose the default functions in combination with an (raw and non-valid) xml output enter \"tagtool.exe articlename.html --toXML\" when starting the application." << endl;
 	cout << "- Note: The application will load by default the file named \"MetadataValueList.csv\" to insert the metadata and the files named \"AuthorYearList.csv\" and \"IllustrationCreditList.csv\" to set author year and illustration credit tags, see above."<< endl;
-	cout << "- Note: The references will be tagged in the manuscript while the metadata and the image credits will be inserted into the article additionally. In this case you need to delete the untagged versions." << endl;
+	cout << "- Note: The references will be tagged in the manuscript while the metadata and the image credits will be inserted into the article additionally. In this case you need to delete the untagged versions afterwards." << endl;
 	cout << "\nAlternatively you can combine the functions by entering following notations when starting the application in your command line (*NOT RECOMMENDED*)." << endl;
 	
 	show_options();
