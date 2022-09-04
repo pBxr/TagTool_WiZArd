@@ -16,8 +16,6 @@ vector<lineClass> containerLines{};
 vector<footNoteClass> footnoteAdressContainer{};
 documentSectionsClass documentSections;
 vector<string> articleFile{};
-vector<string> litListeVector;
-
     
     while(nextRunIsSet) {
 
@@ -222,7 +220,7 @@ vector<string> litListeVector;
     }
     
     
-    //insert tagged illustration creditsvalue list?______________________________________________
+    //insert tagged illustration credits value list?______________________________________________
 	if(insertCreditListSelected==true && imageContainerInserted==false){
 		
 	    insert_image_credit_list(articleFile, fileInfos, documentSections);
