@@ -1,0 +1,76 @@
+##Source list to replace / DO NOT EDIT##%##Replace with##
+###_Insert journal name here_###%###_Insert journal name here_###
+###_Insert volume number_###%###_Insert volume number_###
+###_Insert abbreviation of the journal here (for XML-Version)_###%###_Insert abbreviation of the journal here (for XML-Version)_###
+###_Insert ISSN here (for XML-Version)_###%###_Insert ISSN here (for XML-Version)_###
+###_Insert date "published since" here (for XML-Version)_###%###_Insert date "published since" here (for XML-Version)_###
+###_Insert editor given name here (for XML-Version)_###%###_Insert editor given name here (for XML-Version)_###
+###_Insert editor surname here (for XML-Version)_###%###_Insert editor surname here (for XML-Version)_###
+###_Insert name and address publishing editor here (for XML-Version)_###%###_Insert name and address publishing editor here (for XML-Version)_###
+###_Insert publisher here (for XML-Version)_###%###_Insert publisher here (for XML-Version)_###
+###_Insert publisher adress line here (for XML-Version)_###%###_Insert publisher adress line here (for XML-Version)_###
+###_Insert publisher country (for XML-Version)_###%###_Insert publisher country (for XML-Version)_###
+###_Insert publisher postal code and city here (for XML-Version)_###%###_Insert publisher postal code and city here (for XML-Version)_###
+###_Insert publisher url here (for XML-Version)_###%###_Insert publisher url here (for XML-Version)_###
+###_Insert name copy editor here (for XML-Version)_###%###_Insert name copy editor here (for XML-Version)_###
+###_Insert company or name corporate design here (for XML-Version)_###%###_Insert company or name corporate design here (for XML-Version)_###
+###_Insert company or name webdesign here (for XML-Version)_###%###_Insert company or name webdesign here (for XML-Version)_###
+###_Insert url webdesign here (for XML-Version)_###%###_Insert url webdesign here (for XML-Version)_###
+###_Insert company or name programming viewer here (for XML-Version)_###%###_Insert company or name programming viewer here (for XML-Version)_###
+###_Insert url company programming viewer here (for XML-Version)_###%###_Insert url company programming viewer here (for XML-Version)_###
+###_Insert copyright statement (for XML-Version)_###%###_Insert copyright statement (for XML-Version)_###
+###_Insert url terms of use (for XML-Version)_###%###_Insert url terms of use (for XML-Version)_###
+###_Insert source of illustrations cover (for XML-Version)_###%###_Insert source of illustrations cover (for XML-Version)_###
+###_Insert bibliographic record ID (for XML-Version)_###%###_Insert bibliographic record ID (for XML-Version)_###
+###_Insert DOI here (for XML-Version)_###%###_Insert DOI here (for XML-Version)_###
+###_Insert self url (for XML-Version)_###%###_Insert self url (for XML-Version)_###
+###_Insert self urn (for XML-Version)_###%###_Insert self urn (for XML-Version)_###
+###_Insert way of citation_###%###_Insert way of citation_###
+###_Insert year of publication (for XML-Version)_###%###_Insert year of publication (for XML-Version)_###
+###_Insert month of publication (for XML-Version)_###%###_Insert month of publication (for XML-Version)_###
+###_Insert day of publication (for XML-Version)_###%###_Insert day of publication (for XML-Version)_###
+###_Insert academic title author 1_###%###_Insert academic title author 1_###
+###_Insert first name author 1 here_###%###_Insert first name author 1 here_###
+###_Insert last name author 1 here_###%###_Insert last name author 1 here_###
+###_Insert affiliation author 1_###%###_Insert affiliation author 1_###
+###_Insert address line author 1_###%###_Insert address line author 1_###
+###_Insert postal code and city author 1_###%###_Insert postal code and city author 1_###
+###_Insert country author 1_###%###_Insert country author 1_###
+###_Insert e-mail author 1_###%###_Insert e-mail author 1_###
+###_Insert ORCID author 1 here_###%###_Insert ORCID author 1 here_###
+###_Insert institutional PID (e. g. GND) author 1 (for XML-Version)_###%###_Insert institutional PID (e. g. GND) author 1 (for XML-Version)_###
+###_Insert academic title author 2_###%###_Insert academic title author 2_###
+###_Insert first name author 2 here_###%###_Insert first name author 2 here_###
+###_Insert last name author 2 here_###%###_Insert last name author 2 here_###
+###_Insert affiliation author 2_###%###_Insert affiliation author 2_###
+###_Insert address line author 2_###%###_Insert address line author 2_###
+###_Insert postal code and city author 2_###%###_Insert postal code and city author 2_###
+###_Insert country author 2_###%###_Insert country author 2_###
+###_Insert e-mail author 2_###%###_Insert e-mail author 2_###
+###_Insert ORCID author 2 here_###%###_Insert ORCID author 2 here_###
+###_Insert academic title author 3_###%###_Insert academic title author 3_###
+###_Insert first name author 3 here_###%###_Insert first name author 3 here_###
+###_Insert last name author 3 here_###%###_Insert last name author 3 here_###
+###_Insert affiliation author 3_###%###_Insert affiliation author 3_###
+###_Insert address line author 3_###%###_Insert address line author 3_###
+###_Insert postal code and city author 3_###%###_Insert postal code and city author 3_###
+###_Insert country author 3_###%###_Insert country author 3_###
+###_Insert e-mail author 3_###%###_Insert e-mail author 3_###
+###_Insert ORCID author 3 here_###%###_Insert ORCID author 3 here_###
+###_Insert author(s) here together_###%###_Insert author(s) here together_###
+###_Insert title here (original language)_###%###_Insert title here (original language)_###
+###_Insert subtitle here (original language)_###%###_Insert subtitle here (original language)_###
+###_Insert abstract here (original language) without line break_###%###_Insert abstract here (original language) without line break_###
+###_Insert title here (English)_###%###_Insert title here (English)_###
+###_Insert subtitle here (English)_####%###_Insert subtitle here (English)_####
+###_Insert abstract here (English) without line break_###%###_Insert abstract here (English) without line break_###
+###_Insert keyword1 (original language)_###%###_Insert keyword1 (original language)_###
+###_Insert keyword2 (original language)_###%###_Insert keyword1 (original language)_###
+###_Insert keyword3 (original language)_###%###_Insert keyword3 (original language)_###
+###_Insert keyword4 (original language)_###%###_Insert keyword4 (original language)_###
+###_Insert keyword5 (original language)_###%###_Insert keyword5 (original language)_###
+###_Insert keyword1 (English)_###%###_Insert keyword1 (English)_###
+###_Insert keyword2 (English)_###%###_Insert keyword2 (English)_###
+###_Insert keyword3 (English)_###%###_Insert keyword3 (English)_###
+###_Insert keyword4 (English)_###%###_Insert keyword4 (English)_###
+###_Insert keyword5 (English)_###%###_Insert keyword5 (English)_###
