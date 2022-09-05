@@ -279,7 +279,6 @@ vector<string> articleFile{};
         	//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
         
-			documentSections.log(articleFile);
 		}
         
         if(htmlSelected==false){
@@ -290,8 +289,7 @@ vector<string> articleFile{};
 			
 			//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
-			
-			documentSections.log(articleFile);
+				
 		}
     }
 
