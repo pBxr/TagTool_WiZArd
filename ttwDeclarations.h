@@ -17,6 +17,8 @@ void convert_lists(vector<string>&, vector<lineClass>&, struct documentSectionsC
 
 void convert_selected_Tags(string, vector<string>&, vector<lineClass>&, struct documentSectionsClass&);
 
+string create_replacement_string(string, string);
+
 void create_target_file_and_folder_names(fileInformations&);
 
 void detect_footnotes(string, size_t, unsigned int, unsigned int, vector<footNoteClass>&);
@@ -49,7 +51,7 @@ vector<string> loadFileContent(string);
 
 void load_resources(fileInformations&);
 
-int processParameter(vector<string>&, fileInformations&); 
+int processParameters(vector<string>&, fileInformations&); 
 
 vector<string> remove_blankLines(vector<string>);
 

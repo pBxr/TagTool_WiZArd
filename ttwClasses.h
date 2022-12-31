@@ -28,6 +28,7 @@ public:
     string fileNameAuthorYearList_;
     string fileNameCreditList_;
     string fileNameMetadataList_;
+    string fileNameToSearchAndReplaceList_;
     string newFileNameFor_;
     string workingPath_;
     
@@ -369,10 +370,9 @@ string authorYearListClass::fullCitationTag1LinkBegin_ = "<a href=\u0022";
 string authorYearListClass::fullCitationTag2LinkBegin_ = "\u0022><span class=DAIreference-hyperlink><span lang=EN-GB style=\'mso-ansi-language:EN-GB\'>";
 
 string authorYearListClass::fullCitationTagWithoutLink_ = "<span class=DAIreference-hyperlink><span lang=EN-GB style=\'mso-ansi-language:EN-GB\'>";
-string authorYearListClass::fullCitationTagWithoutLinkEnd_ = "</span></span><span lang=EN-GB style=\'mso-ansi-language:EN-GB\'><o:p></o:p></span></p>";
+string authorYearListClass::fullCitationTagWithoutLinkEnd_ = "</span></span><span lang=EN-GB style=\'mso-ansi-language:EN-GB\'></span>";
 
-string authorYearListClass::fullCitationTagLinkEnd_ = "</span></span></a><span lang=EN-GB style=\'mso-ansi-language:EN-GB\'><o:p></o:p></span></p>";
-
+string authorYearListClass::fullCitationTagLinkEnd_ = "</span></span></a><span lang=EN-GB style=\'mso-ansi-language:EN-GB\'></span>";
 
 //xml
 string authorYearListClass::referencesListTagBeginXML_="<ref-list content-type=\"references\">";
@@ -597,7 +597,9 @@ string strongBeginXML_ = "<bold>";
 string strongEndXML_ = "</bold>";
 
 
-//Global settings...
+//Global settings and switches...
+
+string versionNumber = "v1-2-1";
 
 bool firstRun=true;
 bool nextRunIsSet=true;
@@ -609,6 +611,8 @@ bool footnoteTagsSet=false;
 bool htmlHeadReplaced=false;
 bool dispensableTagsRemoved=false;
 bool paragraphNumbersSet=false;
+bool searchAndReplaceDone=false;
+bool callFromAddSearchReplace=false;
 bool imageContainerInserted=false;
 bool customBodyTagsSet=false;
 bool figureReferenceTagsSet=false;
@@ -622,7 +626,7 @@ bool insertCreditListSelected;
 bool authorYearTagsSelected; 
 bool removeDispensableTagsSelected; 
 bool paragraphNumbersSelected; 
+bool toSearchAndReplaceSelected;
 bool fileNameEntered=false; 
-
 
 #endif // TTWCLASSES_H

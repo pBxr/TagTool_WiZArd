@@ -144,18 +144,18 @@ vector<reducedValueClass> load_reduced_value_list(string fileName, vector<reduce
 
         }
 
-        posA=valueListFile[i].find(" %");
+        posA=valueListFile[i].find(" |");
 
         while(posA>=0){
-            valueListFile[i].replace(posA, 2, "%");
-            posA=valueListFile[i].find(" %");
+            valueListFile[i].replace(posA, 2, "|");
+            posA=valueListFile[i].find(" |");
             }
 
-        posB=valueListFile[i].find("% ");
+        posB=valueListFile[i].find("| ");
 
         while(posB>=0){
-            valueListFile[i].replace(posB, 2, "%");
-            posB=valueListFile[i].find("% ");
+            valueListFile[i].replace(posB, 2, "|");
+            posB=valueListFile[i].find("| ");
             }
 
         
@@ -170,7 +170,7 @@ vector<reducedValueClass> load_reduced_value_list(string fileName, vector<reduce
             toCheck = valueListFile[i][y];
              		
              		
-            if(toCheck=="%"){
+            if(toCheck=="|"){
                 positions.push_back(y);
                 }
 			}
@@ -235,18 +235,18 @@ vector<authorYearListClass> load_value_list(string fileName, vector<authorYearLi
 
         }
 
-        posA=valueListFile[i].find(" %");
+        posA=valueListFile[i].find(" |");
 
         while(posA>=0){
-            valueListFile[i].replace(posA, 2, "%");
-            posA=valueListFile[i].find(" %");
+            valueListFile[i].replace(posA, 2, "|");
+            posA=valueListFile[i].find(" |");
             }
 
-        posB=valueListFile[i].find("% ");
+        posB=valueListFile[i].find("| ");
 
         while(posB>=0){
-            valueListFile[i].replace(posB, 2, "%");
-            posB=valueListFile[i].find("% ");
+            valueListFile[i].replace(posB, 2, "|");
+            posB=valueListFile[i].find("| ");
             }
 
         //Get addresses... 
@@ -258,7 +258,7 @@ vector<authorYearListClass> load_value_list(string fileName, vector<authorYearLi
             toCheck = valueListFile[i][y];
              		
              		
-            if(toCheck=="%"){
+            if(toCheck=="|"){
                 positions.push_back(y);
                 }
 			}
@@ -276,7 +276,7 @@ vector<authorYearListClass> load_value_list(string fileName, vector<authorYearLi
 		
 			for(int y=0; y<(2-vecSize); y++){
 			
-			valueListFile[i].append("%###_CHECK_ENTRY_###");
+			valueListFile[i].append("|###_CHECK_ENTRY_###");
 			
 						
 				positions.clear();
@@ -285,7 +285,7 @@ vector<authorYearListClass> load_value_list(string fileName, vector<authorYearLi
             
             	string toCheck; 
             	toCheck = valueListFile[i][y];
-             		if(toCheck=="%"){
+             		if(toCheck=="|"){
                 	positions.push_back(y);
                 	}
 			}
@@ -355,18 +355,18 @@ vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustr
 
         }
 
-        posA=valueListFile[i].find(" %");
+        posA=valueListFile[i].find(" |");
 
         while(posA>=0){
-            valueListFile[i].replace(posA, 2, "%");
-            posA=valueListFile[i].find(" %");
+            valueListFile[i].replace(posA, 2, "|");
+            posA=valueListFile[i].find(" |");
             }
 
-        posB=valueListFile[i].find("% ");
+        posB=valueListFile[i].find("| ");
 
         while(posB>=0){
-            valueListFile[i].replace(posB, 2, "%");
-            posB=valueListFile[i].find("% ");
+            valueListFile[i].replace(posB, 2, "|");
+            posB=valueListFile[i].find("| ");
             }
 
                 
@@ -379,7 +379,7 @@ vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustr
             toCheck = valueListFile[i][y];
              		
              		
-            if(toCheck=="%"){
+            if(toCheck=="|"){
                 positions.push_back(y);
                 }
 			}
@@ -394,7 +394,7 @@ vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustr
 		
 			for(int y=0; y<(3-vecSize); y++){
 			
-				valueListFile[i].append("%###_CHECK_ENTRY_###");	
+				valueListFile[i].append("|###_CHECK_ENTRY_###");	
 				
 			}
 			
@@ -404,7 +404,7 @@ vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustr
             
             	string toCheck; 
             	toCheck = valueListFile[i][y];
-             		if(toCheck=="%"){
+             		if(toCheck=="|"){
                 	positions.push_back(y);
                 	}
 			}

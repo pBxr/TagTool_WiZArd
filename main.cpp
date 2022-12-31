@@ -6,7 +6,8 @@
 int main(int argc, char *argv[]){
 
     cout << "\n\n********************************************************************************************************\n" << endl;
-    cout << "   Welcome to TagTool_WiZArD application (v1.2.0)"<< endl;
+    cout << "   Welcome to TagTool_WiZArD application (v1.2.1)"<< endl;
+    cout << "\n   (tagtool_" << versionNumber << ".exe)" << endl;
     cout << "\n\n********************************************************************************************************\n" << endl;
 
 
@@ -47,7 +48,7 @@ vector<string> articleFile{};
      }
 
     //Process parameters and set functions...
-    terminationFlag=processParameter(parameterVector, fileInfos);
+    terminationFlag=processParameters(parameterVector, fileInfos);
 
     if(terminationFlag==0){
         cout << "\n";
@@ -133,11 +134,14 @@ vector<string> articleFile{};
 
         for(size_t i=0; i<numberOfLines-1; i++){
             
-            if(containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "paragraphBegin" && containerLines.at(i).lineCategory_!="noTextParagraph") {
-                posA=containerLines.at(i).tagContainerLine_.at(0).addressTagBegin_;
-                posB=containerLines.at(i).tagContainerLine_.at(0).addressTagEnd_;
+            if(containerLines.at(i).tagContainerLine_.at(0).typeOfTag_ == "paragraphBegin" 
+			&& containerLines.at(i).lineCategory_!="noTextParagraph" 
+			&&	i<documentSections.lineNrTextEnd_) {
+			   		
+					posA=containerLines.at(i).tagContainerLine_.at(0).addressTagBegin_;
+                	posB=containerLines.at(i).tagContainerLine_.at(0).addressTagEnd_;
 				
-                articleFile.at(i) = set_custom_bodyTag(articleFile.at(i), posA, posB);
+               		articleFile.at(i) = set_custom_bodyTag(articleFile.at(i), posA, posB);
 
             }
         }
@@ -256,6 +260,26 @@ vector<string> articleFile{};
 		
 		//After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+	}
+	
+	//Additional search an replace____________________________________
+	if(toSearchAndReplaceSelected==true && searchAndReplaceDone==false){
+		vector<reducedValueClass> values;
+		
+		values=load_reduced_value_list(fileInfos.fileNameToSearchAndReplaceList_, values);
+		
+		callFromAddSearchReplace=true;		
+		
+		search_replace(articleFile, values);
+			
+		searchAndReplaceDone=true;
+		callFromAddSearchReplace=false;
+		
+		cout << "Additional search and replace done..." << endl;
+		
+		//After alterating the file analyze again
+        analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+		
 	}
 	
 	
