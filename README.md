@@ -21,13 +21,13 @@ The use of the application for the _Archäologischer Anzeiger_ and the special r
 - setting hyperlink references to external bibliographical resources by a value list (list of references/bibliography)
 - setting tags for figure references
 - and so on
-Beginning with version 1.1.0 the application allows to export not only `.html` but also `.xml` files although it needs to be stressed that the `.xml` file is a non-valid intermediate product that will need manual finishing.  
+Beginning with version 1.1.0 the application allows to export not only `.html` but also `.xml` files although it needs to be stressed that the `.xml` file is a non-valid intermediate product that will need manual finishing (see `--help` function).  
 
 Although the use case and the implemented features for the semi-automatic formatting seems to be specific for the journal mentioned above, the application can be customized for other purposes since the design allows to alterate element tags or add functions for new kind of value lists and so on.
 
 ## Mode of operation
 
-Before starting the application the `.docx` file has to be converted by using pandoc into an `.html` file (see `show_help()` function). The use of pandoc guarantees a uniform standardized and normalized `.html` structure. After finishing the modification by the application the `.html` file can be opened in Microsoft Word and converted into a standard `.docx` for further processing purposes by the copy editor.
+Before starting the application the `.docx` file has to be converted by using pandoc into an `.html` file (see `--help` function). The use of pandoc guarantees a uniform standardized and normalized `.html` structure. After finishing the modification by the application the `.html` file can be opened in Microsoft Word and converted into a standard `.docx` for further processing purposes by the copy editor.
 
 ## To be done
 
@@ -44,3 +44,19 @@ Before starting the application the `.docx` file has to be converted by using pa
 - TDM-GCC 9.2.0 32/64bit
 - Tested with following IDE: Embarcadero Dev-C++ 6.3. If using Embarcadero Dev-C++ 6.3 add "`-std=c++17`" in Project Options -> Parameter s -> C++ compilers.
 - Tested with pandoc version 2.16.2. Other versions may cause problems.
+
+## How to run
+
+After compiling the binary (tagtool_v1-2-1.exe) open a terminal and run "tagtool_v1-2-1.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
+Be sure not to ommit the `.html`-ending of the file you want to process.
+Be sure that all necessary files are saved in the *same folder* together with the `.exe` file, i. e.
+- 01_MetadataValueList.csv
+- 02_AuthorYearList.csv
+- 03_ImageCreditList.csv
+- 04_ToSearchAndReplaceList.csv
+- article.html
+- tagtool_v1-2-1.exe
+- \resources  
+For preparing the `.csv` files see "--help" function. 
+  
+

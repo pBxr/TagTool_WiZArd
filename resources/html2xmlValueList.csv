@@ -1,10 +1,10 @@
-Tag html%Replace in xml (no entry= delete)
-<ol>%
-<ul>%
-</html>%
-</body>%
-</ol>%
-</ul>%
-<section class="footnotes" role="doc-endnotes">%
-<hr />%
-</section>%
+Tag html|Replace in xml (no entry= delete)
+<ol>|
+<ul>|
+</html>|
+</body>|
+</ol>|
+</ul>|
+<section class="footnotes" role="doc-endnotes">|
+<hr />|
+</section>|
