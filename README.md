@@ -47,7 +47,7 @@ Before starting the application the `.docx` file has to be converted by using pa
 
 ## How to run
 
-After compiling the binary (tagtool_v1-2-1.exe) open a terminal and run "tagtool_v1-2-1.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
+After compiling the binary (tagtool_v1-2-2.exe) open a terminal and run "tagtool_v1-2-2.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
 Be sure not to ommit the `.html`-ending of the file you want to process.
 Be sure that all necessary files are saved in the *same folder* together with the `.exe` file, i. e.
 - 01_MetadataValueList.csv
@@ -55,8 +55,6 @@ Be sure that all necessary files are saved in the *same folder* together with th
 - 03_ImageCreditList.csv
 - 04_ToSearchAndReplaceList.csv
 - article.html
-- tagtool_v1-2-1.exe
+- tagtool_v1-2-2.exe
 - \resources  
-For preparing the `.csv` files see "--help" function. 
-  
-
+For preparing the `.csv` files see "--help" function.

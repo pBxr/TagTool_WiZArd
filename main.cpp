@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]){
 
     cout << "\n\n********************************************************************************************************\n" << endl;
-    cout << "   Welcome to TagTool_WiZArD application (v1.2.1)"<< endl;
+    cout << "   Welcome to TagTool_WiZArD application (v1.2.2)"<< endl;
     cout << "\n   (tagtool_" << versionNumber << ".exe)" << endl;
     cout << "\n\n********************************************************************************************************\n" << endl;
 
@@ -267,7 +267,7 @@ vector<string> articleFile{};
 		vector<reducedValueClass> values;
 		
 		values=load_reduced_value_list(fileInfos.fileNameToSearchAndReplaceList_, values);
-		
+				
 		callFromAddSearchReplace=true;		
 		
 		search_replace(articleFile, values);
@@ -279,27 +279,27 @@ vector<string> articleFile{};
 		
 		//After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-		
+       		
 	}
 	
 	
     //Prepare to write file an folder target names and save article and ___________________________________
     
     create_target_file_and_folder_names(fileInfos);
-
+    
     if(customBodyTagsSet==true){
 		
 		if(htmlSelected==true){
 			replace_HtmlHead(articleFile, fileInfos, documentSections);
         	htmlHeadReplaced=true;
-        	
+        
         	search_replace(articleFile, fileInfos.toReplaceInHtmlHead_, fileInfos.newFileNameFor_);	
         
         	//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
         
         	insert_metadataTemplates(articleFile, fileInfos, documentSections);
-        
+        	
         	//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
         

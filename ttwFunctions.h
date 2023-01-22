@@ -200,7 +200,7 @@ string create_replacement_string(string toReplace, string replaceValue){
 			//...and if so, build a full tagged link
 			
 			if(htmlSelected==true){
-				replaceValue="<span class=DAIbody-hyperlink-extrafeatures><a href=\"" + url + "\">" + toReplace + "</a></span>";
+				replaceValue="<a href=\"" + url + "\"><span class=DAIbody-hyperlink-extrafeatures>" + toReplace + "</span></a>";
 			}
 			
 			if(htmlSelected==false){
@@ -1115,9 +1115,7 @@ void insert_image_credit_list(vector<string> &articleFile, fileInformations &fil
 
 void insert_metadataTemplates(vector<string> &articleFile, fileInformations &fileInfos, struct documentSectionsClass &documentSections) {
 	
-	vector<reducedValueClass> newMetadataHTML;
-	
-	newMetadataHTML=load_reduced_value_list(fileInfos.fileNameMetadataList_, newMetadataHTML);
+	vector<reducedValueClass> values;
 		
 	articleFile.insert(articleFile.begin()+documentSections.lineNrBodyBegin_+1, fileInfos.metadataBegin.begin(), fileInfos.metadataBegin.end());
 	
@@ -1128,9 +1126,13 @@ void insert_metadataTemplates(vector<string> &articleFile, fileInformations &fil
 	else{
 		articleFile.insert(articleFile.begin()+fileInfos.metadataBegin.size()+documentSections.lineNrBodyEnd_, fileInfos.metadataEnd.begin(), fileInfos.metadataEnd.end());	
 	}
-	
-   search_replace(articleFile, newMetadataHTML);
 
+  
+  	values=load_reduced_value_list(fileInfos.fileNameMetadataList_, values);
+   
+   	search_replace(articleFile, values);
+     
+  
 }
 
 void insert_FootnoteTags(vector<string> &articleFile, vector<footNoteClass> &footnoteAddressContainer) {
@@ -1749,33 +1751,94 @@ string resolve_hyphens_in_figRef(string bracketContent){
 void search_replace(vector<string> &articleFile, string termSearch, string termReplace) {
 
 	int pos1;
-	for(size_t i=0; i<articleFile.size(); i++) {
-		if(pos1>=0) {
-			std::regex r(termSearch);
-			articleFile[i] = regex_replace(articleFile[i], r, termReplace);
+	int z;
+	vector<int> positions;
+	
+	string testTerm;
+				
+	for(int i=0; i<articleFile.size(); i++){
+		
+		positions.clear();
+			
+		for(int y=0; y+termSearch.size()<=(articleFile[i].size()); y++){
+		
+			z=0;
+			
+			//Add characters for a comparison with termSearch
+			for(z=y; z<termSearch.size()+y; z++){
+				testTerm=testTerm+articleFile[i][z];	
+			}	
+			
+			pos1=testTerm.find(termSearch);
+			
+			if(!pos1){
+			positions.push_back(z-termSearch.size());	
+			}
+			
+			testTerm.clear();
+		}
+		
+		//In case of match(es) replace all matches...
+		if(positions.size()>0){
+		
+			for(int p=positions.size()-1; p>=0; p--){
+				articleFile[i].replace(positions[p], termSearch.size(), termReplace);	
+			}
 		}
 	}
-
 }
 
 void search_replace(vector<string> &textVector, vector<reducedValueClass> valueList) {
 
 	int pos1;
+	int pos2;
+	int z;
 	
-	string replaceValue;
+	vector<int> positions;
+	string termSearch;
+	string termReplace;
+	string testTerm;
 		
 	for(size_t i=0; i<textVector.size(); i++) {
 		
 		for(int y=0; y<valueList.size(); y++){
+		
 		pos1=textVector[i].find(valueList[y].values_[0]);
 		
-			if(pos1>=0) {
+			if(pos1>=0) {		
+				termSearch = valueList[y].values_[0];
+				
+				//Check if replacement value contains a link:
+				termReplace=create_replacement_string(valueList[y].values_[0], valueList[y].values_[1]);
+												
+				positions.clear();
 			
-			replaceValue=create_replacement_string(valueList[y].values_[0], valueList[y].values_[1]);
-			
-			std::regex r(valueList[y].values_[0]);
-			textVector[i] = regex_replace(textVector[i], r, replaceValue);
-						
+				for(int y2=0; y2+termSearch.size()<=(textVector[i].size()); y2++){
+					z=0;
+					
+					//Add characters for a comparison with termSearch
+					for(z=y2; z<termSearch.size()+y2; z++){
+						testTerm=testTerm+textVector[i][z];	
+					}	
+										
+					pos2=testTerm.find(termSearch);
+					
+					if(!pos2){
+					positions.push_back(z-termSearch.size());	
+					}
+					
+					testTerm.clear();
+				}
+				
+				//In case of match(es) replace all matches...
+				if(positions.size()>0){
+				
+					for(int p=positions.size()-1; p>=0; p--){
+									
+					textVector[i].replace(positions[p], termSearch.size(), termReplace);	
+					
+					}
+				}	
 			}
 		}
 	}
@@ -2480,7 +2543,7 @@ void show_help() {
 	
 	cout << "\nStep 4:\nThe application writes an edited file with the ending \"_edited_1_.html\" respectively \"_edited_1_.xml\"" << endl;
 	cout << "In case of html output format it also writes a folder with data that are important for the correct conversion to MS Word (with the ending \"__ress\")." << endl;
-	cout << "In case of xml output the tool generates only a raw and non-valid xml version (see below). " << endl;
+	cout << "In case of xml output the tool generates only a raw and non-valid xml version (see above). " << endl;
 	cout << "\nSTEP 5:\nOpen MS Word and open the edited .html-file. Save it immediately as a .docx-file" << endl;
 	cout << "Important: For a correct represantation in MS Word the .html-file, the \\resources folder and the folder \"\\__ress\" need to be in the same folder." << endl;
 }
@@ -2496,7 +2559,7 @@ void show_options(){
 	cout << "--paragrNum = Set paragraph numbers (recommended only if --bodyTags is chosen as well)" << endl;
 	cout << "--illCred = Insert tagged illustration credits section. *CAUTION*: 03_IllustrationCreditList.csv *REQUIRED*" << endl;
 	cout << "--delTags = Remove dispensable formattings/tags (*NOT RECOMMENDED*)" << endl;
-	cout << "--addSR = Additional search and replace based on a value list. Special feature: If a plain url is entered as replacement string, the tool creates the whole tagged link automatically prepared for the chosen output format (.html or .xml). If you want to avoid to add links to all occurrences of the search expression a \"@\" can be used as a prefix (both in the search expression in the .csv file and in the article text). The tool will remove this prefix when creating the tagged link. See \"ToSearchAndReplaceList_EXAMPLE.csv\" in the folder \\resources. *CAUTION*: 04_ToSearchAndReplaceList.csv *REQUIRED*." << endl;
+	cout << "--addSR = Additional search and replace based on a value list: The purpose of this funcion is mainly to set tagged hyperlinks.\nNote: Other and especially more complex find-replace operations should be done in other applications for better reliability.\nIf a plain url is entered as replacement string, the tool creates the whole tagged link automatically prepared for the chosen output format (.html or .xml). If you want to avoid to add links to all occurrences of the search expression the \"@\" character can be used as a prefix (both in the search expression in the .csv file and in the article text). The tool will remove this prefix when creating the tagged link. See \"04_ToSearchAndReplaceList_EXAMPLE.csv\" in the folder \\resources. *CAUTION*: 04_ToSearchAndReplaceList.csv *REQUIRED*." << endl;
 	 
     
 }

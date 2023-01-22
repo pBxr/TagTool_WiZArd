@@ -599,7 +599,7 @@ string strongEndXML_ = "</bold>";
 
 //Global settings and switches...
 
-string versionNumber = "v1-2-1";
+string versionNumber = "v1-2-2";
 
 bool firstRun=true;
 bool nextRunIsSet=true;
