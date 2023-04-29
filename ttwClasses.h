@@ -17,7 +17,6 @@
 using std::cout; using std::cin; using std::vector; using std::string; using std::ifstream; using std::ofstream;
 using std::endl; using std::stringstream;
 
-vector<string> loadFileContent(string);
 
 class fileInformations {
 public:
@@ -30,7 +29,9 @@ public:
     string fileNameMetadataList_;
     string fileNameToSearchAndReplaceList_;
     string newFileNameFor_;
-    string workingPath_;
+    string ttwRootPath_;
+    string nameTempDirectory_;
+    string pathTempDirectory_;
     
 	string folderWriting_;
 
@@ -67,6 +68,14 @@ public:
 	void set_lapCounter(){
       lapCounter_++;
     }
+    
+    void set_tempPath(){
+    	fileNameArticleFile_.insert(0, pathTempDirectory_) ; 
+		fileNameAuthorYearList_.insert(0, pathTempDirectory_); 
+  		fileNameCreditList_.insert(0, pathTempDirectory_); 
+  		fileNameMetadataList_.insert(0, pathTempDirectory_); 
+  		fileNameToSearchAndReplaceList_.insert(0, pathTempDirectory_); 
+	}
     
 };
 
@@ -599,12 +608,13 @@ string strongEndXML_ = "</bold>";
 
 //Global settings and switches...
 
-string versionNumber = "v1-2-2";
+string versionNumber = "v1-3-0";
+string versionTag = "v1.3.0";
 
 bool firstRun=true;
 bool nextRunIsSet=true;
 bool htmlSelected=true; //=default setting;
-
+bool callFromWebSelected=false; 
 
 bool authorYearTagsSet=false;
 bool footnoteTagsSet=false;

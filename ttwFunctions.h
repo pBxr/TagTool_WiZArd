@@ -172,6 +172,14 @@ void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containe
 	}
 }
 			
+void console_print(string consoleMessage){
+	
+	if(callFromWebSelected==false){
+	cout << consoleMessage << endl;	
+	}
+		
+}
+
 
 string create_replacement_string(string toReplace, string replaceValue){
 	
@@ -1008,7 +1016,7 @@ void insert_image_credit_list(vector<string> &articleFile, fileInformations &fil
 	
 	vector<illustrationCreditsClass> illustrationCreditList;
 	
-	illustrationCreditList=load_value_list(fileInfos.fileNameCreditList_, illustrationCreditList);
+	illustrationCreditList=load_value_list(fileInfos.fileNameCreditList_, fileInfos.ttwRootPath_, illustrationCreditList);
 	
 	string nr;
 
@@ -1128,7 +1136,7 @@ void insert_metadataTemplates(vector<string> &articleFile, fileInformations &fil
 	}
 
   
-  	values=load_reduced_value_list(fileInfos.fileNameMetadataList_, values);
+  	values=load_reduced_value_list(fileInfos.fileNameMetadataList_, fileInfos.ttwRootPath_, values);
    
    	search_replace(articleFile, values);
      
@@ -1282,8 +1290,10 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 	
 	vector<string> enteredFunctions;
 	vector<string> enteredValueLists;
-	
-		
+
+	//Note: In the web extension (ttw_webx) all dialogues, parameter settings, errors etc. 
+	//are handled in the browser, for the console version it is implemented below.
+				
 	if(parameterVector.size()==0) {
 		cout << "Parameters missing. " << endl;
 		cout << "Please enter the name of the source file or enter \"--help\" when starting the application the next time" << endl;
@@ -1291,20 +1301,14 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 	}
 
 
-	//Detect possible --help call 
-	//... or extract output format to isolate functions and 		
+	//Isolate process specifications from functions 		
 	
 	vector<int> toDelete;
+	bool showHelp=false;
+	
 	for(int i=0; i<parameterVector.size(); i++){
 		
 		int pos;
-		
-		pos = parameterVector[i].find("--help");
-		if(pos>=0){
-			show_help();
-			return 0;
-		}
-		
 		pos = parameterVector[i].find("--toXML");
 		if(pos>=0){
 			outputFormatSpecified=true;
@@ -1319,14 +1323,39 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 			toDelete.push_back(i);
 		}
 		
-	}
+		pos = parameterVector[i].find("--tempID");
+		if(pos>=0){
+			//extract temp folder name
+			fileInfos.nameTempDirectory_ = parameterVector[i].substr(8);
+			callFromWebSelected=true;
+			toDelete.push_back(i);
+		}
 		
-	//... finally delete output format from functions and value lists	
+		pos = parameterVector[i].find("--help");
+		if(pos>=0){
+			showHelp=true;
+		}
+	}
+	
+	if(showHelp){
+			show_help();
+			return 0;
+		}
+		
+	if(callFromWebSelected==false){
+		cout << "\n\n********************************************************************************************************\n" << endl;
+   		cout << "   Welcome to TagTool_WiZArD application (" << versionTag << ")"<< endl;
+   		cout << "\n   (tagtool_" << versionNumber << ".exe)" << endl;
+    	cout << "\n\n********************************************************************************************************\n" << endl;
+	}		
+
+	
+	//... delete process specifications from functions and value lists	
 	for(int i : toDelete){
 		parameterVector.erase(parameterVector.begin()+i);
 	}
 		
-	//Detect source format, entered function parameter and entered value lists		
+	//Extract source format, entered function parameter, entered value lists and outputformat		
 	for(int i=0; i<parameterVector.size(); i++){
 				
 		int pos;
@@ -1360,8 +1389,14 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 			cout << "\n";
 			cout << "NO SOURCE FILE WAS ENTERED. Check also if required filename extension was entered correctly (\".html\" or \".xml\")." << endl;
 			return 0;
-		}
+	}
 
+	
+	if(firstRun==true){
+	//Get article and path...
+        get_current_path(fileInfos);
+    }
+	
 	//Detect and process function parameters_______________________________________
 	
 	//... if no function parameters were entered, set default functions... 
@@ -1374,7 +1409,7 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 		insertCreditListSelected=true;
 		toSearchAndReplaceSelected=true;
 					
-		cout << "No parameters entered, so the default functions will be set:\n- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace according to the separate value list.\n" << endl;
+		console_print("No parameters entered, so the default functions will be set:\n- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace according to the separate value list.\n");
 	
 	}
 			
@@ -1384,53 +1419,51 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 		
 	if(enteredFunctions.size()>0) {
 		
-		cout << "\n" << "You have chosen following functions: " << endl;	
-	
-				
+		console_print("\nYou have chosen following functions: ");	
+					
 		for(int i=0; i<enteredFunctions.size(); i++) {
 						
 			if(enteredFunctions[i]=="--bodyTags") {
 				customBodyTagsSelected=true;
 				numberParameters++;
-				cout << "- Set customized journal body tags\n";
+				console_print("- Set customized journal body tags\n");
 			}
 
 			if(enteredFunctions[i]=="--figTags") {
 				figureReferenceTagsSelected=true;
 				numberParameters++;
-				cout << "- Set figure references tags\n";
+				console_print("- Set figure references tags\n");
 			}
 
 			if(enteredFunctions[i]=="--litTags") {
 				authorYearTagsSelected=true;
 				numberParameters++; 
-				cout << "- Set author year tags. CAUTION: 02_AuthorYearList.csv required!\n";
+				console_print("- Set author year tags. CAUTION: 02_AuthorYearList.csv required!\n");
 			}
 
 			if(enteredFunctions[i]=="--paragrNum") {
 				paragraphNumbersSelected=true;
 				numberParameters++;
-				cout << "- Set paragraph numbers\n";
+				console_print("- Set paragraph numbers\n");
 			}
 
 			if(enteredFunctions[i]=="--delTags") {
 				removeDispensableTagsSelected=true;
 				numberParameters++;
-				cout << "- Remove dispensable formattings/tags\n";
+				console_print("- Remove dispensable formattings/tags\n");
 			}
 			
 			if(enteredFunctions[i]=="--illCred") {
 				insertCreditListSelected=true;
 				numberParameters++;
-				cout << "- Insert tagged illustration credit section. CAUTION: 03_IllustrationCreditList.csv requried!\n";
+				console_print("- Insert tagged illustration credit section. CAUTION: 03_IllustrationCreditList.csv requried!\n");
 			}
 			
 			if(enteredFunctions[i]=="--addSR") {
 				toSearchAndReplaceSelected=true;
 				numberParameters++;
-				cout << "- Additional search and replace selected. CAUTION: 04_ToSearchAndReplaceList.csv requried!\n";
+				console_print("- Additional search and replace selected. CAUTION: 04_ToSearchAndReplaceList.csv requried!\n");
 			}
-				
 		}
 	}	
 		
@@ -1442,15 +1475,15 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 					
 		//Output format info
 		if(outputFormatSpecified==false){ //= default
-		cout << "\nNo output format entered, so the default outout format will be: HTML"<< endl;
+		console_print("\nNo output format entered, so the default outout format will be: HTML");
 		}
 		
 		if(outputFormatSpecified==true){
 			if(htmlSelected==false){
-				cout << "\nYou have chosen the following output format: XML"<< endl;	
+				console_print("\nYou have chosen the following output format: XML");	
 			}
 			if(htmlSelected==true){
-				cout << "\nYou have chosen the following output format: HTML"<< endl;	
+				console_print("\nYou have chosen the following output format: HTML");	
 			}
 		}
 	
@@ -1458,21 +1491,22 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 		//... if no value lists were entered set default file names
 		
 		if(enteredValueLists.size()==0){ 			//= default setting
-		
+			
+			fileInfos.fileNameMetadataList_ = "01_MetadataValueList.csv";
+			metadataListEntered=true;
+			
 			fileInfos.fileNameAuthorYearList_ = "02_AuthorYearList.csv";
 			referenceListEntered=true;
 						
 			fileInfos.fileNameCreditList_ = "03_IllustrationCreditList.csv";	
 			creditListEntered=true;
 				
-			fileInfos.fileNameMetadataList_ = "01_MetadataValueList.csv";
-			metadataListEntered=true;
-		
 			fileInfos.fileNameToSearchAndReplaceList_ = "04_ToSearchAndReplaceList.csv";
 			toSearchAndReplaceListEntered=true;
 		
 		}
-	
+		
+			
 		//... or check if all filenames of all necessary value lists are existing...
 		for(int i=0; i<enteredValueLists.size(); i++){
 		if(enteredValueLists[i]=="02_AuthorYearList.csv"){
@@ -1532,23 +1566,24 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 			
 		}		
 	
-	//Final confirmation_____________________________
-	
-	bool confirmed=false; 
+	//Final confirmation for console version_____________________________
+	if(callFromWebSelected==false){	
+		bool confirmed=false; 
 
-	while(!confirmed) {
-		cout << "\n Please check before running the application: " << endl;
-		cout << "- Are you sure that you have converted the MS Word .docx-article-file with pandoc to .html?" << endl;
-		cout << "- If chosen: Have you prepared the Author Year, the Illustration Credit and the Search and Replace value lists as required (see --help)?" << endl;
-		cout << "- Are all files saved in the same directory as the TagTool_WiZArD (tagtool_" << versionNumber << ".exe) application?" << endl;
-		cout << "- Please confirm (y/n): ";
-		char input;
-		cin >> input;
-		cin.ignore(1,'\n');
-		if(input=='y' || input=='Y') {
-			confirmed=true;
-		} else {
-			return 0;
+		while(!confirmed) {
+			cout << "\n Please check before running the application: " << endl;
+			cout << "- Are you sure that you have converted the MS Word .docx-article-file with pandoc to .html?" << endl;
+			cout << "- If chosen: Have you prepared the Author Year, the Illustration Credit and the Search and Replace value lists as required (see --help)?" << endl;
+			cout << "- Are all files saved in the same directory as the TagTool_WiZArD (tagtool_" << versionNumber << ".exe) application?" << endl;
+			cout << "- Please confirm (y/n): ";
+			char input;
+			cin >> input;
+			cin.ignore(1,'\n');
+			if(input=='y' || input=='Y') {
+				confirmed=true;
+			} else {
+				return 0;
+			}
 		}
 	}
 	return 1;
@@ -1656,7 +1691,7 @@ void replace_HtmlHead(vector<string>& articleFile, fileInformations &fileInfos, 
 		}	
 	
 	if(htmlSelected==false){  
-		valueList=load_reduced_value_list(fileInfos.fileNameMetadataList_, valueList);
+		valueList=load_reduced_value_list(fileInfos.fileNameMetadataList_, fileInfos.ttwRootPath_, valueList);
 		search_replace(newHead, valueList);
 	}
 
@@ -1700,7 +1735,7 @@ string resolve_hyphens_in_figRef(string bracketContent){
         } 
            
       
-     //resolve number pairs...
+    //resolve number pairs...
 	for(size_t z=0; z<numberPairs.size(); z++){
 	
 		pos1=numberPairs[z].find("-");
@@ -2517,35 +2552,63 @@ string set_paragraphNumbers(string articleFileLine, int posA, int posB, string n
 }
 
 void show_help() {
-	cout << "-------- Help: How to use TagTool_WiZArD application -------- \n" << endl;
-	cout << "STEP 1:\nConvert the .docx article file by using pandoc into an .html-file (https://pandoc.org/)." << endl;
-	cout << "(pandoc command: pandoc -s -o target.html source.docx)" << endl;
-	cout << "IMPORTANT:\n- Tested with version pandoc 2.16.2, other versions may cause problems." << endl;
-	cout << "- Tested with .docx documents generated and prepared with MS Word. In case the .docx file was created by LibreOffice or other applications the results may differ; check carefully." << endl;
-	cout << "\nSTEP 2:\nThe tool itself (tagtool_" << versionNumber << ".exe) requires 4 additional .csv value lists as well as the mandatory resources folder, saved IN THE SAME DIRECTORY together with the article file:\n- 01_MetadataValueList.csv\n- 02_AuthorYearList.csv\n- 03_IllustrationCreditList.csv\n- 04_ToSearchAndReplaceList.csv\n- articlefile.html\n- tagtool_" << versionNumber << ".exe\n- \\resources" << endl;
-	cout << "\n*CAUTION*: All .csv value lists are *REQUIRED*. In case you do not intend special alterations (references, illustrations, search and replace) you can use the value lists 02, 03 and 04 with no entries." << endl;
-	cout << "\nDo not change any files in the resources folder." << endl;
-	cout << "\nThe .csv value lists can easily be prepared by using LibeOffice Calc:" << endl;
-	cout << "- Prepare each file concerning the categories and so on like in the example files in the folder \\resources: 01_MetadataValueList_TEMPLATE.csv, 02_AuthorYearList_EXAMPLE.csv, 03_IllustrationCreditList_EXAMPLE.csv and 04_ToSearchAndReplaceList_EXAMPLE.csv." << endl;	
-	cout <<	"- Finally use the option \"Save as .csv\" for the conversion." << endl;
-	cout << "\nIMPORTANT: Be sure that \n- the character encoding (\"character set\"/\"Zeichensatz\") is set to \"Unicode (UTF-8)\",\n- the separating character (\"field delimiter\"/\"Feldtrenner\") is set to \"|\",\n- that no \"string delimiter\"/\"Zeichenketten-Trenner\" is entered (to avoid possible conflicts with similar characters)." << endl;
-	cout << "\nIn case you name the files in the above mentioned way you will not need to enter the filenames explicitly when starting the application.\nIf you enter different filenames for .csv-files the application will ask you to specify the required files (*NOT RECOMMENDED*)." << endl;
-	cout << "\nSTEP 3:\nStart the application by typing \"tagtool_" << versionNumber << ".exe articlename.html\"" << endl;
-	cout << "\nFunctions:" << endl;
-	cout << "If no explicit parameters are entered in the command line, the following functions will be chosen automatically (*RECOMMENDED*): " << endl;
-	cout << "- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace by using the separate value list (see remarks below)\n- Output format will be HTML." << endl;
-	cout << "Note: The application will load by default the files named \"01_MetadataValueList.csv\", \"02_AuthorYearList.csv\",\"03_IllustrationCreditList.csv\" and \"04_ToSearchAndReplaceList.csv\", see above."<< endl;
-	cout << "Note: The references will be tagged directly in the article file while in opposite the metadata and the image credits will be inserted into the article file additionally. Therefore the bibliography/references must remain in the article." << endl;
-	cout << "Note: If you want to choose the default functions in combination with an (raw and non-valid) xml output enter \"tagtool_" << versionNumber << ".exe articlename.html --toXML\" when starting the application." << endl;
-	cout << "\nAlternatively you can combine the functions by entering following notations when starting the application in your command line (*NOT RECOMMENDED*)." << endl;
 	
-	show_options();
+	//In case of a help call from ttw_webx the tool returns 
+	//a console output that read by .php and displayed in the browser window directly 
 	
-	cout << "\nStep 4:\nThe application writes an edited file with the ending \"_edited_1_.html\" respectively \"_edited_1_.xml\"" << endl;
-	cout << "In case of html output format it also writes a folder with data that are important for the correct conversion to MS Word (with the ending \"__ress\")." << endl;
-	cout << "In case of xml output the tool generates only a raw and non-valid xml version (see above). " << endl;
-	cout << "\nSTEP 5:\nOpen MS Word and open the edited .html-file. Save it immediately as a .docx-file" << endl;
-	cout << "Important: For a correct represantation in MS Word the .html-file, the \\resources folder and the folder \"\\__ress\" need to be in the same folder." << endl;
+	if(callFromWebSelected==true){
+		//For web extension...
+		cout << "-------- Help: How to use TagTool_WiZArD application - Extension for small closed networks -------- \n" << endl;
+		cout << "Notice: The tool is tested with .docx documents generated and prepared with MS Word. In case the .docx file was created by LibreOffice or other applications the results may differ; check carefully." << endl;
+		cout << "\nSTEP 1:\nThe tool itself (tagtool_" << versionNumber << ".exe) requires 1 article file (.docx) and 4 additional .csv value lists:\n- A Metadata Value List \n- A Author Year List\n- The Illustration Credit List\n- A additional Search And Replace List." << endl;
+		cout << "\n*CAUTION*: All 4 .csv value lists are *REQUIRED*. In case you do not intend special alterations (references, illustrations, search and replace) you can use the .csv value lists with no entries." << endl;
+		cout << "\nThe .csv value lists can easily be prepared by using LibeOffice Calc, see under \"Examples for .csv lists\" in the web version." << endl;
+		cout << "\nIMPORTANT: Be sure that \n- the character encoding (\"character set\"/\"Zeichensatz\") is set to \"Unicode (UTF-8)\",\n- the separating character (\"field delimiter\"/\"Feldtrenner\") is set to \"|\",\n- that no \"string delimiter\"/\"Zeichenketten-Trenner\" is entered (to avoid possible conflicts with similar characters)." << endl;
+		cout << "\nFunctions:" << endl;
+		cout << "If no explicit parameters are chosen, the following functions will be chosen automatically (*RECOMMENDED*): " << endl;
+		cout << "- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace by using the separate value list (see remarks below)\n- Output format will be HTML." << endl;
+		cout << "Note: If you chose .xml as output format the tool will create in most cases only a non-valid xml version. Manual completion is necessary, especially concerning the section endings. Check especially the marker \"<!-- CHECK POSITION OF CLOSING TAG-->\" that is set in the xml file automatically." << endl;
+		
+		cout << "\nAlternatively you can combine the functions mentioned above (*NOT RECOMMENDED*)." << endl;
+		
+		cout << "\nStep 2:\nThe application writes an edited file with the ending \"_edited_1_.html\" respectively \"_edited_1_.xml\"" << endl;
+		cout << "In case of html output format it also writes a folder with data that are important for the correct conversion to MS Word (with the ending \"__ress\")." << endl;
+		cout << "In case of xml output the tool generates only a raw and non-valid xml version (see above). " << endl;
+		cout << "\nSTEP 3:\nDownload the files. In case of a chosen .html output: Open MS Word and open the edited .html-file. Save it immediately as a .docx-file" << endl;
+		cout << "Important: For a correct represantation in MS Word the .html-file, the \\resources folder and the folder \"\\__ress\" need to be in the same folder." << endl;
+			
+	}else{
+		//For console version...
+		cout << "-------- Help: How to use TagTool_WiZArD application -------- \n" << endl;
+		cout << "STEP 1:\nConvert the .docx article file by using pandoc into an .html-file (https://pandoc.org/)." << endl;
+		cout << "(pandoc command: pandoc -s -o target.html source.docx)" << endl;
+		cout << "IMPORTANT:\n- Tested with version pandoc 2.16.2, other versions may cause problems." << endl;
+		cout << "- Tested with .docx documents generated and prepared with MS Word. In case the .docx file was created by LibreOffice or other applications the results may differ; check carefully." << endl;
+		cout << "\nSTEP 2:\nThe tool itself (tagtool_" << versionNumber << ".exe) requires 4 additional .csv value lists as well as the mandatory resources folder, saved IN THE SAME DIRECTORY together with the article file:\n- 01_MetadataValueList.csv\n- 02_AuthorYearList.csv\n- 03_IllustrationCreditList.csv\n- 04_ToSearchAndReplaceList.csv\n- articlefile.html\n- tagtool_" << versionNumber << ".exe\n- \\resources" << endl;
+		cout << "\n*CAUTION*: All .csv value lists are *REQUIRED*. In case you do not intend special alterations (references, illustrations, search and replace) you can use the value lists 02, 03 and 04 with no entries." << endl;
+		cout << "\nDo not change any files in the resources folder." << endl;
+		cout << "\nThe .csv value lists can easily be prepared by using LibeOffice Calc:" << endl;
+		cout << "- Prepare each file concerning the categories and so on like in the example files in the folder \\resources: 01_MetadataValueList_TEMPLATE.csv, 02_AuthorYearList_EXAMPLE.csv, 03_IllustrationCreditList_EXAMPLE.csv and 04_ToSearchAndReplaceList_EXAMPLE.csv." << endl;	
+		cout <<	"- Finally use the option \"Save as .csv\" for the conversion." << endl;
+		cout << "\nIMPORTANT: Be sure that \n- the character encoding (\"character set\"/\"Zeichensatz\") is set to \"Unicode (UTF-8)\",\n- the separating character (\"field delimiter\"/\"Feldtrenner\") is set to \"|\",\n- that no \"string delimiter\"/\"Zeichenketten-Trenner\" is entered (to avoid possible conflicts with similar characters)." << endl;
+		cout << "\nIn case you name the files in the above mentioned way you will not need to enter the filenames explicitly when starting the application.\nIf you enter different filenames for .csv-files the application will ask you to specify the required files (*NOT RECOMMENDED*)." << endl;
+		cout << "\nSTEP 3:\nStart the application by typing \"tagtool_" << versionNumber << ".exe articlename.html\"" << endl;
+		cout << "\nFunctions:" << endl;
+		cout << "If no explicit parameters are entered in the command line, the following functions will be chosen automatically (*RECOMMENDED*): " << endl;
+		cout << "- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace by using the separate value list (see remarks below)\n- Output format will be HTML." << endl;
+		cout << "Note: The application will load by default the files named \"01_MetadataValueList.csv\", \"02_AuthorYearList.csv\",\"03_IllustrationCreditList.csv\" and \"04_ToSearchAndReplaceList.csv\", see above."<< endl;
+		cout << "Note: The references will be tagged directly in the article file while in opposite the metadata and the image credits will be inserted into the article file additionally. Therefore the bibliography/references must remain in the article." << endl;
+		cout << "Note: If you want to choose the default functions in combination with an (raw and non-valid) xml output enter \"tagtool_" << versionNumber << ".exe articlename.html --toXML\" when starting the application." << endl;
+		cout << "\nAlternatively you can combine the functions by entering following notations when starting the application in your command line (*NOT RECOMMENDED*)." << endl;
+		
+		show_options();
+		
+		cout << "\nStep 4:\nThe application writes an edited file with the ending \"_edited_1_.html\" respectively \"_edited_1_.xml\"" << endl;
+		cout << "In case of html output format it also writes a folder with data that are important for the correct conversion to MS Word (with the ending \"__ress\")." << endl;
+		cout << "In case of xml output the tool generates only a raw and non-valid xml version (see above). " << endl;
+		cout << "\nSTEP 5:\nOpen MS Word and open the edited .html-file. Save it immediately as a .docx-file" << endl;
+		cout << "Important: For a correct represantation in MS Word the .html-file, the \\resources folder and the folder \"\\__ress\" need to be in the same folder." << endl;
+	}
 }
 
 void show_options(){
@@ -2571,7 +2634,7 @@ void structure_xml_output_file(vector<string> &articleFile, fileInformations& fi
 		
 	vector<reducedValueClass> xml2htmlList;
 			
-	xml2htmlList=load_reduced_value_list(fileInfos.fileNameHTML_XML_valueList_, xml2htmlList);
+	xml2htmlList=load_reduced_value_list(fileInfos.fileNameHTML_XML_valueList_, fileInfos.ttwRootPath_, xml2htmlList);
 			
 	search_replace(articleFile, xml2htmlList);
 	
