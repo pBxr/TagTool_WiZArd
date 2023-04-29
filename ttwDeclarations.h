@@ -13,6 +13,8 @@ void analyze_articleFile(vector<string>&, vector<tagClass>&, vector<lineClass>&,
 
 string classify_tag(string, size_t, struct documentSectionsClass&);
 
+void console_print(string consoleMessage);
+
 void convert_lists(vector<string>&, vector<lineClass>&, struct documentSectionsClass&);
 
 void convert_selected_Tags(string, vector<string>&, vector<lineClass>&, struct documentSectionsClass&);
@@ -41,13 +43,13 @@ void insert_FootnoteTags(vector<string>&, vector<footNoteClass>&);
 
 string isolate_plainText(string);
 
-vector<reducedValueClass> load_reduced_value_list(string fileName, vector<reducedValueClass> valueList);
+vector<reducedValueClass> load_reduced_value_list(string fileName, string path, vector<reducedValueClass> valueList);
 
-vector<authorYearListClass> load_value_list(string fileName, vector<authorYearListClass> authorYearList);
+vector<authorYearListClass> load_value_list(string fileName, string path, vector<authorYearListClass> authorYearList);
 
-vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustrationCreditsClass> illustrationCreditList);
+vector<illustrationCreditsClass> load_value_list(string fileName, string path, vector<illustrationCreditsClass> illustrationCreditList);
 
-vector<string> loadFileContent(string);
+vector<string> loadFileContent(string fileName);
 
 void load_resources(fileInformations&);
 

@@ -43,8 +43,11 @@ void create_target_file_and_folder_names(fileInformations &fileInfos) {
     
     fileInfos.newFileNameFor_= appendix;
     	
-	fileInfos.folderWriting_ = fileInfos.workingPath_ + "/" + appendix;
-
+	if(callFromWebSelected==true){
+	fileInfos.folderWriting_ = fileInfos.pathTempDirectory_ + "/" + appendix;	
+	}else{
+	fileInfos.folderWriting_ = fileInfos.ttwRootPath_ + "/" + appendix;
+	}
     
 }
 
@@ -54,19 +57,24 @@ void get_current_path(fileInformations &fileInfos){
 	
 	workingPathTemp = fs::current_path();
 	
-	fileInfos.workingPath_= workingPathTemp.string();
+	fileInfos.ttwRootPath_= workingPathTemp.string();
 	
 	//Convert slashes 
 	
 	int pos;
 	
-	pos=fileInfos.workingPath_.find("\\");
+	pos=fileInfos.ttwRootPath_.find("\\");
 
 	while(pos>=0){
-	fileInfos.workingPath_.replace(pos, 1, "/");
-	pos=fileInfos.workingPath_.find("\\");
+	fileInfos.ttwRootPath_.replace(pos, 1, "/");
+	pos=fileInfos.ttwRootPath_.find("\\");
 	}
 
+	if(callFromWebSelected == true){
+		fileInfos.pathTempDirectory_ = fileInfos.ttwRootPath_ + "/" +fileInfos.nameTempDirectory_ + "/";
+		//fileInfos.pathTempDirectory_ = "C:\\xampp\\htdocs\\Ordner_PB\\ttw\\20230416_tempu63v\\";
+	}
+		
 }
 
 vector<string> loadFileContent(string fileName){
@@ -92,16 +100,16 @@ return workingFile_;
 
 void load_resources(fileInformations& fileInfos){
 	
-	fileInfos.fileNameTemplMetadBegin_= fileInfos.workingPath_ + "/resources/" + "MetadataTextBegin.txt";
- 	fileInfos.fileNameTemplMetadEnd_= fileInfos.workingPath_ + "/resources/" + "MetadataTextEnd.txt";
-	fileInfos.fileNameNewHtmlHead_ = fileInfos.workingPath_ + "/resources/" + "New_Html_Head.html";
-	fileInfos.fileNameNewXMLHead_ = fileInfos.workingPath_ + "/resources/" + "New_XML_Head.xml";
-	fileInfos.fileNameColorschememapping_ = fileInfos.workingPath_ + "/resources/" + "colorschememapping.xml";
-	fileInfos.fileNameFilelist_ = fileInfos.workingPath_ + "/resources/" + "filelist.xml";
-	fileInfos.fileNameHeader_ = fileInfos.workingPath_ + "/resources/" + "header.html";
-	fileInfos.fileNameItem0001_ = fileInfos.workingPath_ + "/resources/" + "item0001.xml";
+	fileInfos.fileNameTemplMetadBegin_= fileInfos.ttwRootPath_ + "/resources/" + "MetadataTextBegin.txt";
+ 	fileInfos.fileNameTemplMetadEnd_= fileInfos.ttwRootPath_ + "/resources/" + "MetadataTextEnd.txt";
+	fileInfos.fileNameNewHtmlHead_ = fileInfos.ttwRootPath_ + "/resources/" + "New_Html_Head.html";
+	fileInfos.fileNameNewXMLHead_ = fileInfos.ttwRootPath_ + "/resources/" + "New_XML_Head.xml";
+	fileInfos.fileNameColorschememapping_ = fileInfos.ttwRootPath_ + "/resources/" + "colorschememapping.xml";
+	fileInfos.fileNameFilelist_ = fileInfos.ttwRootPath_ + "/resources/" + "filelist.xml";
+	fileInfos.fileNameHeader_ = fileInfos.ttwRootPath_ + "/resources/" + "header.html";
+	fileInfos.fileNameItem0001_ = fileInfos.ttwRootPath_ + "/resources/" + "item0001.xml";
 	
-	fileInfos.fileNameHTML_XML_valueList_ = fileInfos.workingPath_ + "/resources/" + "html2xmlValueList.csv";
+	fileInfos.fileNameHTML_XML_valueList_ = fileInfos.ttwRootPath_ + "/resources/" + "html2xmlValueList.csv";
 		
 	fileInfos.metadataBegin = loadFileContent(fileInfos.fileNameTemplMetadBegin_);
 	fileInfos.metadataEnd = loadFileContent(fileInfos.fileNameTemplMetadEnd_);
@@ -113,7 +121,7 @@ void load_resources(fileInformations& fileInfos){
 	
 }
 
-vector<reducedValueClass> load_reduced_value_list(string fileName, vector<reducedValueClass> valueList){
+vector<reducedValueClass> load_reduced_value_list(string fileName, string path, vector<reducedValueClass> valueList){
 	
 	vector<string> valueListFile;
 	
@@ -202,7 +210,7 @@ vector<reducedValueClass> load_reduced_value_list(string fileName, vector<reduce
 			
 }
 
-vector<authorYearListClass> load_value_list(string fileName, vector<authorYearListClass> authorYearList){
+vector<authorYearListClass> load_value_list(string fileName, string path, vector<authorYearListClass> authorYearList){
 
     vector<string> valueListFile;
 
@@ -322,12 +330,12 @@ vector<authorYearListClass> load_value_list(string fileName, vector<authorYearLi
 
 }
 
-vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustrationCreditsClass> illustrationCreditList){
+vector<illustrationCreditsClass> load_value_list(string fileName, string path, vector<illustrationCreditsClass> illustrationCreditList){
 	
 	vector<string> valueListFile;
 
     valueListFile=loadFileContent(fileName);
-
+ 
     size_t numberOfLines;
     
     int posA=0;
@@ -448,8 +456,14 @@ vector<illustrationCreditsClass> load_value_list(string fileName, vector<illustr
 }
 
 void saveFile(vector<string> &articleFile, fileInformations &fileInfos){
+	
+	string toSave = fileInfos.fileNameArticleFile_;
+	
+	if(callFromWebSelected==true){
+		toSave = fileInfos.pathTempDirectory_ + fileInfos.fileNameArticleFile_;
+	}
 
-     ofstream fileOut(fileInfos.fileNameArticleFile_, std::ios::trunc);
+     ofstream fileOut(toSave, std::ios::trunc);
      if(!fileOut){
          std::cerr << "\n****ERROR WRITING " << fileInfos.fileNameArticleFile_ << ". Check filename or path or if file ist opened****\n"<< endl;
          return;
@@ -461,7 +475,7 @@ void saveFile(vector<string> &articleFile, fileInformations &fileInfos){
 
      fileOut.close();
 
-     cout << "Article successfully written..." << endl;
+     console_print("Article successfully written...");
 }
 
 void write_resources(fileInformations &fileInfos){
@@ -484,7 +498,7 @@ void write_resources(fileInformations &fileInfos){
     string pathToWrite2=fileInfos.folderWriting_+"/"+"header.html";
     string pathToWrite3=fileInfos.folderWriting_+"/"+"item0001.xml";
     string pathToWrite4=fileInfos.folderWriting_+"/"+"colorschememapping.xml";
-
+    
     ofstream fileOut1(pathToWrite1);
     for(string &p:fileInfos.filelist) {
     fileOut1 << p << "\n";

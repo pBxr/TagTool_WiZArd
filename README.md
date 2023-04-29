@@ -1,6 +1,6 @@
-# TagTool_WiZArD application
+# TagTool_WiZArD application (ttw)
 
-## Preliminary remark
+## Introductory remarks
 
 Dealing with scientific articles in the humanities most of the authors and copy editors are still used to work with `.docx` documents to write and edit text documents.
 Solutions to prepare `.docx` articles semi-automatically for complex and enhanced output formats require specific knowledge that many institutions or involved actors do not have.
@@ -17,13 +17,13 @@ The `.html` format as intermediate product ensures that involved actors with eve
 
 The use of the application for the _Archäologischer Anzeiger_ and the special requirements are the reason for the features used in this test version like:
 
-- setting automatical paragraph numberings
+- setting automatically paragraph numberings
 - setting hyperlink references to external bibliographical resources by a value list (list of references/bibliography)
 - setting tags for figure references
 - and so on
 Beginning with version 1.1.0 the application allows to export not only `.html` but also `.xml` files although it needs to be stressed that the `.xml` file is a non-valid intermediate product that will need manual finishing (see `--help` function).  
 
-Although the use case and the implemented features for the semi-automatic formatting seems to be specific for the journal mentioned above, the application can be customized for other purposes since the design allows to alterate element tags or add functions for new kind of value lists and so on.
+Although the use case and the implemented features for the semi-automatic formatting seems to be specific for the journal mentioned above, the application can be customized for other purposes since the design allows to alternate element tags or add functions for new kind of value lists and so on.
 
 ## Mode of operation
 
@@ -47,14 +47,26 @@ Before starting the application the `.docx` file has to be converted by using pa
 
 ## How to run
 
-After compiling the binary (tagtool_v1-2-2.exe) open a terminal and run "tagtool_v1-2-2.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
-Be sure not to ommit the `.html`-ending of the file you want to process.
+After compiling the binary (tagtool_v1-3-0.exe) open a terminal and run "tagtool_v1-3-0.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
+Be sure not to omit the `.html`-ending of the file you want to process.
 Be sure that all necessary files are saved in the *same folder* together with the `.exe` file, i. e.
 - 01_MetadataValueList.csv
 - 02_AuthorYearList.csv
 - 03_ImageCreditList.csv
 - 04_ToSearchAndReplaceList.csv
 - article.html
-- tagtool_v1-2-2.exe
+- tagtool_v1-3-0.exe
 - \resources  
+
 For preparing the `.csv` files see "--help" function.
+
+## New in v1.3.0: Prepared for a Web Extension (ttw_webx) to integrate ttw into small closed networks
+
+A separate web extension (ttw_webx) can be used optionally to integrate TagTool_WiZArD application starting with v1.3.0 into a web-compatible framework for small closed networks. 
+
+Therefore new in v1.3.0: Additional mode implemented when ttw is called from web extension, that means:
+- Receive temp ID from ttw_webx and enable interaction with temp folders created by ttw_webx (load source files and save ttw results there)
+- Suppress console messages when called web from extension
+- Return help statment for this mode to be received and displayed by ttw_webx
+
+For ttw_webx see https://github.com/pBxr/ttw_WebExtension

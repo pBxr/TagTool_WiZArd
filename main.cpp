@@ -5,18 +5,15 @@
 
 int main(int argc, char *argv[]){
 
-    cout << "\n\n********************************************************************************************************\n" << endl;
-    cout << "   Welcome to TagTool_WiZArD application (v1.2.2)"<< endl;
-    cout << "\n   (tagtool_" << versionNumber << ".exe)" << endl;
-    cout << "\n\n********************************************************************************************************\n" << endl;
-
-
 fileInformations fileInfos;
 vector<tagClass> containerTags{};
 vector<lineClass> containerLines{};
 vector<footNoteClass> footnoteAdressContainer{};
 documentSectionsClass documentSections;
 vector<string> articleFile{};
+    
+    
+    //Process arguments__________________________________________
     
     while(nextRunIsSet) {
 
@@ -46,11 +43,11 @@ vector<string> articleFile{};
         parameterVector=identifyParameters(input);
 
      }
-
+	
     //Process parameters and set functions...
     terminationFlag=processParameters(parameterVector, fileInfos);
 
-    if(terminationFlag==0){
+	if(terminationFlag==0){
         cout << "\n";
         cout << "Application was stopped, please restart" << endl;
         return 0;
@@ -58,24 +55,25 @@ vector<string> articleFile{};
 
 
 	//Start__________________________________________
-    cout << "\nTagTool_WiZArD is starting..." << endl;
+    
+	console_print("\nTagTool_WiZArD is starting...");
     
    	fileInfos.set_lapCounter();
 
     size_t numberOfLines;
-
     
 	if(firstRun==true){
-        
-		//Get article and path...
-        fileInfos.fileNameArticleFile_ = fileInfos.fileNameSourceFile_;
+        				
+		fileInfos.fileNameArticleFile_ = fileInfos.fileNameSourceFile_;
 
-        articleFile=loadFileContent(fileInfos.fileNameArticleFile_);
-        
-        get_current_path(fileInfos);
-                
+        if(callFromWebSelected==true){
+			fileInfos.set_tempPath();
+		}
+		
+		articleFile=loadFileContent(fileInfos.fileNameArticleFile_);
+            
         load_resources(fileInfos);
-        
+         
         firstRun=false;
         
     }
@@ -89,10 +87,9 @@ vector<string> articleFile{};
 
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-        cout << "Dispensable formattings/tags successfully removed..." << endl;
+        console_print("Dispensable formattings/tags successfully removed...");
         dispensableTagsRemoved=true;
     }
-
 
     //Set author year tags?__________________________________________________________________
     if (authorYearTagsSelected==true && authorYearTagsSet==false){
@@ -101,8 +98,8 @@ vector<string> articleFile{};
 
         vector<authorYearListClass> authorYearList;
 
-        authorYearList=load_value_list(fileInfos.fileNameAuthorYearList_, authorYearList);
-              
+        authorYearList=load_value_list(fileInfos.fileNameAuthorYearList_, fileInfos.ttwRootPath_, authorYearList);
+             
         if(htmlSelected==true){
 		set_authorYearTags(articleFile, authorYearList, documentSections);	
 		}
@@ -114,10 +111,9 @@ vector<string> articleFile{};
 		        
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-        cout << "Author year tags set successfully..." << endl;
+        console_print("Author year tags set successfully...");
         authorYearTagsSet=true;
     }
-
 
     //Set customized journal Tags?______________________________________
     if(customBodyTagsSelected==true && customBodyTagsSet==false){
@@ -146,7 +142,7 @@ vector<string> articleFile{};
             }
         }
         
-		
+	
 		//After alterating the file analyze again
        	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
 
@@ -175,7 +171,7 @@ vector<string> articleFile{};
         convert_selected_tags("subscriptBegin", articleFile, containerLines, documentSections);
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
       
-       	cout << "Custom journal body tags set successfully..." << endl;
+       	console_print("Custom journal body tags set successfully...");
         customBodyTagsSet=true;
 
     }
@@ -204,7 +200,7 @@ vector<string> articleFile{};
 
             //After alterating the file analyze again
             analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-            cout << "Paragraph numbers set successfully..." << endl;
+            console_print("Paragraph numbers set successfully...");
             paragraphNumbersSet=true;
 
     }
@@ -218,7 +214,7 @@ vector<string> articleFile{};
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
         numberOfLines=articleFile.size();
-        cout << "Figure references tags set successfully..." << endl;
+        console_print("Figure references tags set successfully...");
         figureReferenceTagsSet=true;
 
     }
@@ -231,7 +227,7 @@ vector<string> articleFile{};
 		
 		//After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
-		cout << "Illustration credit tags set successfully..." << endl;	
+		console_print("Illustration credit tags set successfully...");	
 		figureReferenceTagsSet=true;
 	}	
     
@@ -244,7 +240,7 @@ vector<string> articleFile{};
 	
         //After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-        cout << "Footnotes converted successfully..." << endl;
+        console_print("Footnotes converted successfully...");
         footnoteTagsSet=true;
     }
 
@@ -255,7 +251,7 @@ vector<string> articleFile{};
 		
 		convert_selected_tags("superscriptBegin", articleFile, containerLines, documentSections);
 		
-		cout << "Superscript passages converted successfully..." << endl;
+		console_print("Superscript passages converted successfully...");
 		superscriptTagsSet=true;
 		
 		//After alterating the file analyze again
@@ -266,7 +262,7 @@ vector<string> articleFile{};
 	if(toSearchAndReplaceSelected==true && searchAndReplaceDone==false){
 		vector<reducedValueClass> values;
 		
-		values=load_reduced_value_list(fileInfos.fileNameToSearchAndReplaceList_, values);
+		values=load_reduced_value_list(fileInfos.fileNameToSearchAndReplaceList_, fileInfos.ttwRootPath_, values);
 				
 		callFromAddSearchReplace=true;		
 		
@@ -275,7 +271,7 @@ vector<string> articleFile{};
 		searchAndReplaceDone=true;
 		callFromAddSearchReplace=false;
 		
-		cout << "Additional search and replace done..." << endl;
+		console_print("Additional search and replace done...");
 		
 		//After alterating the file analyze again
         analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
@@ -318,19 +314,16 @@ vector<string> articleFile{};
     }
 
 	
-
-   	saveFile(articleFile, fileInfos);
+	saveFile(articleFile, fileInfos);
     
-    if(htmlSelected==true){
-		write_resources(fileInfos);
-    	}
-    
+    write_resources(fileInfos);
+    	
 
     //Success report and resetting the tool for next run
 
-    cout << "\n+ + + + + + + + + + + + + + + + + + + +" << endl;
-    cout << "+ Article successfully edited!  +" << endl;;
-    cout << "+ + + + + + + + + + + + + + + + + + + +\n" << endl;
+    console_print("\n+ + + + + + + + + + + + + + + + + + + +");
+    console_print("+     Article successfully edited!     +");
+    console_print("+ + + + + + + + + + + + + + + + + + + +\n");
 
     customBodyTagsSelected=false;
     figureReferenceTagsSelected=false;
@@ -340,20 +333,26 @@ vector<string> articleFile{};
 	reducedCreditListSelected=false; 
 	figureReferenceTagsSelected=false;
 
-	cout << "\n";
-    cout << "Do you wish further alterations (y/n)? ";
-    char input;
-    cin >> input;
-    cin.ignore(1,'\n');
-    cout << "\n";
-
-    if(input=='n' || input=='N'){
-    nextRunIsSet=false;
-    }
-
-    }
+	char input;
+	if(callFromWebSelected==false){	
+		cout << "\n";
+	    cout << "Do you wish further alterations (y/n)? ";
+	    
+	    cin >> input;
+	    cin.ignore(1,'\n');
+	    cout << "\n";
 	
-    cout << "TagTool_WiZArD terminated successfully" << endl;
+	    if(input=='n' || input=='N'){
+	    nextRunIsSet=false;
+	    }
+	}
+	if(callFromWebSelected==true){
+		nextRunIsSet=false;
+	}
+	
+}
+	
+    console_print("TagTool_WiZArD terminated successfully");
 
     return 0;
 }
