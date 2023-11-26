@@ -309,6 +309,14 @@ vector<string> articleFile{};
 			
 			//After alterating the file analyze again        
         	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
+        	
+        	//custom function for tagebuecher project
+        	xml_preparation_tagebuecher (articleFile, documentSections);
+        	
+        	//After alterating the file analyze again        
+        	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);	
+        	
+
 				
 		}
     }
@@ -322,7 +330,7 @@ vector<string> articleFile{};
     //Success report and resetting the tool for next run
 
     console_print("\n+ + + + + + + + + + + + + + + + + + + +");
-    console_print("+     Article successfully edited!     +");
+    console_print("+     Article successfully edited!    +");
     console_print("+ + + + + + + + + + + + + + + + + + + +\n");
 
     customBodyTagsSelected=false;
@@ -334,7 +342,7 @@ vector<string> articleFile{};
 	figureReferenceTagsSelected=false;
 
 	char input;
-	if(callFromWebSelected==false){	
+	if(silentModeSelected==false){	
 		cout << "\n";
 	    cout << "Do you wish further alterations (y/n)? ";
 	    
@@ -346,7 +354,7 @@ vector<string> articleFile{};
 	    nextRunIsSet=false;
 	    }
 	}
-	if(callFromWebSelected==true){
+	if(silentModeSelected==true){
 		nextRunIsSet=false;
 	}
 	

@@ -174,7 +174,7 @@ void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containe
 			
 void console_print(string consoleMessage){
 	
-	if(callFromWebSelected==false){
+	if(silentModeSelected==false){
 	cout << consoleMessage << endl;	
 	}
 		
@@ -1328,6 +1328,13 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 			//extract temp folder name
 			fileInfos.nameTempDirectory_ = parameterVector[i].substr(8);
 			callFromWebSelected=true;
+			silentModeSelected=true;
+			toDelete.push_back(i);
+		}
+		
+		pos = parameterVector[i].find("--silent");
+		if(pos>=0){
+			silentModeSelected=true;
 			toDelete.push_back(i);
 		}
 		
@@ -1342,7 +1349,7 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 			return 0;
 		}
 		
-	if(callFromWebSelected==false){
+	if(silentModeSelected==false){
 		cout << "\n\n********************************************************************************************************\n" << endl;
    		cout << "   Welcome to TagTool_WiZArD application (" << versionTag << ")"<< endl;
    		cout << "\n   (tagtool_" << versionNumber << ".exe)" << endl;
@@ -1567,7 +1574,7 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 		}		
 	
 	//Final confirmation for console version_____________________________
-	if(callFromWebSelected==false){	
+	if(silentModeSelected==false){	
 		bool confirmed=false; 
 
 		while(!confirmed) {
@@ -2657,6 +2664,86 @@ void structure_xml_output_file(vector<string> &articleFile, fileInformations& fi
 	
 	replace_HtmlHead(articleFile, fileInfos, documentSections);
 	
+}
+
+
+//Custom functions for special projects______________________________________________
+
+void xml_preparation_tagebuecher (vector<string> &articleFile, struct documentSectionsClass& documentSections){
+	
+	int pos1;
+	int pos2;
+	string toInsert;
+	string pageNumberStr;
+	
+	
+	//First detect page numbers to insert figure reference tags	
+	for(int i=0; i<documentSections.lineNrBodyEnd_; i++){
+		
+		pos1=articleFile[i].find("[S.]");
+		
+		if(pos1==3){ //3 to be sure to get only the usual page numbers at the beginning ("<p>")
+			std::regex pattern{"[0-9]{1,3}"};
+			std::sregex_iterator begin{ articleFile[i].cbegin(), articleFile[i].cend(), pattern};
+			std::sregex_iterator end;
+
+			for (std::sregex_iterator i = begin; i != end; ++i) {
+				std::smatch match = *i;
+				pageNumberStr = match.str();
+			}
+			
+			pos2=articleFile[i].find("</p>");
+			
+			if(pos2>=0){
+				
+			articleFile[i].insert(pos2, figureReferencesClass::figReferenceTagEndXML_); 	
+			
+			}
+				
+ 	       	std::regex r1("#");
+ 	       	toInsert = std::regex_replace(figureReferencesClass::figReferenceTagBeginXML_, r1, pageNumberStr);
+			articleFile[i].insert(pos1, toInsert);
+		}
+	}
+	
+	//Now detect notes at the end of the pages and put them into boxed text
+	
+	bool boxedTextTagOpen;
+	int lineNrLastOpenTag;
+	
+	for(int i=0; i<documentSections.lineNrBodyEnd_; i++){
+	
+		pos1=articleFile[i].find("[Notizen außerhalb der Textkolumne]");
+		
+		if(pos1>=0){
+			//cout << "Treffer: " << articleFile[i] << endl;
+			articleFile[i].insert(0, "<boxed-text>\n");
+			boxedTextTagOpen=true;
+			lineNrLastOpenTag=i;
+		}
+			
+		for(int y=i; y<documentSections.lineNrBodyEnd_; y++){
+			pos2=articleFile[i].find("<p><xref ref-type=\"fig\"");
+			if(pos2>=0 && boxedTextTagOpen==true){
+				articleFile[i].insert(0, "</boxed-text>\n");
+				boxedTextTagOpen=false;
+				y=documentSections.lineNrBodyEnd_;
+			}
+		}
+	}
+	
+	if(boxedTextTagOpen==true){
+		for(int i=lineNrLastOpenTag; i<documentSections.lineNrBodyEnd_; i++){
+			
+			pos2=articleFile[i].find("</sec>");
+			
+			if(pos2>=0 && boxedTextTagOpen==true){
+				articleFile[i].insert(0, "</boxed-text>\n");
+				boxedTextTagOpen=false;
+				break;
+			}
+		}
+	}
 }
 
 #endif // TTWFUNCTIONS_H

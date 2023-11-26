@@ -94,4 +94,6 @@ void structure_xml_output_file(vector<string> &articleFile, fileInformations&, s
 
 void write_resources(fileInformations &fileInfo);
 
+void xml_preparation_tagebuecher (vector<string> &articleFile, struct documentSectionsClass&);
+
 #endif // TTWDECLARATIONS_H
