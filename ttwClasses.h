@@ -608,13 +608,14 @@ string strongEndXML_ = "</bold>";
 
 //Global settings and switches...
 
-string versionNumber = "v1-3-0";
-string versionTag = "v1.3.0";
+string versionNumber = "v1-3-1";
+string versionTag = "v1.3.1";
 
 bool firstRun=true;
 bool nextRunIsSet=true;
 bool htmlSelected=true; //=default setting;
-bool callFromWebSelected=false; 
+bool callFromWebSelected=false;
+bool silentModeSelected=false; 
 
 bool authorYearTagsSet=false;
 bool footnoteTagsSet=false;

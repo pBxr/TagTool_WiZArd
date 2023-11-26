@@ -47,7 +47,7 @@ Before starting the application the `.docx` file has to be converted by using pa
 
 ## How to run
 
-After compiling the binary (tagtool_v1-3-0.exe) open a terminal and run "tagtool_v1-3-0.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
+After compiling the binary (tagtool_v1-3-1.exe) open a terminal and run "tagtool_v1-3-1.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
 Be sure not to omit the `.html`-ending of the file you want to process.
 Be sure that all necessary files are saved in the *same folder* together with the `.exe` file, i. e.
 - 01_MetadataValueList.csv
@@ -55,7 +55,7 @@ Be sure that all necessary files are saved in the *same folder* together with th
 - 03_ImageCreditList.csv
 - 04_ToSearchAndReplaceList.csv
 - article.html
-- tagtool_v1-3-0.exe
+- tagtool_v1-3-1.exe
 - \resources  
 
 For preparing the `.csv` files see "--help" function.
@@ -69,4 +69,13 @@ Therefore new in v1.3.0: Additional mode implemented when ttw is called from web
 - Suppress console messages when called web from extension
 - Return help statment for this mode to be received and displayed by ttw_webx
 
-For ttw_webx see https://github.com/pBxr/ttw_WebExtension
+## New in v1.3.1
+
+- Added a silent mode that can be called with the argument `--silent`. In this case the applications offers no dialogues or any log information, so it can cooperate better with additional features (e. g. the features and `batch` file added by fabfab1)
+- Also added was a function to solve a problem in context of a special project under "Custom functions for special projects" at the end of `ttwFunctions.h`.  
+
+## See also
+
+- For ttw_webx see https://github.com/pBxr/ttw_WebExtension
+- ID_Extractor (ID_Ex) for extracting IDs and references from `.jats` article files, especially for the above mentioned journals, see   https://github.com/pBxr/ID_Extractor
+
