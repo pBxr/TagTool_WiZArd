@@ -57,8 +57,6 @@ int processParameters(vector<string>&, fileInformations&);
 
 vector<string> remove_blankLines(vector<string>);
 
-vector<string> remove_disp_formattings(vector<string>, vector<lineClass>&, struct documentSectionsClass&);
-
 void replace_HtmlHead(vector<string> &, fileInformations&);
 
 string resolve_hyphens_in_figRef(string bracketContent);

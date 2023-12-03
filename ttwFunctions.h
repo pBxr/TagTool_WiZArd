@@ -1412,7 +1412,6 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 		figureReferenceTagsSelected=true;
 		authorYearTagsSelected=true; 
 		paragraphNumbersSelected=true;
-		removeDispensableTagsSelected=false;
 		insertCreditListSelected=true;
 		toSearchAndReplaceSelected=true;
 					
@@ -1452,12 +1451,6 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 				paragraphNumbersSelected=true;
 				numberParameters++;
 				console_print("- Set paragraph numbers\n");
-			}
-
-			if(enteredFunctions[i]=="--delTags") {
-				removeDispensableTagsSelected=true;
-				numberParameters++;
-				console_print("- Remove dispensable formattings/tags\n");
 			}
 			
 			if(enteredFunctions[i]=="--illCred") {
@@ -1572,27 +1565,6 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 			}
 			
 		}		
-	
-	//Final confirmation for console version_____________________________
-	if(silentModeSelected==false){	
-		bool confirmed=false; 
-
-		while(!confirmed) {
-			cout << "\n Please check before running the application: " << endl;
-			cout << "- Are you sure that you have converted the MS Word .docx-article-file with pandoc to .html?" << endl;
-			cout << "- If chosen: Have you prepared the Author Year, the Illustration Credit and the Search and Replace value lists as required (see --help)?" << endl;
-			cout << "- Are all files saved in the same directory as the TagTool_WiZArD (tagtool_" << versionNumber << ".exe) application?" << endl;
-			cout << "- Please confirm (y/n): ";
-			char input;
-			cin >> input;
-			cin.ignore(1,'\n');
-			if(input=='y' || input=='Y') {
-				confirmed=true;
-			} else {
-				return 0;
-			}
-		}
-	}
 	return 1;
 }
 
@@ -1608,78 +1580,6 @@ vector<string> remove_blankLines(vector<string> articleFile) {
 
 	}
 
-	return articleFile;
-}
-
-vector<string> remove_disp_formattings(vector<string> articleFile, vector<lineClass> &containerLines, struct documentSectionsClass &documentSections) {
-
-	unsigned int posA=0;
-	unsigned int posB=0;
-	size_t vectorSize;
-	
-	string tagType;
-	string newTagBegin, newTagEnd;
-
-	
-//Delete body formats
-
-	for(size_t i=documentSections.lineNrHtmlHeadEnd_; i<articleFile.size(); i++) {
-		vectorSize=containerLines.at(i).tagContainerLine_.size();
-
-		if(vectorSize>0) {
-			for(size_t y=vectorSize; y>0; y--) {
-				tagType=containerLines.at(i).tagContainerLine_.at(y-1).typeOfTag_;
-				posB=containerLines.at(i).tagContainerLine_.at(y-1).addressTagEnd_;
-				posA=containerLines.at(i).tagContainerLine_.at(y-1).addressTagBegin_;
-				if(tagType=="paragraphBegin") {
-					newTagBegin="<p>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-
-				if(tagType=="italicWithFormatBegin") {
-					newTagBegin="<i>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-
-				if(tagType=="spanBegin") {
-					newTagBegin="<span>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-				if(tagType=="styleBegin") {
-					newTagBegin="<style>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-
-				if(tagType=="languageBegin") {
-					newTagBegin="<p>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-
-				if(tagType=="bodyBegin") {
-					newTagBegin="<body>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-
-				if(tagType=="metaBegin") {
-					newTagBegin="<meta>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-
-				if(tagType=="headBegin") {
-					newTagBegin="<head>";
-					articleFile.at(i)=set_new_tags(articleFile.at(i), posA, posB, newTagBegin);
-				}
-
-
-
-				if(tagType=="toDelete") {
-					posB=containerLines.at(i).tagContainerLine_.at(y-1).addressTagEnd_;
-					posA=containerLines.at(i).tagContainerLine_.at(y-1).addressTagBegin_;
-					articleFile.at(i).erase(posA, (posB-posA+1));
-				}
-			}
-		}
-	}
 	return articleFile;
 }
 
@@ -2620,7 +2520,7 @@ void show_help() {
 
 void show_options(){
 		
-	cout << "(Enter blank spaces between parameters, e. g.:--bodyTags --delTags --figTags)" << endl;
+	cout << "(Enter blank spaces between parameters, e. g.:--bodyTags --figTags --paragrNum)" << endl;
 	cout << "--toHTML = Set output format to html" << endl;
 	cout << "--toXML = Set output format to xml. Improtant: This function will create in most cases only a non-valid xml version. Manual completion is necessary, especially concerning the section endings. Check especially the marker \"<!-- CHECK POSITION OF CLOSING TAG-->\" that is set in the xml file automatically." << endl;
 	cout << "--bodyTags = Set customized journal body tags" << endl;
@@ -2628,7 +2528,6 @@ void show_options(){
 	cout << "--litTags = Set author year tags. *CAUTION*: 02_AuthorYearList.csv *REQUIRED*" << endl;
 	cout << "--paragrNum = Set paragraph numbers (recommended only if --bodyTags is chosen as well)" << endl;
 	cout << "--illCred = Insert tagged illustration credits section. *CAUTION*: 03_IllustrationCreditList.csv *REQUIRED*" << endl;
-	cout << "--delTags = Remove dispensable formattings/tags (*NOT RECOMMENDED*)" << endl;
 	cout << "--addSR = Additional search and replace based on a value list: The purpose of this funcion is mainly to set tagged hyperlinks.\nNote: Other and especially more complex find-replace operations should be done in other applications for better reliability.\nIf a plain url is entered as replacement string, the tool creates the whole tagged link automatically prepared for the chosen output format (.html or .xml). If you want to avoid to add links to all occurrences of the search expression the \"@\" character can be used as a prefix (both in the search expression in the .csv file and in the article text). The tool will remove this prefix when creating the tagged link. See \"04_ToSearchAndReplaceList_EXAMPLE.csv\" in the folder \\resources. *CAUTION*: 04_ToSearchAndReplaceList.csv *REQUIRED*." << endl;
 	 
     

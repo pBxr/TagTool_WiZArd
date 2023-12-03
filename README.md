@@ -60,6 +60,14 @@ Be sure that all necessary files are saved in the *same folder* together with th
 
 For preparing the `.csv` files see "--help" function.
 
+## New in v1.3.1
+
+- Added a silent mode that can be called with the argument `--silent`. In this case the applications offers no dialogues or any log information, so it can cooperate better with additional features (e. g. the features and `batch` file added by fabfab1)
+- Also added was a function to solve a problem in context of a special project under "Custom functions for special projects" at the end of `ttwFunctions.h`.
+- Deleted unused feature "Remove dispensable formattings/tags"
+- Deleted confirmation dialogue "Please check before running the application: ..."
+- Suppressed function and dialogue for a next run (until ttw is prepared better for re-editing the same content multiple times, see above).
+
 ## New in v1.3.0: Prepared for a Web Extension (ttw_webx) to integrate ttw into small closed networks
 
 A separate web extension (ttw_webx) can be used optionally to integrate TagTool_WiZArD application starting with v1.3.0 into a web-compatible framework for small closed networks. 
@@ -68,11 +76,6 @@ Therefore new in v1.3.0: Additional mode implemented when ttw is called from web
 - Receive temp ID from ttw_webx and enable interaction with temp folders created by ttw_webx (load source files and save ttw results there)
 - Suppress console messages when called web from extension
 - Return help statment for this mode to be received and displayed by ttw_webx
-
-## New in v1.3.1
-
-- Added a silent mode that can be called with the argument `--silent`. In this case the applications offers no dialogues or any log information, so it can cooperate better with additional features (e. g. the features and `batch` file added by fabfab1)
-- Also added was a function to solve a problem in context of a special project under "Custom functions for special projects" at the end of `ttwFunctions.h`.  
 
 ## See also
 
