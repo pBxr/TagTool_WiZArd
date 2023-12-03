@@ -79,17 +79,7 @@ vector<string> articleFile{};
     }
 
     analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-  	 	
-    //Remove dispensable formattings/tags?____________________________________________
-    if (removeDispensableTagsSelected==true && dispensableTagsRemoved==false){
 
-        articleFile=remove_disp_formattings(articleFile, containerLines, documentSections);
-
-        //After alterating the file analyze again
-        analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
-        console_print("Dispensable formattings/tags successfully removed...");
-        dispensableTagsRemoved=true;
-    }
 
     //Set author year tags?__________________________________________________________________
     if (authorYearTagsSelected==true && authorYearTagsSet==false){
@@ -336,11 +326,12 @@ vector<string> articleFile{};
     customBodyTagsSelected=false;
     figureReferenceTagsSelected=false;
     authorYearTagsSelected=false;
-    removeDispensableTagsSelected=false; 
     paragraphNumbersSelected=false;
 	reducedCreditListSelected=false; 
 	figureReferenceTagsSelected=false;
-
+	
+	// Suppressed this dialogue until ttw is prepared better for re-editing the same content multiple times
+	/*
 	char input;
 	if(silentModeSelected==false){	
 		cout << "\n";
@@ -357,7 +348,8 @@ vector<string> articleFile{};
 	if(silentModeSelected==true){
 		nextRunIsSet=false;
 	}
-	
+	*/
+	nextRunIsSet=false;
 }
 	
     console_print("TagTool_WiZArD terminated successfully");

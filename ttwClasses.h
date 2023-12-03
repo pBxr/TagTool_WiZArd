@@ -620,7 +620,6 @@ bool silentModeSelected=false;
 bool authorYearTagsSet=false;
 bool footnoteTagsSet=false;
 bool htmlHeadReplaced=false;
-bool dispensableTagsRemoved=false;
 bool paragraphNumbersSet=false;
 bool searchAndReplaceDone=false;
 bool callFromAddSearchReplace=false;
@@ -635,7 +634,6 @@ bool figureReferenceTagsSelected;
 bool insertCreditListSelected;
 
 bool authorYearTagsSelected; 
-bool removeDispensableTagsSelected; 
 bool paragraphNumbersSelected; 
 bool toSearchAndReplaceSelected;
 bool fileNameEntered=false; 
