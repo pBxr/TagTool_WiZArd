@@ -617,6 +617,7 @@ bool htmlSelected=true; //=default setting;
 bool callFromWebSelected=false;
 bool silentModeSelected=false; 
 
+bool applyCitationStyleDone=false;
 bool authorYearTagsSet=false;
 bool footnoteTagsSet=false;
 bool htmlHeadReplaced=false;
@@ -633,6 +634,7 @@ bool customBodyTagsSelected;
 bool figureReferenceTagsSelected;
 bool insertCreditListSelected;
 
+bool applyCitationStyleSelected;
 bool authorYearTagsSelected; 
 bool paragraphNumbersSelected; 
 bool toSearchAndReplaceSelected;

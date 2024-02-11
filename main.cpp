@@ -1,5 +1,6 @@
 #include "ttwFunctions.h"
 #include "ttwFileFunctions.h"
+#include "ttwCustomFunctions.h"
 #include "ttwClasses.h"
 #include "ttwDeclarations.h"
 
@@ -80,6 +81,16 @@ vector<string> articleFile{};
 
     analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
 
+	//Custom function: Apply functions on DAI citation style?____________________________________________________
+	if(applyCitationStyleSelected==true){
+	
+		apply_citation_style_hyphens(articleFile, documentSections);
+		
+		//After alterating the file analyze again
+    	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
+    	console_print("DAI citation style features applied successfully...");
+		applyCitationStyleDone=true;
+	}	
 
     //Set author year tags?__________________________________________________________________
     if (authorYearTagsSelected==true && authorYearTagsSet==false){

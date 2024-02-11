@@ -10,6 +10,8 @@ using std::endl; using std::stringstream;
 
 void analyze_articleFile(vector<string>&, vector<tagClass>&, vector<lineClass>&, 
 	struct documentSectionsClass&, vector<footNoteClass>&);
+	
+void apply_citation_style_hyphens(vector<string>&, struct documentSectionsClass&);
 
 string classify_tag(string, size_t, struct documentSectionsClass&);
 
@@ -62,6 +64,8 @@ void replace_HtmlHead(vector<string> &, fileInformations&);
 string resolve_hyphens_in_figRef(string bracketContent);
 
 void saveFile(vector<string>&, fileInformations&);
+
+void search_replace(string &textLine, string termSearch, string termReplace);
 
 void search_replace(vector<string> &articleFile, string termSearch, string termReplace);
 
