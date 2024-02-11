@@ -78,7 +78,7 @@ void get_current_path(fileInformations &fileInfos){
 }
 
 vector<string> loadFileContent(string fileName){
-
+	
 vector<string> workingFile_;
 string inputLine;
 

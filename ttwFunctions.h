@@ -11,6 +11,7 @@
 
 #include "ttwClasses.h"
 #include "ttwDeclarations.h"
+#include "ttwCustomFunctions.h"
 
 
 using std::cout; using std::cin; using std::vector; using std::string; using std::ifstream; using std::ofstream;
@@ -171,6 +172,7 @@ void analyze_articleFile(vector<string> &articleFile, vector<tagClass> &containe
 		}
 	}
 }
+
 			
 void console_print(string consoleMessage){
 	
@@ -1408,6 +1410,7 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 	
 	//... if no function parameters were entered, set default functions... 
 	if(enteredFunctions.size()==0) {		//=default setting
+		applyCitationStyleSelected=true;
 		customBodyTagsSelected=true;
 		figureReferenceTagsSelected=true;
 		authorYearTagsSelected=true; 
@@ -1415,7 +1418,7 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 		insertCreditListSelected=true;
 		toSearchAndReplaceSelected=true;
 					
-		console_print("No parameters entered, so the default functions will be set:\n- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace according to the separate value list.\n");
+		console_print("No parameters entered, so the default functions will be set:\n- Apply custom DAI citation style features (not yet fully implemented)\n- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace according to the separate value list.\n");
 	
 	}
 			
@@ -1428,6 +1431,12 @@ int processParameters(vector<string> &parameterVector, fileInformations &fileInf
 		console_print("\nYou have chosen following functions: ");	
 					
 		for(int i=0; i<enteredFunctions.size(); i++) {
+			
+			if(enteredFunctions[i]=="--DAIStyle") {
+				applyCitationStyleSelected=true;
+				numberParameters++;
+				console_print("- Apply DAI citation Style\n");
+			}
 						
 			if(enteredFunctions[i]=="--bodyTags") {
 				customBodyTagsSelected=true;
@@ -1689,6 +1698,48 @@ string resolve_hyphens_in_figRef(string bracketContent){
 
 	return bracketContentNew;	
 }
+
+
+void search_replace(string &textLine, string termSearch, string termReplace) {
+
+	int pos1;
+	int z;
+	vector<int> positions;
+	
+	string testTerm;
+				
+	
+			
+	for(int y=0; y+termSearch.size()<=(textLine.size()); y++){
+	
+		z=0;
+		
+		//Add characters for a comparison with termSearch
+		for(z=y; z<termSearch.size()+y; z++){
+			testTerm=testTerm+textLine[z];	
+		}	
+		
+		pos1=testTerm.find(termSearch);
+		
+		if(!pos1){
+		positions.push_back(z-termSearch.size());	
+		}
+		
+		testTerm.clear();
+	}
+	
+	//In case of match(es) replace all matches...
+	if(positions.size()>0){
+	
+		for(int p=positions.size()-1; p>=0; p--){
+			textLine.replace(positions[p], termSearch.size(), termReplace);	
+		}
+	}
+	
+}
+
+
+
 
 void search_replace(vector<string> &articleFile, string termSearch, string termReplace) {
 
@@ -2502,7 +2553,7 @@ void show_help() {
 		cout << "\nSTEP 3:\nStart the application by typing \"tagtool_" << versionNumber << ".exe articlename.html\"" << endl;
 		cout << "\nFunctions:" << endl;
 		cout << "If no explicit parameters are entered in the command line, the following functions will be chosen automatically (*RECOMMENDED*): " << endl;
-		cout << "- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace by using the separate value list (see remarks below)\n- Output format will be HTML." << endl;
+		cout << "- Apply custom DAI citation style features (not yet fully implemented)\n- Set customized journal body tags\n- Set figure references tags\n- Set author year tags\n- Set paragraph numbers\n- Insert tagged illustration credits section\n- Search and replace by using the separate value list (see remarks below)\n- Output format will be HTML." << endl;
 		cout << "Note: The application will load by default the files named \"01_MetadataValueList.csv\", \"02_AuthorYearList.csv\",\"03_IllustrationCreditList.csv\" and \"04_ToSearchAndReplaceList.csv\", see above."<< endl;
 		cout << "Note: The references will be tagged directly in the article file while in opposite the metadata and the image credits will be inserted into the article file additionally. Therefore the bibliography/references must remain in the article." << endl;
 		cout << "Note: If you want to choose the default functions in combination with an (raw and non-valid) xml output enter \"tagtool_" << versionNumber << ".exe articlename.html --toXML\" when starting the application." << endl;
@@ -2523,6 +2574,7 @@ void show_options(){
 	cout << "(Enter blank spaces between parameters, e. g.:--bodyTags --figTags --paragrNum)" << endl;
 	cout << "--toHTML = Set output format to html" << endl;
 	cout << "--toXML = Set output format to xml. Improtant: This function will create in most cases only a non-valid xml version. Manual completion is necessary, especially concerning the section endings. Check especially the marker \"<!-- CHECK POSITION OF CLOSING TAG-->\" that is set in the xml file automatically." << endl;
+	cout << "--DAIStyle = Custom function: Apply custom DAI citation style features (not yet fully implemented)" << endl;
 	cout << "--bodyTags = Set customized journal body tags" << endl;
 	cout << "--figTags = Set figure references tags" << endl;
 	cout << "--litTags = Set author year tags. *CAUTION*: 02_AuthorYearList.csv *REQUIRED*" << endl;
@@ -2566,83 +2618,6 @@ void structure_xml_output_file(vector<string> &articleFile, fileInformations& fi
 }
 
 
-//Custom functions for special projects______________________________________________
 
-void xml_preparation_tagebuecher (vector<string> &articleFile, struct documentSectionsClass& documentSections){
-	
-	int pos1;
-	int pos2;
-	string toInsert;
-	string pageNumberStr;
-	
-	
-	//First detect page numbers to insert figure reference tags	
-	for(int i=0; i<documentSections.lineNrBodyEnd_; i++){
-		
-		pos1=articleFile[i].find("[S.]");
-		
-		if(pos1==3){ //3 to be sure to get only the usual page numbers at the beginning ("<p>")
-			std::regex pattern{"[0-9]{1,3}"};
-			std::sregex_iterator begin{ articleFile[i].cbegin(), articleFile[i].cend(), pattern};
-			std::sregex_iterator end;
-
-			for (std::sregex_iterator i = begin; i != end; ++i) {
-				std::smatch match = *i;
-				pageNumberStr = match.str();
-			}
-			
-			pos2=articleFile[i].find("</p>");
-			
-			if(pos2>=0){
-				
-			articleFile[i].insert(pos2, figureReferencesClass::figReferenceTagEndXML_); 	
-			
-			}
-				
- 	       	std::regex r1("#");
- 	       	toInsert = std::regex_replace(figureReferencesClass::figReferenceTagBeginXML_, r1, pageNumberStr);
-			articleFile[i].insert(pos1, toInsert);
-		}
-	}
-	
-	//Now detect notes at the end of the pages and put them into boxed text
-	
-	bool boxedTextTagOpen;
-	int lineNrLastOpenTag;
-	
-	for(int i=0; i<documentSections.lineNrBodyEnd_; i++){
-	
-		pos1=articleFile[i].find("[Notizen außerhalb der Textkolumne]");
-		
-		if(pos1>=0){
-			//cout << "Treffer: " << articleFile[i] << endl;
-			articleFile[i].insert(0, "<boxed-text>\n");
-			boxedTextTagOpen=true;
-			lineNrLastOpenTag=i;
-		}
-			
-		for(int y=i; y<documentSections.lineNrBodyEnd_; y++){
-			pos2=articleFile[i].find("<p><xref ref-type=\"fig\"");
-			if(pos2>=0 && boxedTextTagOpen==true){
-				articleFile[i].insert(0, "</boxed-text>\n");
-				boxedTextTagOpen=false;
-				y=documentSections.lineNrBodyEnd_;
-			}
-		}
-	}
-	
-	if(boxedTextTagOpen==true){
-		for(int i=lineNrLastOpenTag; i<documentSections.lineNrBodyEnd_; i++){
-			
-			pos2=articleFile[i].find("</sec>");
-			
-			if(pos2>=0 && boxedTextTagOpen==true){
-				articleFile[i].insert(0, "</boxed-text>\n");
-				boxedTextTagOpen=false;
-				break;
-			}
-		}
-	}
-}
 
 #endif // TTWFUNCTIONS_H

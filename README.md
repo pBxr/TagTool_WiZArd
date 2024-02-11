@@ -63,7 +63,7 @@ For preparing the `.csv` files see "--help" function.
 ## New in v1.3.1
 
 - Added a silent mode that can be called with the argument `--silent`. In this case the applications offers no dialogues or any log information, so it can cooperate better with additional features (e. g. the features and `batch` file added by fabfab1)
-- Also added was a function to solve a problem in context of a special project under "Custom functions for special projects" at the end of `ttwFunctions.h`.
+- For reasons of clearity a new header file `ttwCustomFunctions` collects functions that don´t belong to the core resp. are needed for special purposes, e. g. in context of a single project or for special feautues (e. g. helping to prepare a special citation style) 
 - Deleted unused feature "Remove dispensable formattings/tags"
 - Deleted confirmation dialogue "Please check before running the application: ..."
 - Suppressed function and dialogue for a next run (until ttw is prepared better for re-editing the same content multiple times, see above).
