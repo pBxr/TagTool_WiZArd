@@ -15,50 +15,127 @@ The `.html` format as intermediate product ensures that involved actors with eve
 
 ## Features
 
-The use of the application for the _Archäologischer Anzeiger_ and the special requirements are the reason for the features used in this test version like:
-
+Following features are implemented for the use for the _Archäologischer Anzeiger_ and the special requirements:
+- setting tags for author year references, headlines, figure references, illustration credits, article metadata and so on
 - setting automatically paragraph numberings
 - setting hyperlink references to external bibliographical resources by a value list (list of references/bibliography)
-- setting tags for figure references
-- and so on
-Beginning with version 1.1.0 the application allows to export not only `.html` but also `.xml` files although it needs to be stressed that the `.xml` file is a non-valid intermediate product that will need manual finishing (see `--help` function).  
+
+Beginning with version 1.1.0 the application allows to export also `.xml` files although it needs to be stressed that the `.xml` file is a non-valid intermediate product that will need manual finishing (see `ttw_help.html`).  
 
 Although the use case and the implemented features for the semi-automatic formatting seems to be specific for the journal mentioned above, the application can be customized for other purposes since the design allows to alternate element tags or add functions for new kind of value lists and so on.
 
 ## Mode of operation
 
-Before starting the application the `.docx` file has to be converted by using pandoc into an `.html` file (see `--help` function). The use of pandoc guarantees a uniform standardized and normalized `.html` structure. After finishing the modification by the application the `.html` file can be opened in Microsoft Word and converted into a standard `.docx` for further processing purposes by the copy editor.
+At first, the `.docx` file is converted by using pandoc into an `.html` file. The use of pandoc guarantees a uniform standardized and normalized `.html` structure. After finishing the modification with ttw the edited `.html` file can be opened in Microsoft Word and converted into a standard `.docx` for further processing purposes by the copy editor. For further details see `ttw_help.html`.
 
-## To be done
+ttw consists of two components:
 
-- Integrating the pandoc conversion
-- Importing article metadata from json
-- Exception handling
-- Implementing the possibility to reload files that were converted with the application already
-- Article languages settings
-- Reducing the `.html` tags that Microsoft Word needs to open the converted file correctly to a minimum
+1.) The `Python` framework (`TagTool_WiZArd_Start`):
+- it provides the GUI for all settings and the handling of the application
+- it also runs several integrity checks on the files
+(- step by step it will also take over the functions from the `c++` core)  
 
-## Technical remarks and requirements
+2.) The `c++` core (`tagtool_v2-0-0.exe`):
+- it runs most of the main tasks
+- using the `Python` framework it needs to be embedded into the framework´s main folder
+- like in former releases it still can be run as a standalone application using a terminal.
 
-- Windows only (Windows 10)
-- TDM-GCC 9.2.0 32/64bit
-- Tested with following IDE: Embarcadero Dev-C++ 6.3. If using Embarcadero Dev-C++ 6.3 add "`-std=c++17`" in Project Options -> Parameter s -> C++ compilers.
-- Tested with pandoc version 2.16.2. Other versions may cause problems.
+## Prepare the main files
 
-## How to run
+Note: ttw runs only on Windows. MacOS, Linux and so on are not supported yet.
 
-After compiling the binary (tagtool_v1-3-1.exe) open a terminal and run "tagtool_v1-3-1.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
+1.) First, install pandoc on your machine:
+ttw ist tested with pandoc version 2.16.2. Other versions may cause problems. 
+You will find the release here: https://github.com/jgm/pandoc/releases (see "Assets": pandoc-2.16.2-windows-x86_64.msi).
+
+2.) Create `TagTool_WiZArd_Start.exe` using this repo (`python_frame`): 
+A simple way to create an `.exe` file from TagTool_WiZArd_Start.py and Settings.py:
+
+pyinstaller -wF --icon="Logo.ico" TagTool_WiZArd_Start.py
+
+(Note: Logo.ico and Logo.gif need to be placed in the same folder as TagTool_WiZArd_Start.py and Settings.py)
+
+Result is `TagTool_WiZArd_Start.exe`.
+
+3.) Create `tagtool_v2-0-0.exe` using this repo (`cpp_core`):
+A simple way to create the `tagtool_v2-0-0.exe` file from the `c++` core is to use Embarcadero Dev-C++ 6.3.:
+- Open the `.dev` file and add all `c++` files to your project (`main.cpp` and all header files (`.h`))
+- If using Embarcadero Dev-C++ 6.3 add "`-std=c++17`" in Project Options -> Parameter s -> C++ compilers.
+- Run "Rebuild all". 
+
+Result is `tagtool_v2-0-0.exe`
+
+## How to setup and run
+
+**With the `Python` framework (recommended):**
+
+1.) Create a folder (somewhere on your machine, no matter where) containing the following files:
+- TagTool_WiZArd_Start.exe
+- ttw_help.html
+- Logo.ico
+- Logo.gif
+- tagtool_v2-0-0.exe (how to create the `.exe` file from the `c++` core see above)
+- and the \resources folder (with all necessary files downloaded together with the ttw release)
+
+If you create a shortcut on your desktop to start `TagTool_WiZArd_Start.exe` you don´t have to touch the ttw folder again.
+
+2.) For the normal usage it is recommended to create a separate folder containing the article file that is to be processed (also somewhere on your machine, no matter where). 
+Make sure that the 4 mandatory value lists are saved in this folder together with the article file:
+- 01_MetadataValueList.csv
+- 02_AuthorYearList.csv
+- 03_ImageCreditList.csv
+- 04_ToSearchAndReplaceList.csv
+
+For preparing the `.csv` files and all other questions how to run the application see `ttw_help.html` resp. "About" -> "Help" in the menue bar after starting the application.
+
+**Alternatively: Stand alone from console:**
+
+After compiling the binary (tagtool_v2-0-0.exe, see above) open a terminal and run "tagtool_v2-0-0.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
 Be sure not to omit the `.html`-ending of the file you want to process.
-Be sure that all necessary files are saved in the *same folder* together with the `.exe` file, i. e.
+Be sure that all necessary files are saved in the **same folder** together with the `tagtool_v2-0-0.exe` file, i. e.
 - 01_MetadataValueList.csv
 - 02_AuthorYearList.csv
 - 03_ImageCreditList.csv
 - 04_ToSearchAndReplaceList.csv
 - article.html
-- tagtool_v1-3-1.exe
+- tagtool_v2-0-0.exe
 - \resources  
 
-For preparing the `.csv` files see "--help" function.
+See "--help" to find all necessary informations to run the application in a standalone version.
+For preparing the `.csv` files see `ttw_help.html`.
+
+## New in v2.0.0
+
+- Starting with v2.0.0 ttw comes with a GUI, based on `Python/tkinter`. Although the `c++` core can still be used as terminal standalone application (`tagtool_v2-0-0.exe`, see above), it is not recommended, because the `Python` framework does several integrity checks. 
+
+Also new to previous versions: 
+- The article file and value lists no longer need to be saved in the same folder with ttw, any directory can be chosen.
+- After starting ttw, all parameters (functions, export format) can be set easily by using the GUI-widgets.
+- ttw does the conversion from `pandoc` to `.html` automatically, so the source file will be a `.docx`.
+- Result files will be saved in the same folder with the article source file. 
+- ttw checks whether the mandatory `.csv` lists exist.
+- ttw also runs some simple integrity checks on the `.csv` lists (see `ttw_help.html`)
+- ttw checks the footnote section for manual paragraph breaks and merges seperated lines highlighting the changes.
+
+## To be done
+
+- Importing article metadata from json
+- Exception handling
+- Implementing the possibility to reload files that were converted with the application already
+- Article languages settings
+- Table conversion to `.xml`
+
+## Technical remarks and requirements
+
+- Windows only (Windows 10)
+- pandoc version 2.16.2. Other versions may cause problems.
+
+For the `Python` framework:
+- Tested with `Python 3.12.0`
+
+For the `c++` core: 
+- TDM-GCC 9.2.0 32/64bit
+- Tested with following IDE: Embarcadero Dev-C++ 6.3.
 
 ## New in v1.3.1
 
@@ -81,4 +158,3 @@ Therefore new in v1.3.0: Additional mode implemented when ttw is called from web
 
 - For ttw_webx see https://github.com/pBxr/ttw_WebExtension
 - ID_Extractor (ID_Ex) for extracting IDs and references from `.jats` article files, especially for the above mentioned journals, see   https://github.com/pBxr/ID_Extractor
-
