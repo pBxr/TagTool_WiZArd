@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>TagTool_WiZArd Help</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">TagTool_WiZArd Help</h1>
+</header>
+<p>v2.0.0</p>
+<h1 class="TOC-Heading" id="contents">Contents</h1>
+<p><a href="#before-starting-tagtoolwizard-ttw">Before starting TagToolWiZArd (ttw) <a href="#before-starting-tagtoolwizard-ttw">1</a></a></p>
+<p><a href="#preparation-of-the-article-file">Preparation of the article file <a href="#preparation-of-the-article-file">2</a></a></p>
+<p><a href="#preparation-of-the-.csv-files">Preparation of the .csv files <a href="#preparation-of-the-.csv-files">3</a></a></p>
+<p><a href="#in-general">In general <a href="#in-general">3</a></a></p>
+<p><a href="#metadata-list-01_metadatavaluelist.csv">Metadata list (01_MetadataValueList.csv) <a href="#metadata-list-01_metadatavaluelist.csv">4</a></a></p>
+<p><a href="#bibliography-02_authoryearlist.csv">Bibliography (02_AuthorYearList.csv) <a href="#bibliography-02_authoryearlist.csv">4</a></a></p>
+<p><a href="#illustration-credits-and-captions-03_illustrationcreditlist.csv">Illustration credits and captions (03_IllustrationCreditList.csv) <a href="#illustration-credits-and-captions-03_illustrationcreditlist.csv">5</a></a></p>
+<p><a href="#to-search-and-replace-04_tosearchandreplacelist.csv">To search and replace (04_ToSearchAndReplaceList.csv) <a href="#to-search-and-replace-04_tosearchandreplacelist.csv">5</a></a></p>
+<p><a href="#common-errors">Common errors <a href="#common-errors">6</a></a></p>
+<p><a href="#start-ttw">Start ttw <a href="#start-ttw">6</a></a></p>
+<p><a href="#automatic-checks">Automatic checks <a href="#automatic-checks">7</a></a></p>
+<p><a href="#mandatory-.csv-files">Mandatory .csv files <a href="#mandatory-.csv-files">7</a></a></p>
+<p><a href="#article-file">Article file: <a href="#article-file">7</a></a></p>
+<p><a href="#xml-output">XML output <a href="#xml-output">8</a></a></p>
+<p><a href="#result">Result <a href="#result">8</a></a></p>
+<h1 id="before-starting-tagtoolwizard-ttw">Before starting TagToolWiZArd (ttw)</h1>
+<p>1.) ttw runs <strong>only on Windows</strong>. MacOS, Linux and so on are not supported yet.</p>
+<p>2.) Install <strong>pandoc</strong> on your machine. TagTool_WiZArd (ttw) is tested with version <strong>pandoc 2.16.2</strong>, other versions may cause problems.</p>
+<p>You will find the release here: <a href="https://github.com/jgm/pandoc/releases"><u>https://github.com/jgm/pandoc/releases</u></a> (see "Assets": pandoc-2.16.2-windows-x86_64.msi)</p>
+<p>3.) Create a folder (somewhere on your machine, no matter where) containing the following files:</p>
+<ul>
+<li><p>TagTool_WiZArd_Start.exe</p></li>
+<li><p>ttw_help.html</p></li>
+<li><p>Logo.ico</p></li>
+<li><p>Logo.gif</p></li>
+</ul>
+<ul>
+<li><p>tagtool_v2-0-0.exe (or later versions)</p></li>
+<li><p>and the \resources folder (with all necessary files downloaded together with the ttw release)</p></li>
+</ul>
+<p>4.) <strong>Create a shortcut</strong> on your desktop to start TagTool_WiZArd_Start.exe. <strong>In this case you don´t have to touch the ttw folder again.</strong></p>
+<p>5.) It is recommended to create a separate folder containing the article file that is to be processed (also somewhere on your machine, no matter where).</p>
+<p>Make sure that the <strong>4</strong> <strong>mandatory value lists</strong> are in the <strong>same folder</strong> together <strong>with the article file</strong>:</p>
+<ul>
+<li><p>01_MetadataValueList.csv</p></li>
+<li><p>02_AuthorYearList.csv</p></li>
+<li><p>03_ImageCreditList.csv</p></li>
+<li><p>04_ToSearchAndReplaceList.csv</p></li>
+</ul>
+<p><strong>For the preparation of the .csv files see below.</strong></p>
+<h2 id="preparation-of-the-article-file">Preparation of the article file</h2>
+<ul>
+<li><p>Arrangement of the article sections: To avoid errors in the automatic paragraph numbering, it is recommended to place <strong>all technical sections or informations at the end of the article</strong> and <strong>not to use headlines for them</strong>, e. g.</p>
+<ul>
+<li><p>Abstract</p></li>
+<li><p>Kewords</p></li>
+<li><p>Bibliography/references</p></li>
+<li><p>Illustrations credits/captions</p></li>
+<li><p>Address/affiliations.</p></li>
+</ul></li>
+</ul>
+<ul>
+<li><p>ttw can <strong>only process articles with author-year-schema</strong> reliably (see also on preparing .csv files).</p></li>
+</ul>
+<p>Also important:</p>
+<ul>
+<li><p>If the chapter headlines are not marked with MS Word style sheet headline templates, it <strong>may lead to errors in the automatic paragraph numbering</strong>. It is therefore recommended to <strong>use MS Word style sheet headline templates</strong>, which has the additional advantage that the tool then automatically sets the correct style sheet needed for the typesetting process.</p></li>
+<li><p><strong>Paragraph numbers may be set by mistake in catalog sections or other unusually formatted sections.</strong> In case of too many sections or special formattings, it is not recommended to use the tool but to prepare the MS manually.</p></li>
+<li><p>The tool can process simple tables (for output to .html).</p></li>
+<li><p><strong>Foreign-language</strong> texts (Greek, Cyrillic) are <strong>no problem, if unicode fonts are used</strong> (Calibri, Noto or similar).</p></li>
+</ul>
+<p>Figure references within the text:</p>
+<ul>
+<li><p>Only figure references that are in brackets and begin directly after the opening bracket – i.e. "<strong>(Abb.</strong>", "<strong>(Fig.</strong>" or "<strong>(Figs.</strong>" etc. – <strong>are marked automatically</strong>. All other variants are ignored and must be marked manually.</p></li>
+<li><p>Make sure that there is <strong>no other content in the brackets</strong> apart from the figure references (e.g. references to inventory numbers or similar) or drag these manually behind the bracket: "<strong>(Fig. 6, K 93.301.4)</strong>" → "<strong>(Fig. 6) (K 93.301.4)</strong>".</p></li>
+<li><p>References to figure sections are automatically resolved by ttw, as this is necessary for the viewer output (i.e. "<strong>(Fig. 2-5. 8-10)</strong>" will be resolved to "<strong>(Fig. 2. 3. 4. 5. 8. 9. 10)</strong>". In addition to normal hyphens between the numbers, ttw should also recognize dashes.</p></li>
+</ul>
+<h2 id="preparation-of-the-.csv-files">Preparation of the .csv files</h2>
+<h3 id="in-general">In general</h3>
+<p>The .csv value lists can easily be prepared by using LibeOffice Calc.</p>
+<p>Prepare each file concerning the categories and so on like <strong>in the example files</strong> <strong>in the folder \resources:</strong></p>
+<ul>
+<li><p>01_MetadataValueList_TEMPLATE.csv</p></li>
+<li><p>02_AuthorYearList_EXAMPLE.csv,</p></li>
+<li><p>03_IllustrationCreditList_EXAMPLE.csv</p></li>
+<li><p>04_ToSearchAndReplaceList_EXAMPLE.csv.</p></li>
+</ul>
+<p>Use the option "Save as .csv" for the conversion. <strong>Be sure that:</strong></p>
+<ul>
+<li><p>the character encoding ("character set"/"Zeichensatz") is set to "<strong>Unicode (UTF-8)</strong>",</p></li>
+<li><p><strong>the separating character</strong> ("field delimiter"/"Feldtrenner") <strong>is set to "|"</strong>,</p></li>
+<li><p>that no "string delimiter"/"Zeichenketten-Trenner" is entered (to avoid possible conflicts with similar characters).</p></li>
+</ul>
+<p><strong>Important:</strong></p>
+<ul>
+<li><p>All <strong>4 .csv value lists are</strong> <strong>mandatory</strong>.</p></li>
+<li><p>In case you do not intend special alterations (references, illustrations, search and replace) <strong>you can use the value lists 02, 03 and 04 with no entries</strong>.</p></li>
+</ul>
+<h3 id="metadata-list-01_metadatavaluelist.csv">Metadata list (01_MetadataValueList.csv)</h3>
+<p>The list needs to contain <strong>two columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
+<ul>
+<li><p><strong>##Source list to replace ##|##Replace with##</strong></p></li>
+<li><p><strong>Example:</strong> ###_Insert volume number_###|42</p></li>
+</ul>
+<p>That means:</p>
+<ul>
+<li><p>Open "01_MetadataValueList_TEMPLATE.csv" in the "resources" directory (see above).</p></li>
+<li><p>Enter the metadata of the journal and the article.</p></li>
+<li><p>Save the file <strong>in the same folder where you have saved the article file</strong> as "01_MetadataValueList.csv"</p></li>
+</ul>
+<p>Please note:</p>
+<ul>
+<li><p>During the process <strong>ttw inserts the metadata into the article file</strong> with the correct style sheet template.</p></li>
+</ul>
+<h3 id="bibliography-02_authoryearlist.csv">Bibliography (02_AuthorYearList.csv)</h3>
+<p>The list needs to contain <strong>three columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
+<ul>
+<li><p><strong>Author/Year|Full citation|Identifier</strong></p></li>
+<li><p><strong>Example:</strong> Bury 1932|R. G. Bury, The Symposium of Plato (Cambridge MA 1932)|https://zenon.dainst.org/Record/000182245</p></li>
+</ul>
+<p>That means:</p>
+<ul>
+<li><p>Open "02_AuthorYearList.csv" in the "resources" directory (see above).</p></li>
+<li><p>Enter the necessary informations.</p></li>
+<li><p>If no identifier is entered in the "Identifier" column, the tool automatically sets a note during the conversion.</p></li>
+<li><p>Save the file <strong>in the same folder where you have saved the article file</strong> as "02_AuthorYearList.csv "</p></li>
+</ul>
+<p>Please note:</p>
+<ul>
+<li><p>ttw tags the references directly in the article file. Therefore the <strong>bibliography/references must also remain in the article</strong> <strong>in a congruent version</strong>.</p></li>
+<li><p><strong>Only articles using the author-year-schema</strong> are suitable for ttw. If this is not the case, it is not recommended to use ttw.</p></li>
+<li><p>In some cases, <strong>the automatic tagging does not work if special characters appear in the short quotation and/or the full quotation</strong> (superscript numbers etc.). These passages can easily identified after the conversion because the style sheet has not been applied.</p></li>
+</ul>
+<h3 id="illustration-credits-and-captions-03_illustrationcreditlist.csv">Illustration credits and captions (03_IllustrationCreditList.csv)</h3>
+<p>The list needs to contain <strong>four columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
+<ul>
+<li><p><strong>Figure number|Captions|Path of source file (for xml-Version)|Copyright/Illustration credit</strong></p></li>
+<li><p><strong>Example:</strong> Fig. 1|Plan of Heraion with excavation area 2010–2013 marked in yellow|C:/Data/Article/image.jpg|All rights reserved</p></li>
+</ul>
+<p>That means:</p>
+<ul>
+<li><p>Open "03_IllustrationCreditList_TEMPLATE.csv" in the "resources" directory (see above).</p></li>
+</ul>
+<ul>
+<li><p>Copy the captions and informations on the illustrations credits into the file.</p></li>
+<li><p>The "<strong>Path of source file</strong> (for xml version only)" <strong>only needs to be entered if an XML output is chosen</strong>. In the case of .html output, this column can remain empty.</p></li>
+<li><p>Save the file <strong>in the same folder where you have saved the article file</strong> as "03_IllustrationCreditList.csv”</p></li>
+</ul>
+<p>Please note:</p>
+<ul>
+<li><p>During the process <strong>ttw inserts the illustration credits and captions into the article file</strong> with the correct style sheet template.</p></li>
+</ul>
+<h3 id="to-search-and-replace-04_tosearchandreplacelist.csv">To search and replace (04_ToSearchAndReplaceList.csv)</h3>
+<p>The list needs to contain <strong>two columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
+<ul>
+<li><p><strong>##Search##|##Replace with##</strong></p></li>
+<li><p><strong>Example</strong>: Olympia|https://gazetteer.dainst.org/place/2281840</p></li>
+</ul>
+<h4 id="notes-for-function-additional-search-and-replace">Notes for function “Additional search and replace”</h4>
+<ul>
+<li><p>The <strong>purpose of this function is mainly to set tagged hyperlinks</strong>. Other and especially more complex find-replace operations should be done in other applications for better reliability.</p></li>
+<li><p>If a plain url is entered as replacement string, the tool creates the whole tagged link automatically prepared for the chosen output format (.html or .xml).</p></li>
+<li><p>If you want to avoid to add links to all occurrences of the search expression the "@" character can be used as a prefix (both in the search expression in the .csv file and in the article text). The tool will remove this prefix when creating the tagged link.</p></li>
+<li><p>See "04_ToSearchAndReplaceList_EXAMPLE.csv" in the folder \resources.</p></li>
+</ul>
+<h1 id="common-errors">Common errors</h1>
+<ul>
+<li><p><strong>Unusual formattings in the footnote section</strong> (such as manual paragraph marks, tables, indentations, blank lines or similar).</p></li>
+<li><p><strong>Rudiments of previous formattings</strong> that remain (sometimes hidden) in the footnotes or elsewhere in the text, such as section breaks (<strong>frequent problem when opening Mac MS Word documents in Windows MS Word or LibreOffice</strong>)</p></li>
+<li><p><strong>Additional content in the brackets of the figure references</strong> (see above).</p></li>
+</ul>
+<p>When preparing the .csv lists:</p>
+<ul>
+<li><p><strong>Blank lines</strong> at the beginning, at the end or in the middle of the list. (Although ttw tries to correct this, it is not a guarantee.)</p></li>
+<li><p>02_AuthorYearList.csv: <strong>A field entry is missing</strong> (either the full citation associated with the short citation is missing or vice versa). Or: Whitespaces at the beginning or the end of a field entry. (Although ttw tries to correct this, it is not a guarantee.)</p></li>
+<li><p>03_IllustrationCreditList.csv: <strong>A field entry is missing</strong> in the column "Figure number", "Captions" or "Copyright/Illustration credit".</p></li>
+<li><p>When converting to .csv, LibreOffice sometimes inserts paragraph marks in case the table itself was not prepared correctly or incorrect settings were selected when saving. This step should therefore be checked carefully. <strong>Tip: Sometimes it is more reliable to create the source table in a Word table, convert it to text with the appropriate separator and then save the result as a .csv file.</strong></p></li>
+</ul>
+<h1 id="start-ttw">Start ttw</h1>
+<p>When starting ttw the following functions are chosen by default (<strong>recommended</strong>):</p>
+<ul>
+<li><p>Apply custom DAI citation style features (not yet fully implemented)</p></li>
+<li><p>Set customized journal body tags</p></li>
+<li><p>Set figure references tags</p></li>
+<li><p>Set author year tags</p></li>
+<li><p>Set paragraph numbers</p></li>
+<li><p>Insert tagged illustration credits section</p></li>
+<li><p>Search and replace by using the separate value list (see remarks below)</p></li>
+<li><p>Output format will be HTML.</p></li>
+</ul>
+<p>Please note:</p>
+<ul>
+<li><p>You can change the functions and/or the output format using the ttw menu bar or the buttons.</p></li>
+<li><p>It is not recommended to change the functions if you are not familiar with ttw.</p></li>
+</ul>
+<h2 id="automatic-checks">Automatic checks</h2>
+<h3 id="mandatory-.csv-files">Mandatory .csv files</h3>
+<p>After choosing the article file <strong>ttw checks automatically if all mandatory 4 .csv value lists are found</strong> in the same directory with the article file. <strong>In case one or more files are missing, ttw throws an error</strong> and the tool will not be ready to run.</p>
+<p>ttw is also carrying out a simple <strong>integrity check</strong> on the 4 .csv value lists:</p>
+<ul>
+<li><p>If a .csv list contains <strong>less than the expected number of columns</strong>/cells (see the templates above) <strong>or empty rows</strong> within the document <strong>ttw throws an error</strong> and the tool will not be ready to run. In this case check the files and reload the article.</p></li>
+<li><p>In case of an <strong>empty line at the end</strong> of one of the .csv lists ttw throws a warning, i. e. the tool will be ready to run, but in case the process fails it is recommended to actualize the value lists.</p></li>
+<li><p>Although ttw removes leading or ending whitespaces in the entries of the cells it is recommended to prepare the .csv lists carefully.</p></li>
+</ul>
+<h3 id="article-file">Article file:</h3>
+<p>If ttw detects manual paragraph marks in the footnote section it merges the lines to a single footnote and sets a green marker. Check those passages carefully. <strong>It is recommended though to remove all paragraph marks or other special formattings from the footnote section manually before using ttw.</strong></p>
+<h2 id="xml-output">XML output</h2>
+<p>If you want to choose the default functions in combination with an (raw and non-valid) .xml output choose "to XML" as output format.</p>
+<p><strong>Important</strong>:</p>
+<ul>
+<li><p>This function will create in most cases only a non-valid .xml version.</p></li>
+<li><p>Manual completion is necessary, especially concerning the section endings. Check especially the marker "&lt;!-- CHECK POSITION OF CLOSING TAG--&gt;" that is set in the xml file automatically.</p></li>
+<li><p>Table conversion is not implemented yet.</p></li>
+</ul>
+<h1 id="result">Result</h1>
+<p>ttw writes an edited file with the ending "<strong>_edited_1_.html</strong>" respectively "<strong>_edited_1_.xml</strong>" in the same folder where your article file is stored.</p>
+<p><strong>In case of .html output format it also writes a folder</strong> with data that are important for the correct conversion to MS Word (with the ending "<strong>__ress</strong>").</p>
+<p>In case of .xml output the tool generates only a raw and non-valid .xml version (see above).</p>
+<p>If the files are written successfully:</p>
+<ul>
+<li><p>Open MS Word and open the edited .html-file.</p></li>
+<li><p>Save it immediately as a .docx-file</p></li>
+</ul>
+<p><strong>Important</strong>:</p>
+<ul>
+<li><p>For a correct representation in MS Word the folder "\__ress" need to be in the same folder together with the .html article file.</p></li>
+</ul>
+</body>
+</html>
