@@ -1163,7 +1163,7 @@ void insert_image_credit_list(vector<string> &articleFile, fileInformations &fil
 	int offset; 
 	
 	if(documentSections.lineNrFootnotesBeginIsSet==true){
-		offset = documentSections.lineNrFootnotesBegin_;	
+		offset = documentSections.lineNrFootnotesBegin_+1;	
 	}	
 	
 	if(documentSections.lineNrFootnotesBeginIsSet==false){
@@ -1176,7 +1176,7 @@ void insert_image_credit_list(vector<string> &articleFile, fileInformations &fil
 		}	
 	
 	}
-		
+			
 	articleFile.insert(articleFile.begin()+offset, insertVector.begin(), insertVector.end());
 	
 	if(htmlSelected==true){
@@ -2018,7 +2018,7 @@ void set_authorYearTags_XML(vector<string> &articleFile,
 		for(size_t y=0; y<authorYearList.size(); y++) {
 
 			pos1=articleFile[i].find(authorYearList[y].citations_[0]);
-
+			
 			if(pos1==3) {
 				//Important: When preparing the MS Word file be sure that the position of the author year abbreviations
 				//has to be directely at the beginning of the line without any blank spaces
@@ -2065,18 +2065,14 @@ void set_authorYearTags_XML(vector<string> &articleFile,
 		string fullCitationTag1LinkBeginXML;
 		fullCitationTag1LinkBeginXML = authorYearListClass::fullCitationTag1LinkBeginXML_;
 		for(size_t y=0; y<authorYearList.size(); y++) {
-
 			pos10=articleFile[i].find(authorYearList[y].citations_[1]);
-
 			if(pos10>=0) {
 
 				pos20=pos10+authorYearList[y].citations_[1].size();
-				
 				articleFile[i].insert(pos20, authorYearListClass::fullCitationTagLinkEndXML_);
 				
 				//Delete Carriage Return/Linefeed from Vector so that it will not be inserted...
 				authorYearList[y].citations_[2].pop_back();
-				
 				fullCitationTag1LinkBeginXML = authorYearListClass::fullCitationTag1LinkBeginXML_;
 				
 				std::regex r2("##_BibID_##");
@@ -2086,13 +2082,16 @@ void set_authorYearTags_XML(vector<string> &articleFile,
 				articleFile[i].insert(pos10, fullCitationTag1LinkBeginXML);
 				fullCitationTag1LinkBeginXML = authorYearListClass::fullCitationTag1LinkBeginXML_; //reset
 				
+				//In case the abbrevation an full citation are not in the same line
 				int pos30;
 				pos30=articleFile[i].find("</p>");
-				articleFile[i].replace(pos30, 5, "\n");
-				int pos40;
-				pos40=articleFile[i].find("<p>");
-				articleFile[i].erase(pos40, pos40+3);
 								
+				if(pos30>=0){
+					articleFile[i].replace(pos30, 5, "\n");
+					int pos40;
+					pos40=articleFile[i].find("<p>");
+					articleFile[i].erase(pos40, pos40+3);
+				}
 			}
 		}
 	}
@@ -2100,21 +2099,38 @@ void set_authorYearTags_XML(vector<string> &articleFile,
 	//Setting the start and the end tag of the list
 	analyze_articleFile(articleFile, containerTags, containerLines, documentSections, footnoteAdressContainer);
 	
+	//offset defines the end of the article where the lists are to be inserted
+	//i. e. before the footnotes or at the end of the body text
+	
+	int offset; 
+	
+	if(documentSections.lineNrFootnotesBeginIsSet==true){
+		offset = documentSections.lineNrFootnotesBegin_;	
+	}	
+	
+	if(documentSections.lineNrFootnotesBeginIsSet==false){
+		
+		if(documentSections.markerEndOfTextIsSet==true){
+			offset = documentSections.lineNrTextEnd_+1;
+			}
+		else{
+			offset = documentSections.lineNrBodyEnd_;		
+		}	
+	
+	}
+		
 	if (documentSections.lineNrReferencesBeginIsSet==true){
 		
 		int lineNr;
 		string toInsert;
 		
-		lineNr = documentSections.lineNrReferencesBegin_ + (authorYearList.size()*2);	
+		lineNr = offset;	
 		toInsert = authorYearListClass::referencesListTagEndXML_ + "\n";
 		articleFile[lineNr].insert(0, toInsert);
-		
+				
 		toInsert = authorYearListClass::referencesListTagBeginXML_ + "\n";
 		articleFile[documentSections.lineNrReferencesBegin_].insert(0, toInsert);
-		
 	}
-	 
-
 }
 
 string set_custom_bodyTag(string articleFileLine, int posA, int posB) {

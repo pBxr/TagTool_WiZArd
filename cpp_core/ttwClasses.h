@@ -262,6 +262,20 @@ struct documentSectionsClass {
 				
 	}
 
+	void log(vector<string> articleFile){
+		
+	cout << "\nOutput documentSections.log:" << endl;
+	cout << "detected lineNrAbstractBegin_: " << lineNrAbstractBegin_ << endl;
+	cout << "detected lineNrKeywordsBegin_: " << lineNrKeywordsBegin_ << endl;
+	cout << "detected lineNrAbbreviationsBegin_: " << lineNrAbbreviationsBegin_ << endl;
+	cout << "detected lineNrSourcesIllustrationsBegin_: " << lineNrSourcesIllustrationsBegin_ << endl;
+	cout << "detected lineNrBodyBegin_: " << lineNrBodyBegin_ << endl;
+	cout << "detected lineNrTextEnd_: " << lineNrTextEnd_ << " and content: " << articleFile[lineNrTextEnd_] << endl;
+	cout << "detected lineNrBodyEnd_: " << lineNrBodyEnd_ << endl;
+	cout << "Zeileninhalt BodyEnd: " << articleFile[lineNrBodyEnd_-1] << endl;
+	cout << "detected lineNrFootnotesBegin_: " << lineNrFootnotesBegin_ << endl;
+	}
+
     void clear(){
     lineNrAbstractBegin_=0;
     lineNrAbstractBeginIsSet_=false;

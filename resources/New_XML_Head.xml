@@ -123,7 +123,7 @@
           <title>Zusammenfassung</title>
         <p><styled-content style-type="abstract-title">###_Insert title here (original language)_###</styled-content></p>
         <p><styled-content style-type="abstract-subtitle">###_Insert subtitle here (original language)_###</styled-content></p>
-        <p><styled-content style-type="abstract-author">##_Insert author(s) here together_###</styled-content></p>
+        <p><styled-content style-type="abstract-author">###_Insert author(s) here together_###</styled-content></p>
         <p><styled-content style-type="abstract-text">###_Insert abstract here (original language) without line break_###</styled-content></p>
     </abstract>
 	       
