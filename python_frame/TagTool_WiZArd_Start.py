@@ -16,6 +16,8 @@ from PIL import ImageTk, Image
 from Settings import ttwSettings
 from Settings import files
 
+import pyScripts as pyScr
+
 class MainWindow(tkinter.Frame):
         
         def __init__(self, root):
@@ -343,6 +345,19 @@ class MainWindow(tkinter.Frame):
             else:
                 FNULL = open(os.devnull, 'w') #For subprocess
 
+                #Prepare Args
+                argsTagTool = []
+                for x, y in self.settings.ttwFunctionsSet.items():
+                    argsTagTool.append(y['Arg'])
+
+                for x, y in self.settings.ttwFlagsSet.items():
+                    argsTagTool.append(y['Arg'])
+
+                for x, y, in self.settings.ttwExportFormatSet.items():
+                    argsTagTool.append(y['Arg'])
+                    if y['Description'] == "to XML":
+                        self.settings.xmlExportIsSet = True
+                
                 #Step 1: Convert .docx -> .html with pandoc
                 pandocCall = "pandoc -s -o "
 
@@ -356,18 +371,6 @@ class MainWindow(tkinter.Frame):
                 ttwCall = "\"" + self.settings.cwd + "\\tagtool_v2-0-0.exe\"" + " \""\
                           + self.files.projectPath + self.settings.target + "\""
 
-                argsTagTool = []
-                for x, y in self.settings.ttwFunctionsSet.items():
-                    argsTagTool.append(y['Arg'])
-
-                for x, y in self.settings.ttwFlagsSet.items():
-                    argsTagTool.append(y['Arg'])
-
-                for x, y, in self.settings.ttwExportFormatSet.items():
-                    argsTagTool.append(y['Arg'])
-                    if y['Description'] == "to XML":
-                        self.settings.xmlExportIsSet = True
-                
                 #In case of whitespaces
                 testWhitespace = " "
                 if testWhitespace in self.files.projectPath:
@@ -376,8 +379,14 @@ class MainWindow(tkinter.Frame):
                         pathForTtw = self.files.projectPath
                   
                 ttwCall = ttwCall + " " + " ".join(argsTagTool) + " " + "--fromPy" + pathForTtw
-                print(ttwCall)
+                #print(ttwCall)
+                
                 subprocess.run(ttwCall, stdout=True, stderr=FNULL, shell=True)
+
+                #Step 3: Additional tasks (prepared in Python, not C++ in order to replace the cpp core functions successively)
+                if self.settings.xmlExportIsSet == True:
+                        pyScr.convert_tables_to_XML(self)
+                                
                 self.files.check_result()
                 self.actualize_widgets()
                                                
