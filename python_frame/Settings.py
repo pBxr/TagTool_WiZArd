@@ -46,6 +46,19 @@ class ttwSettings:
 
         self.ttwFlagsSet = {1 : {'Arg' : '--silent', 'Description' : 'Silent Mode'}}
 
+        #Possible NER parameter
+        self.NER_Settings = {'Model' : ['dslim/bert-base-NER', 'dslim/bert-large-NER'],
+                             'Entity Type' : ['Location', 'Person'],
+                             'Source' : ['Convert .docx to .html and get text', 'Convert .docx to .txt and get text']
+                             }
+
+        #Set default NER parameters
+        #In this version the default settings cannot be changed so they are hard coded
+        self.NER_SettingsSet = {'Model' : 'dslim/bert-base-NER',
+                               'Entity Type' : 'Location',
+                               'Source' : 'Convert .docx to .txt and get text'
+                             }
+        
         #Set default functions
         self.ttwFunctionsSet = {}
         i = 0

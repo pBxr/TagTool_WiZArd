@@ -17,6 +17,7 @@ from Settings import ttwSettings
 from Settings import files
 
 import pyScripts as pyScr
+import pyNER 
 
 class MainWindow(tkinter.Frame):
         
@@ -84,7 +85,7 @@ class MainWindow(tkinter.Frame):
                 self.labelFormat.configure(font=self.textFont)
                 self.labelFormat.grid()
                                 
-                #Load file button
+                #Load file button ------Margin buttons
                 self.buttonLoadFile = ttk.Button(self, text = "Select Article File", style = "TButton",
                     command=lambda: self.load_files())
                 self.buttonLoadFile["width"] = 20
@@ -134,12 +135,18 @@ class MainWindow(tkinter.Frame):
                        
                 self.tboxFunctions.config(state='disabled')
                 
-                #Set functions button
+                #Set functions button ------Margin buttons
                 self.buttonSetFunctions = ttk.Button(self, text = "Change Functions", style = "TButton",
                     command=lambda: self.set_functions())
                 self.buttonSetFunctions["width"] = 20
                 self.buttonSetFunctions.grid(column = 3, row = heightRow1 + 1, sticky="nw")
-            
+
+                #NER plugin button
+                self.buttonStartNER = ttk.Button(self, text = "Open NER plugin", style = "TButton",
+                    command=lambda: self.set_NER_settings())
+                self.buttonStartNER["width"] = 20
+                self.buttonStartNER.grid(column = 3, row = heightRow1 + 2, sticky="nw")
+                
                 #Result box ---------Third section-----------------
                 self.groupResult = tkinter.LabelFrame(self)
                 self.groupResult["text"] = "Results"
@@ -260,6 +267,18 @@ class MainWindow(tkinter.Frame):
                 self.settings.reset_settings()
                 self.actualize_widgets()
 
+        def run_NER_Plugin(self, window):
+
+            #In this version the default settings cannot be changed so they are hard coded
+            pyNER.run_NER_process(self.files, self.settings)
+
+            textInfo = "Process finished. Check result"
+    
+            tkinter.messagebox.showinfo(title="Info", \
+                                     message=textInfo)
+         
+            window.destroy()
+
         def save_functions(self, vals, window):
     
                 self.tboxFunctions.delete(1.0, "end")
@@ -327,6 +346,93 @@ class MainWindow(tkinter.Frame):
             self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
             self.tboxInfo.config(state='disabled')
         
+
+        def set_NER_settings(self):
+
+            if self.files.fileName == "":
+                tkinter.messagebox.showwarning(title="ERROR", \
+                                     message="No file selected!")
+                self.settings.selectedFileIsReady = False
+                self.bgColorTboxArticle = "red"
+                self.actualize_widgets()
+            else:
+                tkinter.messagebox.showwarning(title="Important Information", \
+                 message=(      "The now opening NER Plugin needs to be run before "
+                                "preparing the file \"04_ToSearchAndReplaceList.csv\".\n\n"
+                                "So:\n"
+                                "1. Run the NER Pluging first. Its results will be saved "
+                                "in the file \"NER_results\\02_Gazetteer_IDs_DRAFT.csv\"\n\n"
+                                "2. Copy the entries you have approved into "
+                                "\"04_ToSearchAndReplaceList.csv\"\n\n"
+                                "3. After having prepared the other mandatory files run TagTool"
+                                ))
+
+                setNER_PluginWindow = tkinter.Toplevel()
+                setNER_PluginWindow.geometry('600x500')
+                setNER_PluginWindow.title('Named Entity Recognition Plugin')
+                setNER_PluginWindow.iconbitmap(self.settings.cwd+"\\Logo.ico")
+
+                #Models
+                self.groupModels = tkinter.LabelFrame(setNER_PluginWindow)
+                self.groupModels["text"] = "Models"
+                self.groupModels.grid(sticky="w", pady = 10, padx = 10)
+                self.tboxModels = Text(self.groupModels, height=len(self.settings.NER_Settings['Model']), width=70,
+                                          background=self.settings.colorNeutral)
+                self.tboxModels.configure(font=self.textFont)
+                self.tboxModels.grid()
+                for item in self.settings.NER_Settings['Model']:
+                    self.tboxModels.insert("end", item + "\n")
+                self.tboxModels.config(state='disabled')
+
+                #Entities
+                self.groupEntities = tkinter.LabelFrame(setNER_PluginWindow)
+                self.groupEntities["text"] = "Entity Types"
+                self.groupEntities.grid(sticky="w", pady = 10, padx = 10)
+                self.tboxEntities = Text(self.groupEntities, height=len(self.settings.NER_Settings['Entity Type']), width=70,
+                                          background=self.settings.colorNeutral)
+                self.tboxEntities.configure(font=self.textFont)
+                self.tboxEntities.grid()
+                for item in self.settings.NER_Settings['Entity Type']:
+                    self.tboxEntities.insert("end", item + "\n")
+                self.tboxEntities.config(state='disabled')
+
+                #Sources
+                self.groupSources = tkinter.LabelFrame(setNER_PluginWindow)
+                self.groupSources["text"] = "Ways of Source Text Extraction"
+                self.groupSources.grid(sticky="w", pady = 10, padx = 10)
+                self.tboxSources = Text(self.groupSources, height=len(self.settings.NER_Settings['Source']), width=70,
+                                          background=self.settings.colorNeutral)
+                self.tboxSources.configure(font=self.textFont)
+                self.tboxSources.grid()
+                for item in self.settings.NER_Settings['Source']:
+                    self.tboxSources.insert("end", item + "\n")
+                self.tboxSources.config(state='disabled')
+
+                #In this version the default settings cannot be changed so they are hard coded
+                #Selected Settings
+                self.groupSettings = tkinter.LabelFrame(setNER_PluginWindow)
+                self.groupSettings["text"] = "Selected Settings"
+                self.groupSettings.grid(sticky="w", pady = 10, padx = 10)
+                self.tboxSettings = Text(self.groupSettings, height=3, width=70,
+                                          background=self.settings.okGreen)
+                self.tboxSettings.configure(font=self.textFont)
+                self.tboxSettings.grid()
+                for x, y in self.settings.NER_SettingsSet.items():
+                    self.tboxSettings.insert("end", x + ": " + y + "\n")
+                self.tboxSettings.config(state='disabled')
+                
+                self.buttonRunNER = ttk.Button(setNER_PluginWindow, text = "Run NER Plugin", style = "TButton",
+                        command=lambda: self.run_NER_Plugin(setNER_PluginWindow))
+                self.buttonRunNER.grid(sticky="e")
+
+                self.tboxInfo = Text(setNER_PluginWindow, height=1, width=70, background="#ffff66")
+                self.tboxInfo.configure(font=self.textFont)
+                infoText = "NOTE: In this test versions this selected settings are predefined."
+                self.tboxInfo.insert("end", infoText)
+                self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
+                self.tboxInfo.config(state='disabled')
+
+
         def show_help(self):
                 webbrowser.open_new(self.settings.cwd+"\\ttw_help.html")
                 
@@ -336,8 +442,8 @@ class MainWindow(tkinter.Frame):
                     "version: "+versionNumber+"\n"\
                     "for complete documentation see\nhttps://github.com/pBxr/TagTool_WiZArd"
             tkinter.messagebox.showinfo(title="Info", \
-                                     message=textInfo)
-
+                                    message=textInfo)                                
+        
         def start_process(self):
             if self.settings.readyToRun == False:
                 tkinter.messagebox.showwarning(title="ERROR", \
