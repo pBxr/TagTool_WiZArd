@@ -17,7 +17,7 @@ from Settings import ttwSettings
 from Settings import files
 
 import pyScripts as pyScr
-import pyNER 
+
 
 class MainWindow(tkinter.Frame):
         
@@ -143,7 +143,7 @@ class MainWindow(tkinter.Frame):
 
                 #NER plugin button
                 self.buttonStartNER = ttk.Button(self, text = "Open NER plugin", style = "TButton",
-                    command=lambda: self.set_NER_settings())
+                    command=lambda: self.basic_NER_lib_check())
                 self.buttonStartNER["width"] = 20
                 self.buttonStartNER.grid(column = 3, row = heightRow1 + 2, sticky="nw")
                 
@@ -188,6 +188,51 @@ class MainWindow(tkinter.Frame):
                 self.buttonOpenBrowser["width"] = 25
                 self.buttonOpenBrowser.grid(column = 2, row = heightRow1 + 3, sticky="nw")
            
+        def basic_NER_lib_check(self):
+
+                if NER_Plugin_Switch == False:
+                    textInfo = ("NER Plugin must be activated first.\n\n"
+                                "See \"About\" -> \"Help\" for instructions.\n\n\n")
+                    tkinter.messagebox.showwarning(title="ERROR", \
+                                         message=textInfo)
+                    return
+                
+                if self.files.fileName == "":
+                    tkinter.messagebox.showwarning(title="ERROR", \
+                                         message="No file selected!")
+                    self.settings.selectedFileIsReady = False
+                    self.bgColorTboxArticle = "red"
+                    self.actualize_widgets()
+                    return
+
+                #Extensive tests ommitted, but at least a quick check,
+                #whether it can be assumed that the necessary environment exists.
+                try:
+                    from transformers import pipeline
+                except ModuleNotFoundError as err:
+                    textInfo = ("The required NER libraries do not seem to be installed.\n\n"
+                                "Check your environment.\n\n"
+                                "See \"About\" -> \"Help\" for instructions.\n\n\n")
+                    tkinter.messagebox.showwarning(title="ERROR", \
+                                         message=textInfo)
+                    return
+                else:
+                    yesnoResult = tkinter.messagebox.askyesno(title="Important Information", \
+                     message=(      "The now opening NER Plugin must to be run before "
+                                    "preparing the file \"04_ToSearchAndReplaceList.csv\".\n\n"
+                                    "So:\n"
+                                    "1. Run the NER Pluging first. Its results will be saved "
+                                    "in the file \"NER_results\\02_Gazetteer_IDs_DRAFT.csv\"\n\n"
+                                    "2. Copy the entries you have approved and selected into "
+                                    "\"04_ToSearchAndReplaceList.csv\"\n\n"
+                                    "3. After having prepared the other mandatory .csv files run TagTool.\n\n\n"
+                                    "Do you wish to continue?"
+                                    ))
+                    if yesnoResult == False:
+                        return
+                    else:
+                        self.set_NER_settings()
+
         def create_MenuBar(self):
             self.menueBarFile = tkinter.Menu(self.menu, tearoff=False)
 
@@ -270,9 +315,7 @@ class MainWindow(tkinter.Frame):
         def run_NER_Plugin(self, window):
 
             #In this version the default settings cannot be changed so they are hard coded
-            pyNER.run_NER_process(self.files, self.settings)
-
-            textInfo = "Process finished. Check result"
+            success, textInfo = pyNER.run_NER_process(self.files, self.settings)
     
             tkinter.messagebox.showinfo(title="Info", \
                                      message=textInfo)
@@ -348,89 +391,71 @@ class MainWindow(tkinter.Frame):
         
 
         def set_NER_settings(self):
+            
+            setNER_PluginWindow = tkinter.Toplevel()
+            setNER_PluginWindow.geometry('600x500')
+            setNER_PluginWindow.title('Named Entity Recognition Plugin')
+            setNER_PluginWindow.iconbitmap(self.settings.cwd+"\\Logo.ico")
 
-            if self.files.fileName == "":
-                tkinter.messagebox.showwarning(title="ERROR", \
-                                     message="No file selected!")
-                self.settings.selectedFileIsReady = False
-                self.bgColorTboxArticle = "red"
-                self.actualize_widgets()
-            else:
-                tkinter.messagebox.showwarning(title="Important Information", \
-                 message=(      "The now opening NER Plugin needs to be run before "
-                                "preparing the file \"04_ToSearchAndReplaceList.csv\".\n\n"
-                                "So:\n"
-                                "1. Run the NER Pluging first. Its results will be saved "
-                                "in the file \"NER_results\\02_Gazetteer_IDs_DRAFT.csv\"\n\n"
-                                "2. Copy the entries you have approved into "
-                                "\"04_ToSearchAndReplaceList.csv\"\n\n"
-                                "3. After having prepared the other mandatory files run TagTool"
-                                ))
+            #Models
+            self.groupModels = tkinter.LabelFrame(setNER_PluginWindow)
+            self.groupModels["text"] = "Models"
+            self.groupModels.grid(sticky="w", pady = 10, padx = 10)
+            self.tboxModels = Text(self.groupModels, height=len(self.settings.NER_Settings['Model']), width=70,
+                                      background=self.settings.colorNeutral)
+            self.tboxModels.configure(font=self.textFont)
+            self.tboxModels.grid()
+            for item in self.settings.NER_Settings['Model']:
+                self.tboxModels.insert("end", item + "\n")
+            self.tboxModels.config(state='disabled')
 
-                setNER_PluginWindow = tkinter.Toplevel()
-                setNER_PluginWindow.geometry('600x500')
-                setNER_PluginWindow.title('Named Entity Recognition Plugin')
-                setNER_PluginWindow.iconbitmap(self.settings.cwd+"\\Logo.ico")
+            #Entities
+            self.groupEntities = tkinter.LabelFrame(setNER_PluginWindow)
+            self.groupEntities["text"] = "Entity Types"
+            self.groupEntities.grid(sticky="w", pady = 10, padx = 10)
+            self.tboxEntities = Text(self.groupEntities, height=len(self.settings.NER_Settings['Entity Type']), width=70,
+                                      background=self.settings.colorNeutral)
+            self.tboxEntities.configure(font=self.textFont)
+            self.tboxEntities.grid()
+            for item in self.settings.NER_Settings['Entity Type']:
+                self.tboxEntities.insert("end", item + "\n")
+            self.tboxEntities.config(state='disabled')
 
-                #Models
-                self.groupModels = tkinter.LabelFrame(setNER_PluginWindow)
-                self.groupModels["text"] = "Models"
-                self.groupModels.grid(sticky="w", pady = 10, padx = 10)
-                self.tboxModels = Text(self.groupModels, height=len(self.settings.NER_Settings['Model']), width=70,
-                                          background=self.settings.colorNeutral)
-                self.tboxModels.configure(font=self.textFont)
-                self.tboxModels.grid()
-                for item in self.settings.NER_Settings['Model']:
-                    self.tboxModels.insert("end", item + "\n")
-                self.tboxModels.config(state='disabled')
+            #Sources
+            self.groupSources = tkinter.LabelFrame(setNER_PluginWindow)
+            self.groupSources["text"] = "Ways of Source Text Extraction"
+            self.groupSources.grid(sticky="w", pady = 10, padx = 10)
+            self.tboxSources = Text(self.groupSources, height=len(self.settings.NER_Settings['Source']), width=70,
+                                      background=self.settings.colorNeutral)
+            self.tboxSources.configure(font=self.textFont)
+            self.tboxSources.grid()
+            for item in self.settings.NER_Settings['Source']:
+                self.tboxSources.insert("end", item + "\n")
+            self.tboxSources.config(state='disabled')
 
-                #Entities
-                self.groupEntities = tkinter.LabelFrame(setNER_PluginWindow)
-                self.groupEntities["text"] = "Entity Types"
-                self.groupEntities.grid(sticky="w", pady = 10, padx = 10)
-                self.tboxEntities = Text(self.groupEntities, height=len(self.settings.NER_Settings['Entity Type']), width=70,
-                                          background=self.settings.colorNeutral)
-                self.tboxEntities.configure(font=self.textFont)
-                self.tboxEntities.grid()
-                for item in self.settings.NER_Settings['Entity Type']:
-                    self.tboxEntities.insert("end", item + "\n")
-                self.tboxEntities.config(state='disabled')
+            #In this version the default settings cannot be changed so they are hard coded
+            #Selected Settings
+            self.groupSettings = tkinter.LabelFrame(setNER_PluginWindow)
+            self.groupSettings["text"] = "Selected Settings"
+            self.groupSettings.grid(sticky="w", pady = 10, padx = 10)
+            self.tboxSettings = Text(self.groupSettings, height=3, width=70,
+                                      background=self.settings.okGreen)
+            self.tboxSettings.configure(font=self.textFont)
+            self.tboxSettings.grid()
+            for x, y in self.settings.NER_SettingsSet.items():
+                self.tboxSettings.insert("end", x + ": " + y + "\n")
+            self.tboxSettings.config(state='disabled')
+            
+            self.buttonRunNER = ttk.Button(setNER_PluginWindow, text = "Run NER Plugin", style = "TButton",
+                    command=lambda: self.run_NER_Plugin(setNER_PluginWindow))
+            self.buttonRunNER.grid(sticky="e")
 
-                #Sources
-                self.groupSources = tkinter.LabelFrame(setNER_PluginWindow)
-                self.groupSources["text"] = "Ways of Source Text Extraction"
-                self.groupSources.grid(sticky="w", pady = 10, padx = 10)
-                self.tboxSources = Text(self.groupSources, height=len(self.settings.NER_Settings['Source']), width=70,
-                                          background=self.settings.colorNeutral)
-                self.tboxSources.configure(font=self.textFont)
-                self.tboxSources.grid()
-                for item in self.settings.NER_Settings['Source']:
-                    self.tboxSources.insert("end", item + "\n")
-                self.tboxSources.config(state='disabled')
-
-                #In this version the default settings cannot be changed so they are hard coded
-                #Selected Settings
-                self.groupSettings = tkinter.LabelFrame(setNER_PluginWindow)
-                self.groupSettings["text"] = "Selected Settings"
-                self.groupSettings.grid(sticky="w", pady = 10, padx = 10)
-                self.tboxSettings = Text(self.groupSettings, height=3, width=70,
-                                          background=self.settings.okGreen)
-                self.tboxSettings.configure(font=self.textFont)
-                self.tboxSettings.grid()
-                for x, y in self.settings.NER_SettingsSet.items():
-                    self.tboxSettings.insert("end", x + ": " + y + "\n")
-                self.tboxSettings.config(state='disabled')
-                
-                self.buttonRunNER = ttk.Button(setNER_PluginWindow, text = "Run NER Plugin", style = "TButton",
-                        command=lambda: self.run_NER_Plugin(setNER_PluginWindow))
-                self.buttonRunNER.grid(sticky="e")
-
-                self.tboxInfo = Text(setNER_PluginWindow, height=1, width=70, background="#ffff66")
-                self.tboxInfo.configure(font=self.textFont)
-                infoText = "NOTE: In this test versions this selected settings are predefined."
-                self.tboxInfo.insert("end", infoText)
-                self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
-                self.tboxInfo.config(state='disabled')
+            self.tboxInfo = Text(setNER_PluginWindow, height=1, width=70, background="#ffff66")
+            self.tboxInfo.configure(font=self.textFont)
+            infoText = "NOTE: In this test versions this selected settings are predefined."
+            self.tboxInfo.insert("end", infoText)
+            self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
+            self.tboxInfo.config(state='disabled')
 
 
         def show_help(self):
@@ -474,7 +499,8 @@ class MainWindow(tkinter.Frame):
                 subprocess.run(pandocCall, stdout=FNULL, stderr=FNULL, shell=False)
 
                 #Step 2: Run ttw
-                ttwCall = "\"" + self.settings.cwd + "\\tagtool_v2-0-0.exe\"" + " \""\
+                versionNumberCall = versionNumber.replace(".","-")
+                ttwCall = "\"" + self.settings.cwd + "\\tagtool_v"+versionNumberCall+".exe\"" + " \""\
                           + self.files.projectPath + self.settings.target + "\""
 
                 #In case of whitespaces
@@ -500,7 +526,14 @@ if __name__=='__main__':
 
     root = tkinter.Tk()
     global versionNumber
-    versionNumber = "2.0.0"
+    versionNumber = "2.1.0"
+
+    #Here is the switch if you want to test the NER Plugin
+    global NER_Plugin_Switch
+    NER_Plugin_Switch = False
+    if NER_Plugin_Switch == True:
+        import pyNER 
+    
     currentDirectory = os.getcwd()
     titleText = "Welcome to TagToolWiZArd application " + "(v"+versionNumber+")"
     root.title(titleText)

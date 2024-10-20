@@ -634,8 +634,8 @@ string strongEndXML_ = "</bold>";
 
 //Global settings and switches...
 
-string versionNumber = "v2-0-0";
-string versionTag = "v2.0.0";
+string versionNumber = "v2-1-0";
+string versionTag = "v2.1.0";
 
 bool firstRun=true;
 bool nextRunIsSet=true;

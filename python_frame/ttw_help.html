@@ -153,23 +153,30 @@
 <header id="title-block-header">
 <h1 class="title">TagTool_WiZArd Help</h1>
 </header>
-<p>v2.0.0</p>
+<h1 id="tagtool_wizard-help">TagTool_WiZArd Help</h1>
+<p>v2.1.0</p>
 <h1 class="TOC-Heading" id="contents">Contents</h1>
-<p><a href="#before-starting-tagtoolwizard-ttw">Before starting TagToolWiZArd (ttw) <a href="#before-starting-tagtoolwizard-ttw">1</a></a></p>
-<p><a href="#preparation-of-the-article-file">Preparation of the article file <a href="#preparation-of-the-article-file">2</a></a></p>
-<p><a href="#preparation-of-the-.csv-files">Preparation of the .csv files <a href="#preparation-of-the-.csv-files">3</a></a></p>
-<p><a href="#in-general">In general <a href="#in-general">3</a></a></p>
-<p><a href="#metadata-list-01_metadatavaluelist.csv">Metadata list (01_MetadataValueList.csv) <a href="#metadata-list-01_metadatavaluelist.csv">4</a></a></p>
-<p><a href="#bibliography-02_authoryearlist.csv">Bibliography (02_AuthorYearList.csv) <a href="#bibliography-02_authoryearlist.csv">4</a></a></p>
-<p><a href="#illustration-credits-and-captions-03_illustrationcreditlist.csv">Illustration credits and captions (03_IllustrationCreditList.csv) <a href="#illustration-credits-and-captions-03_illustrationcreditlist.csv">5</a></a></p>
-<p><a href="#to-search-and-replace-04_tosearchandreplacelist.csv">To search and replace (04_ToSearchAndReplaceList.csv) <a href="#to-search-and-replace-04_tosearchandreplacelist.csv">5</a></a></p>
-<p><a href="#common-errors">Common errors <a href="#common-errors">6</a></a></p>
-<p><a href="#start-ttw">Start ttw <a href="#start-ttw">6</a></a></p>
-<p><a href="#automatic-checks">Automatic checks <a href="#automatic-checks">7</a></a></p>
-<p><a href="#mandatory-.csv-files">Mandatory .csv files <a href="#mandatory-.csv-files">7</a></a></p>
-<p><a href="#article-file">Article file: <a href="#article-file">7</a></a></p>
-<p><a href="#xml-output">XML output <a href="#xml-output">8</a></a></p>
-<p><a href="#result">Result <a href="#result">8</a></a></p>
+<p><a href="#tagtool_wizard-help">TagTool_WiZArd Help 1</a></p>
+<p><a href="#before-starting-tagtoolwizard-ttw">Before starting TagToolWiZArd (ttw) 2</a></p>
+<p><a href="#preparation-of-the-article-file">Preparation of the article file 3</a></p>
+<p><a href="#__RefHeading___Toc792_909307545">Preparation of the .csv files 4</a></p>
+<p><a href="#in-general">In general 4</a></p>
+<p><a href="#__RefHeading___Toc796_909307545">Metadata list (01_MetadataValueList.csv) 4</a></p>
+<p><a href="#__RefHeading___Toc798_909307545">Bibliography (02_AuthorYearList.csv) 5</a></p>
+<p><a href="#__RefHeading___Toc800_909307545">Illustration credits and captions (03_IllustrationCreditList.csv) 5</a></p>
+<p><a href="#__RefHeading___Toc802_909307545">To search and replace (04_ToSearchAndReplaceList.csv) 6</a></p>
+<p><a href="#notes-for-function-additional-search-and-replace">Notes for function “Additional search and replace” 6</a></p>
+<p><a href="#__RefHeading___Toc806_909307545">Common errors 6</a></p>
+<p><a href="#__RefHeading___Toc808_909307545">Start ttw 7</a></p>
+<p><a href="#automatic-checks">Automatic checks 8</a></p>
+<p><a href="#mandatory-.csv-files">Mandatory .csv files 8</a></p>
+<p><a href="#__RefHeading___Toc814_909307545">Article file: 8</a></p>
+<p><a href="#__RefHeading___Toc816_909307545">XML output 8</a></p>
+<p><a href="#__RefHeading___Toc818_909307545">Result 8</a></p>
+<p><a href="#named-entity-recognition-ner-plugin-option">Named Entity Recognition (NER) Plugin Option 9</a></p>
+<p><a href="#requirements-for-using-the-ner-plugin">Requirements for using the NER Plugin 9</a></p>
+<p><a href="#ner-functions">NER functions 9</a></p>
+<h1 id="section"></h1>
 <h1 id="before-starting-tagtoolwizard-ttw">Before starting TagToolWiZArd (ttw)</h1>
 <p>1.) ttw runs <strong>only on Windows</strong>. MacOS, Linux and so on are not supported yet.</p>
 <p>2.) Install <strong>pandoc</strong> on your machine. TagTool_WiZArd (ttw) is tested with version <strong>pandoc 2.16.2</strong>, other versions may cause problems.</p>
@@ -183,6 +190,8 @@
 </ul>
 <ul>
 <li><p>tagtool_v2-0-0.exe (or later versions)</p></li>
+</ul>
+<ul>
 <li><p>and the \resources folder (with all necessary files downloaded together with the ttw release)</p></li>
 </ul>
 <p>4.) <strong>Create a shortcut</strong> on your desktop to start TagTool_WiZArd_Start.exe. <strong>In this case you don´t have to touch the ttw folder again.</strong></p>
@@ -190,8 +199,14 @@
 <p>Make sure that the <strong>4</strong> <strong>mandatory value lists</strong> are in the <strong>same folder</strong> together <strong>with the article file</strong>:</p>
 <ul>
 <li><p>01_MetadataValueList.csv</p></li>
+</ul>
+<ul>
 <li><p>02_AuthorYearList.csv</p></li>
+</ul>
+<ul>
 <li><p>03_ImageCreditList.csv</p></li>
+</ul>
+<ul>
 <li><p>04_ToSearchAndReplaceList.csv</p></li>
 </ul>
 <p><strong>For the preparation of the .csv files see below.</strong></p>
@@ -200,9 +215,17 @@
 <li><p>Arrangement of the article sections: To avoid errors in the automatic paragraph numbering, it is recommended to place <strong>all technical sections or informations at the end of the article</strong> and <strong>not to use headlines for them</strong>, e. g.</p>
 <ul>
 <li><p>Abstract</p></li>
+</ul>
+<ul>
 <li><p>Kewords</p></li>
+</ul>
+<ul>
 <li><p>Bibliography/references</p></li>
+</ul>
+<ul>
 <li><p>Illustrations credits/captions</p></li>
+</ul>
+<ul>
 <li><p>Address/affiliations.</p></li>
 </ul></li>
 </ul>
@@ -212,14 +235,24 @@
 <p>Also important:</p>
 <ul>
 <li><p>If the chapter headlines are not marked with MS Word style sheet headline templates, it <strong>may lead to errors in the automatic paragraph numbering</strong>. It is therefore recommended to <strong>use MS Word style sheet headline templates</strong>, which has the additional advantage that the tool then automatically sets the correct style sheet needed for the typesetting process.</p></li>
+</ul>
+<ul>
 <li><p><strong>Paragraph numbers may be set by mistake in catalog sections or other unusually formatted sections.</strong> In case of too many sections or special formattings, it is not recommended to use the tool but to prepare the MS manually.</p></li>
+</ul>
+<ul>
 <li><p>The tool can process simple tables (for output to .html).</p></li>
+</ul>
+<ul>
 <li><p><strong>Foreign-language</strong> texts (Greek, Cyrillic) are <strong>no problem, if unicode fonts are used</strong> (Calibri, Noto or similar).</p></li>
 </ul>
 <p>Figure references within the text:</p>
 <ul>
 <li><p>Only figure references that are in brackets and begin directly after the opening bracket – i.e. "<strong>(Abb.</strong>", "<strong>(Fig.</strong>" or "<strong>(Figs.</strong>" etc. – <strong>are marked automatically</strong>. All other variants are ignored and must be marked manually.</p></li>
+</ul>
+<ul>
 <li><p>Make sure that there is <strong>no other content in the brackets</strong> apart from the figure references (e.g. references to inventory numbers or similar) or drag these manually behind the bracket: "<strong>(Fig. 6, K 93.301.4)</strong>" → "<strong>(Fig. 6) (K 93.301.4)</strong>".</p></li>
+</ul>
+<ul>
 <li><p>References to figure sections are automatically resolved by ttw, as this is necessary for the viewer output (i.e. "<strong>(Fig. 2-5. 8-10)</strong>" will be resolved to "<strong>(Fig. 2. 3. 4. 5. 8. 9. 10)</strong>". In addition to normal hyphens between the numbers, ttw should also recognize dashes.</p></li>
 </ul>
 <h2 id="preparation-of-the-.csv-files">Preparation of the .csv files</h2>
@@ -228,31 +261,49 @@
 <p>Prepare each file concerning the categories and so on like <strong>in the example files</strong> <strong>in the folder \resources:</strong></p>
 <ul>
 <li><p>01_MetadataValueList_TEMPLATE.csv</p></li>
+</ul>
+<ul>
 <li><p>02_AuthorYearList_EXAMPLE.csv,</p></li>
+</ul>
+<ul>
 <li><p>03_IllustrationCreditList_EXAMPLE.csv</p></li>
+</ul>
+<ul>
 <li><p>04_ToSearchAndReplaceList_EXAMPLE.csv.</p></li>
 </ul>
 <p>Use the option "Save as .csv" for the conversion. <strong>Be sure that:</strong></p>
 <ul>
 <li><p>the character encoding ("character set"/"Zeichensatz") is set to "<strong>Unicode (UTF-8)</strong>",</p></li>
+</ul>
+<ul>
 <li><p><strong>the separating character</strong> ("field delimiter"/"Feldtrenner") <strong>is set to "|"</strong>,</p></li>
+</ul>
+<ul>
 <li><p>that no "string delimiter"/"Zeichenketten-Trenner" is entered (to avoid possible conflicts with similar characters).</p></li>
 </ul>
 <p><strong>Important:</strong></p>
 <ul>
 <li><p>All <strong>4 .csv value lists are</strong> <strong>mandatory</strong>.</p></li>
+</ul>
+<ul>
 <li><p>In case you do not intend special alterations (references, illustrations, search and replace) <strong>you can use the value lists 02, 03 and 04 with no entries</strong>.</p></li>
 </ul>
 <h3 id="metadata-list-01_metadatavaluelist.csv">Metadata list (01_MetadataValueList.csv)</h3>
 <p>The list needs to contain <strong>two columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
 <ul>
 <li><p><strong>##Source list to replace ##|##Replace with##</strong></p></li>
+</ul>
+<ul>
 <li><p><strong>Example:</strong> ###_Insert volume number_###|42</p></li>
 </ul>
 <p>That means:</p>
 <ul>
 <li><p>Open "01_MetadataValueList_TEMPLATE.csv" in the "resources" directory (see above).</p></li>
+</ul>
+<ul>
 <li><p>Enter the metadata of the journal and the article.</p></li>
+</ul>
+<ul>
 <li><p>Save the file <strong>in the same folder where you have saved the article file</strong> as "01_MetadataValueList.csv"</p></li>
 </ul>
 <p>Please note:</p>
@@ -263,25 +314,39 @@
 <p>The list needs to contain <strong>three columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
 <ul>
 <li><p><strong>Author/Year|Full citation|Identifier</strong></p></li>
+</ul>
+<ul>
 <li><p><strong>Example:</strong> Bury 1932|R. G. Bury, The Symposium of Plato (Cambridge MA 1932)|https://zenon.dainst.org/Record/000182245</p></li>
 </ul>
 <p>That means:</p>
 <ul>
 <li><p>Open "02_AuthorYearList.csv" in the "resources" directory (see above).</p></li>
+</ul>
+<ul>
 <li><p>Enter the necessary informations.</p></li>
+</ul>
+<ul>
 <li><p>If no identifier is entered in the "Identifier" column, the tool automatically sets a note during the conversion.</p></li>
+</ul>
+<ul>
 <li><p>Save the file <strong>in the same folder where you have saved the article file</strong> as "02_AuthorYearList.csv "</p></li>
 </ul>
 <p>Please note:</p>
 <ul>
 <li><p>ttw tags the references directly in the article file. Therefore the <strong>bibliography/references must also remain in the article</strong> <strong>in a congruent version</strong>.</p></li>
+</ul>
+<ul>
 <li><p><strong>Only articles using the author-year-schema</strong> are suitable for ttw. If this is not the case, it is not recommended to use ttw.</p></li>
+</ul>
+<ul>
 <li><p>In some cases, <strong>the automatic tagging does not work if special characters appear in the short quotation and/or the full quotation</strong> (superscript numbers etc.). These passages can easily identified after the conversion because the style sheet has not been applied.</p></li>
 </ul>
 <h3 id="illustration-credits-and-captions-03_illustrationcreditlist.csv">Illustration credits and captions (03_IllustrationCreditList.csv)</h3>
 <p>The list needs to contain <strong>four columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
 <ul>
 <li><p><strong>Figure number|Captions|Path of source file (for xml-Version)|Copyright/Illustration credit</strong></p></li>
+</ul>
+<ul>
 <li><p><strong>Example:</strong> Fig. 1|Plan of Heraion with excavation area 2010–2013 marked in yellow|C:/Data/Article/image.jpg|All rights reserved</p></li>
 </ul>
 <p>That means:</p>
@@ -290,7 +355,11 @@
 </ul>
 <ul>
 <li><p>Copy the captions and informations on the illustrations credits into the file.</p></li>
+</ul>
+<ul>
 <li><p>The "<strong>Path of source file</strong> (for xml version only)" <strong>only needs to be entered if an XML output is chosen</strong>. In the case of .html output, this column can remain empty.</p></li>
+</ul>
+<ul>
 <li><p>Save the file <strong>in the same folder where you have saved the article file</strong> as "03_IllustrationCreditList.csv”</p></li>
 </ul>
 <p>Please note:</p>
@@ -301,43 +370,77 @@
 <p>The list needs to contain <strong>two columns, separated with the pipe symbol (“|”)</strong> using following schema:</p>
 <ul>
 <li><p><strong>##Search##|##Replace with##</strong></p></li>
+</ul>
+<ul>
 <li><p><strong>Example</strong>: Olympia|https://gazetteer.dainst.org/place/2281840</p></li>
 </ul>
 <h4 id="notes-for-function-additional-search-and-replace">Notes for function “Additional search and replace”</h4>
 <ul>
 <li><p>The <strong>purpose of this function is mainly to set tagged hyperlinks</strong>. Other and especially more complex find-replace operations should be done in other applications for better reliability.</p></li>
+</ul>
+<ul>
 <li><p>If a plain url is entered as replacement string, the tool creates the whole tagged link automatically prepared for the chosen output format (.html or .xml).</p></li>
+</ul>
+<ul>
 <li><p>If you want to avoid to add links to all occurrences of the search expression the "@" character can be used as a prefix (both in the search expression in the .csv file and in the article text). The tool will remove this prefix when creating the tagged link.</p></li>
+</ul>
+<ul>
 <li><p>See "04_ToSearchAndReplaceList_EXAMPLE.csv" in the folder \resources.</p></li>
 </ul>
 <h1 id="common-errors">Common errors</h1>
 <ul>
 <li><p><strong>Unusual formattings in the footnote section</strong> (such as manual paragraph marks, tables, indentations, blank lines or similar).</p></li>
+</ul>
+<ul>
 <li><p><strong>Rudiments of previous formattings</strong> that remain (sometimes hidden) in the footnotes or elsewhere in the text, such as section breaks (<strong>frequent problem when opening Mac MS Word documents in Windows MS Word or LibreOffice</strong>)</p></li>
+</ul>
+<ul>
 <li><p><strong>Additional content in the brackets of the figure references</strong> (see above).</p></li>
 </ul>
 <p>When preparing the .csv lists:</p>
 <ul>
 <li><p><strong>Blank lines</strong> at the beginning, at the end or in the middle of the list. (Although ttw tries to correct this, it is not a guarantee.)</p></li>
+</ul>
+<ul>
 <li><p>02_AuthorYearList.csv: <strong>A field entry is missing</strong> (either the full citation associated with the short citation is missing or vice versa). Or: Whitespaces at the beginning or the end of a field entry. (Although ttw tries to correct this, it is not a guarantee.)</p></li>
+</ul>
+<ul>
 <li><p>03_IllustrationCreditList.csv: <strong>A field entry is missing</strong> in the column "Figure number", "Captions" or "Copyright/Illustration credit".</p></li>
+</ul>
+<ul>
 <li><p>When converting to .csv, LibreOffice sometimes inserts paragraph marks in case the table itself was not prepared correctly or incorrect settings were selected when saving. This step should therefore be checked carefully. <strong>Tip: Sometimes it is more reliable to create the source table in a Word table, convert it to text with the appropriate separator and then save the result as a .csv file.</strong></p></li>
 </ul>
 <h1 id="start-ttw">Start ttw</h1>
 <p>When starting ttw the following functions are chosen by default (<strong>recommended</strong>):</p>
 <ul>
 <li><p>Apply custom DAI citation style features (not yet fully implemented)</p></li>
+</ul>
+<ul>
 <li><p>Set customized journal body tags</p></li>
+</ul>
+<ul>
 <li><p>Set figure references tags</p></li>
+</ul>
+<ul>
 <li><p>Set author year tags</p></li>
+</ul>
+<ul>
 <li><p>Set paragraph numbers</p></li>
+</ul>
+<ul>
 <li><p>Insert tagged illustration credits section</p></li>
+</ul>
+<ul>
 <li><p>Search and replace by using the separate value list (see remarks below)</p></li>
+</ul>
+<ul>
 <li><p>Output format will be HTML.</p></li>
 </ul>
 <p>Please note:</p>
 <ul>
 <li><p>You can change the functions and/or the output format using the ttw menu bar or the buttons.</p></li>
+</ul>
+<ul>
 <li><p>It is not recommended to change the functions if you are not familiar with ttw.</p></li>
 </ul>
 <h2 id="automatic-checks">Automatic checks</h2>
@@ -346,7 +449,11 @@
 <p>ttw is also carrying out a simple <strong>integrity check</strong> on the 4 .csv value lists:</p>
 <ul>
 <li><p>If a .csv list contains <strong>less than the expected number of columns</strong>/cells (see the templates above) <strong>or empty rows</strong> within the document <strong>ttw throws an error</strong> and the tool will not be ready to run. In this case check the files and reload the article.</p></li>
+</ul>
+<ul>
 <li><p>In case of an <strong>empty line at the end</strong> of one of the .csv lists ttw throws a warning, i. e. the tool will be ready to run, but in case the process fails it is recommended to actualize the value lists.</p></li>
+</ul>
+<ul>
 <li><p>Although ttw removes leading or ending whitespaces in the entries of the cells it is recommended to prepare the .csv lists carefully.</p></li>
 </ul>
 <h3 id="article-file">Article file:</h3>
@@ -356,7 +463,11 @@
 <p><strong>Important</strong>:</p>
 <ul>
 <li><p>This function will create in most cases only a non-valid .xml version.</p></li>
+</ul>
+<ul>
 <li><p>Manual completion is necessary, especially concerning the section endings. Check especially the marker "&lt;!-- CHECK POSITION OF CLOSING TAG--&gt;" that is set in the xml file automatically.</p></li>
+</ul>
+<ul>
 <li><p>Table conversion is not implemented yet.</p></li>
 </ul>
 <h1 id="result">Result</h1>
@@ -366,11 +477,37 @@
 <p>If the files are written successfully:</p>
 <ul>
 <li><p>Open MS Word and open the edited .html-file.</p></li>
+</ul>
+<ul>
 <li><p>Save it immediately as a .docx-file</p></li>
 </ul>
 <p><strong>Important</strong>:</p>
 <ul>
 <li><p>For a correct representation in MS Word the folder "\__ress" need to be in the same folder together with the .html article file.</p></li>
 </ul>
+<h1 id="named-entity-recognition-ner-plugin-option">Named Entity Recognition (NER) Plugin Option</h1>
+<h3 id="requirements-for-using-the-ner-plugin">Requirements for using the NER Plugin</h3>
+<p>The NER Plugin needs a specific environment and various additional libraries with special dependencies. <strong>This plugin therefore is switched off by default</strong> in the release versions to avoid conflicts.</p>
+<p>If you want to test the plugin:</p>
+<ul>
+<li><p>Prepare your environment carefully, see the README.md file with the complete documentation here: <a href="https://github.com/pBxr/NER_Plugin_for_ttw">https://github.com/pBxr/NER_Plugin_for_ttw</a>.</p></li>
+<li><p>Activate the plugin in the Python source code before re-interpreting the Python files, see the README.md file here: <a href="https://github.com/pBxr/TagTool_WiZArd">https://github.com/pBxr/TagTool_WiZArd</a>.</p></li>
+</ul>
+<p>In case of problems when running the plugin check the log.txt file (see below).</p>
+<h3 id="ner-functions">NER functions</h3>
+<p>In this version the default settings (e. g. the model) are predefined an cannot be changed. The focus lies on the extraction of location names.</p>
+<ul>
+<li><p>The plugin gets the plain text from the selected text file and saves it in a folder ("NER_results") in the selected project directory.</p></li>
+<li><p>It extracts a tokenized list of result entries that are beeing re-merged to a list of place names.</p></li>
+<li><p>The place names are run through the iDAI.gazetteer webservice to identify the locations and extract the gazetteer-IDs.</p></li>
+<li><p>A log file with the tokenized results, a draft for the final .csv list and the complete gazetteer query result as .json file will be saved in the NER_results folder.</p></li>
+</ul>
+<p>That means that <strong>the NER Plugin must to be run before preparing the file "04_ToSearchAndReplaceList.csv":</strong></p>
+<ol type="1">
+<li><p>Run the NER Pluging first. Its results will be saved in the file <strong>"NER_results\02_Gazetteer_IDs_DRAFT.csv”</strong>.</p></li>
+<li><p>Since the quality of the iDAI.gazetteer query results is still low in this test version, <strong>you need to revise the result manually.</strong></p></li>
+<li><p>Copy the entries you have approved and selected into <strong>"04_ToSearchAndReplaceList.csv”</strong>.</p></li>
+<li><p>After having prepared the other mandatory .csv files run ttw.</p></li>
+</ol>
 </body>
 </html>

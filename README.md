@@ -35,7 +35,7 @@ ttw consists of two components:
 - it also runs several integrity checks on the files
 (- step by step it will also take over the functions from the `c++` core)  
 
-2.) The `c++` core (`tagtool_v2-0-0.exe`):
+2.) The `c++` core (`tagtool_v2-1-0.exe`):
 - it runs most of the main tasks
 - using the `Python` framework it needs to be embedded into the framework´s main folder
 - like in former releases it still can be run as a standalone application using a terminal.
@@ -57,13 +57,13 @@ pyinstaller -wF --icon="Logo.ico" TagTool_WiZArd_Start.py
 
 Result is `TagTool_WiZArd_Start.exe`.
 
-3.) Create `tagtool_v2-0-0.exe` using this repo (`cpp_core`):
-A simple way to create the `tagtool_v2-0-0.exe` file from the `c++` core is to use Embarcadero Dev-C++ 6.3.:
+3.) Create `tagtool_v2-1-0.exe` using this repo (`cpp_core`):
+A simple way to create the `tagtool_v2-1-0.exe` file from the `c++` core is to use Embarcadero Dev-C++ 6.3.:
 - Open the `.dev` file and add all `c++` files to your project (`main.cpp` and all header files (`.h`))
 - If using Embarcadero Dev-C++ 6.3 add "`-std=c++17`" in Project Options -> Parameter s -> C++ compilers.
 - Run "Rebuild all". 
 
-Result is `tagtool_v2-0-0.exe`
+Result is `tagtool_v2-1-0.exe`
 
 ## How to setup and run
 
@@ -74,7 +74,7 @@ Result is `tagtool_v2-0-0.exe`
 - ttw_help.html
 - Logo.ico
 - Logo.gif
-- tagtool_v2-0-0.exe (how to create the `.exe` file from the `c++` core see above)
+- tagtool_v2-1-0.exe (how to create the `.exe` file from the `c++` core see above)
 - and the \resources folder (with all necessary files downloaded together with the ttw release)
 
 If you create a shortcut on your desktop to start `TagTool_WiZArd_Start.exe` you don´t have to touch the ttw folder again.
@@ -90,23 +90,34 @@ For preparing the `.csv` files and all other questions how to run the applicatio
 
 **Alternatively: Stand alone from console:**
 
-After compiling the binary (tagtool_v2-0-0.exe, see above) open a terminal and run "tagtool_v2-0-0.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
+After compiling the binary (tagtool_v2-1-0.exe, see above) open a terminal and run "tagtool_v2-1-0.exe" either with the parameter "--help" to get further informations or together with the name of the file you want to process.
 Be sure not to omit the `.html`-ending of the file you want to process.
-Be sure that all necessary files are saved in the **same folder** together with the `tagtool_v2-0-0.exe` file, i. e.
+Be sure that all necessary files are saved in the **same folder** together with the `tagtool_v2-1-0.exe` file, i. e.
 - 01_MetadataValueList.csv
 - 02_AuthorYearList.csv
 - 03_ImageCreditList.csv
 - 04_ToSearchAndReplaceList.csv
 - article.html
-- tagtool_v2-0-0.exe
+- tagtool_v2-1-0.exe
 - \resources  
 
 See "--help" to find all necessary informations to run the application in a standalone version.
 For preparing the `.csv` files see `ttw_help.html`.
 
+## New in v2.1.0
+
+Starting with v2.1.0 `ttw` comes with a test version of a `Named Entity Recognition (NER)` Plugin option. The NER Plugin needs a specific environment and various additional libraries with special dependencies. This plugin therefore is switched off by default in the release versions to avoid conflicts. If you want to test the plugin:
+- Prepare your environment carefully, see the README.md file with the complete documentation here: https://github.com/pBxr/NER_Plugin_for_ttw.
+- Activate the plugin in the `Python` source code before re-interpreting the Python files. See `TagTool_WiZArd_Start.py` and set the `NER_Plugin_Switch` to `True`.
+The insufficient quality of the `iDAI.gazetteer` query results was ignored for this first test version (as well as the webservice´s default query limit). To work on filter mechanisms to improve the quality of the result will be a task for forthcoming commits.
+For more information see the "Help" file and especially the documentation here: https://github.com/pBxr/NER_Plugin_for_ttw.
+
+New also:
+- Function to convert tables to XML, implemented with Beautiful Soup (therefore not availabe when using the console version).
+
 ## New in v2.0.0
 
-- Starting with v2.0.0 ttw comes with a GUI, based on `Python/tkinter`. Although the `c++` core can still be used as terminal standalone application (`tagtool_v2-0-0.exe`, see above), it is not recommended, because the `Python` framework does several integrity checks. 
+- Starting with v2.0.0 ttw comes with a GUI, based on `Python/tkinter`. Although the `c++` core can still be used as terminal standalone application (`tagtool_v2-1-0.exe`, see above), it is not recommended, because the `Python` framework does several integrity checks. 
 
 Also new to previous versions: 
 - The article file and value lists no longer need to be saved in the same folder with ttw, any directory can be chosen.
@@ -157,4 +168,5 @@ Therefore new in v1.3.0: Additional mode implemented when ttw is called from web
 ## See also
 
 - For ttw_webx see https://github.com/pBxr/ttw_WebExtension
-- ID_Extractor (ID_Ex) for extracting IDs and references from `.jats` article files, especially for the above mentioned journals, see   https://github.com/pBxr/ID_Extractor
+- ID_Extractor (ID_Ex) for extracting IDs and references from `.jats` article files, especially for the above mentioned journals, see https://github.com/pBxr/ID_Extractor
+- Test Environment for a TagTool_WiZArD Named Entity Recognition Plugin, see https://github.com/pBxr/NER_Plugin_for_ttw.
