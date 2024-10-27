@@ -3,3 +3,11 @@
 *.bak
 
 *.exe
+
+*.layout
+
+*.win
+
+*.o
+
+**/__pycache__
