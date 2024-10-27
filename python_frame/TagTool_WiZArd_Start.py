@@ -315,7 +315,7 @@ class MainWindow(tkinter.Frame):
         def run_NER_Plugin(self, window):
 
             #In this version the default settings cannot be changed so they are hard coded
-            success, textInfo = pyNER.run_NER_process(self.files, self.settings)
+            success, textInfo = pyNER_Plugin.run_NER_process(self.files, self.settings)
     
             tkinter.messagebox.showinfo(title="Info", \
                                      message=textInfo)
@@ -393,7 +393,7 @@ class MainWindow(tkinter.Frame):
         def set_NER_settings(self):
             
             setNER_PluginWindow = tkinter.Toplevel()
-            setNER_PluginWindow.geometry('600x500')
+            setNER_PluginWindow.geometry('600x600')
             setNER_PluginWindow.title('Named Entity Recognition Plugin')
             setNER_PluginWindow.iconbitmap(self.settings.cwd+"\\Logo.ico")
 
@@ -433,17 +433,29 @@ class MainWindow(tkinter.Frame):
                 self.tboxSources.insert("end", item + "\n")
             self.tboxSources.config(state='disabled')
 
+            #Threshold
+            self.groupThreshold = tkinter.LabelFrame(setNER_PluginWindow)
+            self.groupThreshold["text"] = "Threshold"
+            self.groupThreshold.grid(sticky="w", pady = 10, padx = 10)
+            self.tboxgroupThreshold = Text(self.groupThreshold, height=len(self.settings.NER_Settings['Threshold']), width=70,
+                                      background=self.settings.colorNeutral)
+            self.tboxgroupThreshold.configure(font=self.textFont)
+            self.tboxgroupThreshold.grid()
+            for item in self.settings.NER_Settings['Threshold']:
+                self.tboxgroupThreshold.insert("end", str(item) + "\n")
+            self.tboxgroupThreshold.config(state='disabled')
+
             #In this version the default settings cannot be changed so they are hard coded
             #Selected Settings
             self.groupSettings = tkinter.LabelFrame(setNER_PluginWindow)
             self.groupSettings["text"] = "Selected Settings"
             self.groupSettings.grid(sticky="w", pady = 10, padx = 10)
-            self.tboxSettings = Text(self.groupSettings, height=3, width=70,
+            self.tboxSettings = Text(self.groupSettings, height=len(self.settings.NER_Settings), width=70,
                                       background=self.settings.okGreen)
             self.tboxSettings.configure(font=self.textFont)
             self.tboxSettings.grid()
             for x, y in self.settings.NER_SettingsSet.items():
-                self.tboxSettings.insert("end", x + ": " + y + "\n")
+                self.tboxSettings.insert("end", x + ": " + str(y) + "\n")
             self.tboxSettings.config(state='disabled')
             
             self.buttonRunNER = ttk.Button(setNER_PluginWindow, text = "Run NER Plugin", style = "TButton",
@@ -532,7 +544,7 @@ if __name__=='__main__':
     global NER_Plugin_Switch
     NER_Plugin_Switch = False
     if NER_Plugin_Switch == True:
-        import pyNER 
+        import pyNER_Plugin 
     
     currentDirectory = os.getcwd()
     titleText = "Welcome to TagToolWiZArd application " + "(v"+versionNumber+")"
