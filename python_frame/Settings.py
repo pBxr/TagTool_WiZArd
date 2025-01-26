@@ -65,12 +65,18 @@ class ttwSettings:
 
         self.NER_Threshold = [0.5, 0.75, 0.90]
 
-        
+        self.NER_Sources = {
+                1 : {'Arg' : 'md',
+                    'Description' : 'Plain Text/Markdown'},
+                2 : {'Arg' : 'html',
+                    'Description' : 'HTML'},
+                }
+
         #Set default NER parameters
         self.NER_ModelIsSet = 'dslim/bert-base-NER'
         self.NER_TaskIsSet = 'LOC'
         self.NER_ThresholdIsSet = 0.5
-        self.NER_SourceIsSet = 'Convert .docx to .txt and get text'
+        self.NER_SourceIsSet = 'md'
         
 
         #Set default functions

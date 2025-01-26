@@ -401,6 +401,7 @@ class MainWindow(tkinter.Frame):
                                
             valModel = tkinter.StringVar()
             valTask = tkinter.StringVar()
+            valFormats = tkinter.StringVar()
             valThreshold = tkinter.StringVar()
                         
             for x, y in self.settings.NER_Models.items():
@@ -428,14 +429,28 @@ class MainWindow(tkinter.Frame):
                 checkBoxThreshold = ttk.Radiobutton(self.groupThreshold, text = val, variable = valThreshold,
                                            value = val)
                 checkBoxThreshold.grid(sticky="w")
-                
-            self.buttonSaveFunctions = ttk.Button(setNERWindow, text = "Save parameters and run NER", style = "TButton",
-                    command=lambda: self.save_NER_parameters(valModel, valTask, valThreshold, setNERWindow))
-            self.buttonSaveFunctions.grid(sticky="e")
 
+            #Source formats
+            self.groupFormats = tkinter.LabelFrame(setNERWindow)
+            self.groupFormats["text"] = "Choose format for NER"
+            self.groupFormats.grid(sticky="w", pady = 10, padx = 10)
+
+            for x, y in self.settings.NER_Sources.items():
+                checkBoxFormats = ttk.Radiobutton(self.groupFormats, text = y['Description'], variable = valFormats,
+                                           value = y['Arg'])
+                checkBoxFormats.grid(sticky="w")
+                
+            #Button    
+            self.buttonSaveFunctions = ttk.Button(setNERWindow, text = "Save parameters and run NER", style = "TButton",
+                    command=lambda: self.save_NER_parameters(valModel, valTask, valFormats, valThreshold, setNERWindow))
+            self.buttonSaveFunctions.grid(sticky="e")
+ 
+            #Info box
             infoText = ["Recommended model is \"dslim/bert-base-NER\"",
                         "Category is limited to \"Places and Locations\" in this test version",
-                        "Recommended threshold is \"0.5\"."]
+                        "Recommended threshold is \"0.5\"",
+                        "Recommended format is \"Plain Text/Markdown\"",
+                        "(\"HTML\" means extraction of the plain text with bs4)."]
 
             self.tboxInfo = Text(setNERWindow, height=len(infoText), width=70, background="#ffff66")
             self.tboxInfo.configure(font=self.textFont)
@@ -445,11 +460,12 @@ class MainWindow(tkinter.Frame):
             self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
             self.tboxInfo.config(state='disabled')
 
-        def save_NER_parameters(self, valModel, valTask, valThreshold, window):
-            if valModel.get() != "" and valTask.get() != "" and valThreshold.get():
+        def save_NER_parameters(self, valModel, valTask, valFormats, valThreshold, window):
+            if valModel.get() and valTask.get() and valThreshold.get() and valFormats.get():
                 self.settings.NER_ModelIsSet = valModel.get()
                 self.settings.NER_TaskIsSet = valTask.get()
                 self.settings.NER_ThresholdIsSet = valThreshold.get()
+                self.settings.NER_SourceIsSet = valFormats.get()
                 self.run_NER_Plugin(window)
                 window.destroy()
             else:
