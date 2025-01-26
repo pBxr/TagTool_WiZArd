@@ -47,19 +47,31 @@ class ttwSettings:
         self.ttwFlagsSet = {1 : {'Arg' : '--silent', 'Description' : 'Silent Mode'}}
 
         #Possible NER parameter
-        self.NER_Settings = {'Model' : ['dslim/bert-base-NER', 'dslim/bert-large-NER'],
-                             'Entity Type' : ['Location', 'Person'],
-                             'Source' : ['Convert .docx to .html and get text', 'Convert .docx to .txt and get text'],
-                             'Threshold' : [0.5, 0.75, 0.90]
-                             }
+        self.NER_Models = {
+                1 : {'Arg' : 'dslim/bert-base-NER',
+                    'Description' : 'dslim/bert-base-NER'},
+                2 : {'Arg' : 'alexbrandsen/ArchaeoBERT-NER',
+                    'Description' : 'alexbrandsen/ArchaeoBERT-NER'},
+                #2 : {'Arg' : 'dslim/bert-large-NER',
+                #    'Description' : 'dslim/bert-large-NER'},
+                }
 
+        self.NER_Tasks = { #In this version the default settings cannot be changed so they are hard coded
+                1 : {'Arg' : 'LOC',
+                    'Description' : 'Places and Locations'}, 
+                #2 : {'Arg' : 'PER',
+                #    'Description' : 'Persons'},
+                }
+
+        self.NER_Threshold = [0.5, 0.75, 0.90]
+
+        
         #Set default NER parameters
-        #In this version the default settings cannot be changed so they are hard coded
-        self.NER_SettingsSet = {'Model' : 'dslim/bert-base-NER',
-                               'Entity Type' : 'Location',
-                               'Source' : 'Convert .docx to .txt and get text',
-                               'Threshold' : 0.5 #Only scores > 0.50 will be taken into account (for B-LOC)
-                             }
+        self.NER_ModelIsSet = 'dslim/bert-base-NER'
+        self.NER_TaskIsSet = 'LOC'
+        self.NER_ThresholdIsSet = 0.5
+        self.NER_SourceIsSet = 'Convert .docx to .txt and get text'
+        
 
         #Set default functions
         self.ttwFunctionsSet = {}
