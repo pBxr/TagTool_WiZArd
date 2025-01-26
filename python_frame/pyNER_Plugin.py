@@ -167,32 +167,37 @@ def prepare_folder_and_input_text(files, settings):
     if not os.path.exists(pathNERresults):
         os.makedirs(pathNERresults)
 
-    #Convert text to the selected input format
-    if settings.NER_SourceIsSet == 'Convert .docx to .txt and get text':
-        pandocParameter = "00_Plain_article_text.txt"
-    else:
-        pandocParameter = "00_Plain_article_text.html"
-
     #Put together the pandoc call to convert the .docx file into the selected format and save it
+    pandocParameter = "00_Plain_article_text." + settings.NER_SourceIsSet
+
     pandocCall = "pandoc -o " + "\"" + pathNERresults + "\\" + pandocParameter + "\"" + " " + "\"" + files.projectPath + files.fileName + "\""
 
     FNULL = open(os.devnull, 'w') #For subprocess
     subprocess.run(pandocCall, stdout=FNULL, stderr=FNULL, shell=False)
 
-    #Return the plain text for the pipeline. If a structured format like .html is selected, text gets extracted with bs4.
-    plainTextPath = pathNERresults + "\\" + pandocParameter
+    #Return the plain text for the pipeline.
+    #If a structured format like .html is selected, text gets extracted with bs4 and saved as well.
+    sourceFilePath = pathNERresults + "\\" + pandocParameter
 
-    if settings.NER_SourceIsSet == 'Convert .docx to .txt and get text':
-        with open(plainTextPath, 'r', encoding="utf8") as fp:
+    if settings.NER_SourceIsSet != 'html':
+        with open(sourceFilePath, 'r', encoding="utf8") as fp:
             inputText = fp.read()
             fp.close()
         return inputText
     else:
-        with open(plainTextPath, 'r', encoding="utf8") as fp:
+        with open(sourceFilePath, 'r', encoding="utf8") as fp:
             soup = BeautifulSoup(fp, "html.parser")
             text = soup.get_text()
             #Remove blank lines
             inputText = str(text).replace('\n\n','')
+            fp.close()
+
+            targetFilePath = pathNERresults + "\\" + "00_Plain_article_from_html.txt"          
+            with open(targetFilePath, 'w', encoding="utf8") as fp:
+                for line in inputText:
+                    fp.write(line)
+                fp.close()
+            os.remove(sourceFilePath)
             return inputText
 
 
