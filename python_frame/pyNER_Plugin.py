@@ -17,7 +17,7 @@ except:
 
 class log_NER_Class:
 
-    def __init__(self, files):
+    def __init__(self, files, settings):
 
         self.files = files
 
@@ -32,7 +32,14 @@ class log_NER_Class:
         
         self.logCollector = []
         
-        self.logCollector.append(f"Log file: {self.year:4d}-{self.month:02d}-{self.day:02d}_{self.hour:02d}:{self.minute:02d}:{self.second:02d}\n")
+        self.logCollector.append(f"TagToolWiZArd NER plugin Log file: {self.year:4d}-{self.month:02d}-{self.day:02d}, {self.hour:02d}:{self.minute:02d}:{self.second:02d}\n")
+
+        self.logCollector.append("\nChosen NER parameters:\n")
+        self.logCollector.append("Model: " + settings.NER_ModelIsSet + "\n")
+        self.logCollector.append("Task: " + settings.NER_TaskIsSet + "\n")
+        self.logCollector.append("Threshold: " + str(settings.NER_ThresholdIsSet) + "\n")
+        self.logCollector.append("Source: " + settings.NER_SourceIsSet + "\n")
+
         
     def add_to_log(self, logInput):
         
@@ -44,7 +51,6 @@ class log_NER_Class:
         
             for logEntry in self.logCollector:
                 fp.write(logEntry)
-                #print(logEntry)
             fp.close()
         
 
@@ -85,71 +91,73 @@ def call_gazetteer(results, logGenerator):
     
     for result in results:
         
-        toBeRun = filter_NER_results(result) #Decides whether the entry will be run or not
+        #Most simple way to call gazetteer, only for testing purposes, more elaborated filters following. 
+        #See also the README.md file here https://github.com/pBxr/NER_Plugin_for_ttw on this point.
+        toSearch = "https://gazetteer.dainst.org/search.json?q=" + result
+        response = requests.get(toSearch)
+        resultListComplete = response.json()
+                     
+        logGenerator.add_to_log(f"\n--------------------------------------------------------------\nSearching in iDAI.gazetteer for \"{result}\"\n")
         
-        if toBeRun == True:
-            #Most simple way to call gazetteer, only for testing purposes, more elaborated filters following. 
-            #See also the README.md file here https://github.com/pBxr/NER_Plugin_for_ttw on this point.
-            toSearch = "https://gazetteer.dainst.org/search.json?q=" + result
-            response = requests.get(toSearch)
-            resultListComplete = response.json()
-                         
-            logGenerator.add_to_log(f"\n--------------------------------------------------------------\nSearching in iDAI.gazetteer for \"{result}\"\n")
-            
-            logGenerator.add_to_log(f"Number of results: {resultListComplete['total']}\n")
-            
-            resultList = resultListComplete['result']
-            i=1
+        logGenerator.add_to_log(f"Number of results: {resultListComplete['total']}\n")
+        
+        resultList = resultListComplete['result']
+        i=1
 
-            for item in resultList:
-                if item['prefName']['title']:
-                    logGenerator.add_to_log(f"Nr. {i}: Preferred Name: {item['prefName']['title']}\n")
+        for item in resultList:
+            if item['prefName']['title']:
+                logGenerator.add_to_log(f"Nr. {i}: Preferred Name: {item['prefName']['title']}\n")
+            
+            if "types" in item:
+                logGenerator.add_to_log("Type: ")
                 
-                if "types" in item:
-                    logGenerator.add_to_log("Type: ")
+                for entry in item['types']:
+                    logGenerator.add_to_log(entry +", ")
+                logGenerator.add_to_log("\n")
+            
+            if "@id" in item:
+                logGenerator.add_to_log(item['@id'])
+            
+            if item['prefName']['title'] and "@id" in item:
+                
+                if ("types" in item) and ('archaeological-area' in item['types']
+                    or 'populated-place' in item['types']
+                    or 'archaeological-site' in item['types']):
                     
-                    for entry in item['types']:
-                        logGenerator.add_to_log(entry +", ")
+                    csvRow = result + "|" + item['@id']
                     logGenerator.add_to_log("\n")
-                
-                if "@id" in item:
-                    logGenerator.add_to_log(item['@id'])
-                
-                if item['prefName']['title'] and "@id" in item:
+                    listForCSV.append(csvRow)
+                else:
+                    result2 = result + "(*NOT LIKELY*)"
+                    csvRow = result2 + "|" + item['@id']
+                    logGenerator.add_to_log("\n")
                     
-                    if ("types" in item) and ('archaeological-area' in item['types']
-                        or 'populated-place' in item['types']
-                        or 'archaeological-site' in item['types']):
-                        
-                        csvRow = result + "|" + item['@id']
-                        logGenerator.add_to_log("\n")
-                        listForCSV.append(csvRow)
-                    else:
-                        result2 = result + "(*NOT LIKELY*)"
-                        csvRow = result2 + "|" + item['@id']
-                        logGenerator.add_to_log("\n")
-                        
-                        listForCSV.append(csvRow) #To save only the needed entries
-                i+=1
-            
-            logGenerator.add_to_log("\n--------------------------------------------------------------\n")        
-            toSearch=""
-            
-            listGazetteer.append(resultListComplete) #To save the complete result
+                    listForCSV.append(csvRow) #To save only the needed entries
+            i+=1
+        
+        logGenerator.add_to_log("\n--------------------------------------------------------------\n")        
+        toSearch=""
+        
+        listGazetteer.append(resultListComplete) #To save the complete result
 
     return listGazetteer, listForCSV
 
 
-def filter_NER_results(result):
+def filter_NER_results(locationNames):
     """
     This is only a simple placeholder for a more elaborated function.
     """
-    if len(result) > 3:
-        return True
-    else:
-        return False
+    filteredLocationNames = []
+    
+    for element in locationNames:
 
-
+        filteredElement = element.replace(" ", "")
+        
+        if len(filteredElement) > 2:
+            filteredLocationNames.append(element)
+         
+    return filteredLocationNames    
+   
 def prepare_folder_and_input_text(files, settings):    
 
     #Prepare folder
@@ -159,7 +167,7 @@ def prepare_folder_and_input_text(files, settings):
         os.makedirs(pathNERresults)
 
     #Convert text to the selected input format
-    if settings.NER_SettingsSet['Source'] == 'Convert .docx to .txt and get text':
+    if settings.NER_SourceIsSet == 'Convert .docx to .txt and get text':
         pandocParameter = "00_Plain_article_text.txt"
     else:
         pandocParameter = "00_Plain_article_text.html"
@@ -173,7 +181,7 @@ def prepare_folder_and_input_text(files, settings):
     #Return the plain text for the pipeline. If a structured format like .html is selected, text gets extracted with bs4.
     plainTextPath = pathNERresults + "\\" + pandocParameter
 
-    if settings.NER_SettingsSet['Source'] == 'Convert .docx to .txt and get text':
+    if settings.NER_SourceIsSet == 'Convert .docx to .txt and get text':
         with open(plainTextPath, 'r', encoding="utf8") as fp:
             inputText = fp.read()
             fp.close()
@@ -191,7 +199,7 @@ def return_location_names(nerResults, settings, logGenerator):
     
     logGenerator.add_to_log("\n1. NER result:\n")
     for result in nerResults:
-            logGenerator.add_to_log(str(result)+"\n")
+        logGenerator.add_to_log(str(result)+"\n")
     
     #Extract names using B/I span
     listNames = []
@@ -199,7 +207,7 @@ def return_location_names(nerResults, settings, logGenerator):
 
     for nerResult in reversed(nerResults):
         #Threshold only for the beginning of a location name)
-        if nerResult['entity'] == "B-LOC" and nerResult['score'] > settings.NER_SettingsSet['Threshold']:
+        if (nerResult['entity'] == "B-LOC") and (float(nerResult['score']) > float(settings.NER_ThresholdIsSet)):
             toInsert = nerResult['word'] + toInsert
             listNames.append(toInsert)
             toInsert = ""
@@ -228,29 +236,32 @@ def return_location_names(nerResults, settings, logGenerator):
             substring = ""
 
     listNamesFixed.sort()
-
+   
     #Delete duplicates
     locationNames = list(set(listNamesFixed))
     locationNames.sort()
-    
-    logGenerator.add_to_log("\n2. Extracted entities de-tokenized\n")
-    for entry in locationNames:
+
+    #Remove unlikely elemtents
+    filteredLocationNames = filter_NER_results(locationNames)
+       
+    logGenerator.add_to_log("\n2. Filtered entities\n")
+    for entry in filteredLocationNames:
         logGenerator.add_to_log(entry +", ")
     logGenerator.add_to_log("\n")
-    return locationNames
+    
+    return filteredLocationNames
 
 
 def run_NER_process(files, settings):
 
-    logGenerator = log_NER_Class(files)
+    logGenerator = log_NER_Class(files, settings)
     
     inputText = prepare_folder_and_input_text(files, settings)
-
-    selectedModell = settings.NER_SettingsSet['Model']
+    
     try:
         #Now run NER
-        tokenizer = AutoTokenizer.from_pretrained(selectedModell)
-        model = AutoModelForTokenClassification.from_pretrained(selectedModell)
+        tokenizer = AutoTokenizer.from_pretrained(settings.NER_ModelIsSet)
+        model = AutoModelForTokenClassification.from_pretrained(settings.NER_ModelIsSet)
         nlp = pipeline("ner", model=model, tokenizer=tokenizer)
             
         nerResults = nlp(inputText)

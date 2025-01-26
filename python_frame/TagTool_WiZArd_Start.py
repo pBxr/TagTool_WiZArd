@@ -314,7 +314,6 @@ class MainWindow(tkinter.Frame):
 
         def run_NER_Plugin(self, window):
 
-            #In this version the default settings cannot be changed so they are hard coded
             success, textInfo = pyNER_Plugin.run_NER_process(self.files, self.settings)
     
             tkinter.messagebox.showinfo(title="Info", \
@@ -388,87 +387,78 @@ class MainWindow(tkinter.Frame):
             self.tboxInfo.insert("end", infoText)
             self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
             self.tboxInfo.config(state='disabled')
-        
 
         def set_NER_settings(self):
+            setNERWindow = tkinter.Toplevel()
+            setNERWindow.geometry('600x600')
+            setNERWindow.title('TagTool_WiZArd choose NER parameters')
+            setNERWindow.iconbitmap(self.settings.cwd+"\\Logo.ico")
+
+            #Models            
+            self.groupModel = tkinter.LabelFrame(setNERWindow)
+            self.groupModel["text"] = "Choose NER model"
+            self.groupModel.grid(sticky="w", pady = 10, padx = 10)
+                               
+            valModel = tkinter.StringVar()
+            valTask = tkinter.StringVar()
+            valThreshold = tkinter.StringVar()
+                        
+            for x, y in self.settings.NER_Models.items():
+                checkBoxModel = ttk.Radiobutton(self.groupModel, text = y['Description'], variable = valModel,
+                                           value = y['Arg'])
+                checkBoxModel.grid(sticky="w")
+
+            #Categories
+            self.groupTask = tkinter.LabelFrame(setNERWindow)
+            self.groupTask["text"] = "Choose NER category"
+            self.groupTask.grid(sticky="w", pady = 10, padx = 10)
             
-            setNER_PluginWindow = tkinter.Toplevel()
-            setNER_PluginWindow.geometry('600x600')
-            setNER_PluginWindow.title('Named Entity Recognition Plugin')
-            setNER_PluginWindow.iconbitmap(self.settings.cwd+"\\Logo.ico")
 
-            #Models
-            self.groupModels = tkinter.LabelFrame(setNER_PluginWindow)
-            self.groupModels["text"] = "Models"
-            self.groupModels.grid(sticky="w", pady = 10, padx = 10)
-            self.tboxModels = Text(self.groupModels, height=len(self.settings.NER_Settings['Model']), width=70,
-                                      background=self.settings.colorNeutral)
-            self.tboxModels.configure(font=self.textFont)
-            self.tboxModels.grid()
-            for item in self.settings.NER_Settings['Model']:
-                self.tboxModels.insert("end", item + "\n")
-            self.tboxModels.config(state='disabled')
-
-            #Entities
-            self.groupEntities = tkinter.LabelFrame(setNER_PluginWindow)
-            self.groupEntities["text"] = "Entity Types"
-            self.groupEntities.grid(sticky="w", pady = 10, padx = 10)
-            self.tboxEntities = Text(self.groupEntities, height=len(self.settings.NER_Settings['Entity Type']), width=70,
-                                      background=self.settings.colorNeutral)
-            self.tboxEntities.configure(font=self.textFont)
-            self.tboxEntities.grid()
-            for item in self.settings.NER_Settings['Entity Type']:
-                self.tboxEntities.insert("end", item + "\n")
-            self.tboxEntities.config(state='disabled')
-
-            #Sources
-            self.groupSources = tkinter.LabelFrame(setNER_PluginWindow)
-            self.groupSources["text"] = "Ways of Source Text Extraction"
-            self.groupSources.grid(sticky="w", pady = 10, padx = 10)
-            self.tboxSources = Text(self.groupSources, height=len(self.settings.NER_Settings['Source']), width=70,
-                                      background=self.settings.colorNeutral)
-            self.tboxSources.configure(font=self.textFont)
-            self.tboxSources.grid()
-            for item in self.settings.NER_Settings['Source']:
-                self.tboxSources.insert("end", item + "\n")
-            self.tboxSources.config(state='disabled')
+            for x, y in self.settings.NER_Tasks.items():
+                checkBoxTask = ttk.Radiobutton(self.groupTask, text = y['Description'], variable = valTask,
+                                           value = y['Arg'])
+                checkBoxTask.grid(sticky="w")
 
             #Threshold
-            self.groupThreshold = tkinter.LabelFrame(setNER_PluginWindow)
-            self.groupThreshold["text"] = "Threshold"
+            self.groupThreshold = tkinter.LabelFrame(setNERWindow)
+            self.groupThreshold["text"] = "Choose threshold"
             self.groupThreshold.grid(sticky="w", pady = 10, padx = 10)
-            self.tboxgroupThreshold = Text(self.groupThreshold, height=len(self.settings.NER_Settings['Threshold']), width=70,
-                                      background=self.settings.colorNeutral)
-            self.tboxgroupThreshold.configure(font=self.textFont)
-            self.tboxgroupThreshold.grid()
-            for item in self.settings.NER_Settings['Threshold']:
-                self.tboxgroupThreshold.insert("end", str(item) + "\n")
-            self.tboxgroupThreshold.config(state='disabled')
 
-            #In this version the default settings cannot be changed so they are hard coded
-            #Selected Settings
-            self.groupSettings = tkinter.LabelFrame(setNER_PluginWindow)
-            self.groupSettings["text"] = "Selected Settings"
-            self.groupSettings.grid(sticky="w", pady = 10, padx = 10)
-            self.tboxSettings = Text(self.groupSettings, height=len(self.settings.NER_Settings), width=70,
-                                      background=self.settings.okGreen)
-            self.tboxSettings.configure(font=self.textFont)
-            self.tboxSettings.grid()
-            for x, y in self.settings.NER_SettingsSet.items():
-                self.tboxSettings.insert("end", x + ": " + str(y) + "\n")
-            self.tboxSettings.config(state='disabled')
-            
-            self.buttonRunNER = ttk.Button(setNER_PluginWindow, text = "Run NER Plugin", style = "TButton",
-                    command=lambda: self.run_NER_Plugin(setNER_PluginWindow))
-            self.buttonRunNER.grid(sticky="e")
+            for val in self.settings.NER_Threshold:
+                checkBoxThreshold = ttk.Radiobutton(self.groupThreshold, text = val, variable = valThreshold,
+                                           value = val)
+                checkBoxThreshold.grid(sticky="w")
+                
+            self.buttonSaveFunctions = ttk.Button(setNERWindow, text = "Save parameters and run NER", style = "TButton",
+                    command=lambda: self.save_NER_parameters(valModel, valTask, valThreshold, setNERWindow))
+            self.buttonSaveFunctions.grid(sticky="e")
 
-            self.tboxInfo = Text(setNER_PluginWindow, height=1, width=70, background="#ffff66")
+            infoText = ["Recommended model is \"dslim/bert-base-NER\"",
+                        "Category is limited to \"Places and Locations\" in this test version",
+                        "Recommended threshold is \"0.5\"."]
+
+            self.tboxInfo = Text(setNERWindow, height=len(infoText), width=70, background="#ffff66")
             self.tboxInfo.configure(font=self.textFont)
-            infoText = "NOTE: In this test versions this selected settings are predefined."
-            self.tboxInfo.insert("end", infoText)
+
+            for element in infoText:
+                self.tboxInfo.insert("end", element + "\n")
             self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
             self.tboxInfo.config(state='disabled')
 
+        def save_NER_parameters(self, valModel, valTask, valThreshold, window):
+            if valModel.get() != "" and valTask.get() != "" and valThreshold.get():
+                self.settings.NER_ModelIsSet = valModel.get()
+                self.settings.NER_TaskIsSet = valTask.get()
+                self.settings.NER_ThresholdIsSet = valThreshold.get()
+                self.run_NER_Plugin(window)
+                window.destroy()
+            else:
+                textInfo = "You have to click all three checkboxes.\n"
+                tkinter.messagebox.showinfo(title="Info", \
+                                     message=textInfo)
+                window.destroy()
+                return
+        
 
         def show_help(self):
                 webbrowser.open_new(self.settings.cwd+"\\ttw_help.html")
@@ -542,7 +532,7 @@ if __name__=='__main__':
 
     #Here is the switch if you want to test the NER Plugin
     global NER_Plugin_Switch
-    NER_Plugin_Switch = False
+    NER_Plugin_Switch = True
     if NER_Plugin_Switch == True:
         import pyNER_Plugin 
     
