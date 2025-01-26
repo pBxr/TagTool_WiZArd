@@ -1,6 +1,7 @@
 import time
 import subprocess
 import os
+import re
 
 from bs4 import BeautifulSoup
 
@@ -147,16 +148,16 @@ def filter_NER_results(locationNames):
     """
     This is only a simple placeholder for a more elaborated function.
     """
-    filteredLocationNames = []
-    
-    for element in locationNames:
 
-        filteredElement = element.replace(" ", "")
-        
-        if len(filteredElement) > 2:
-            filteredLocationNames.append(element)
-         
-    return filteredLocationNames    
+    locationNamesFiltered = []
+
+    #Check length after deleting all non-alphanumeric characters, words < 3 characters are unlikely
+    for name in locationNames:
+        nameStripped = re.sub("[\W\d\s]", "", name) 
+        if len(nameStripped) > 2:
+            locationNamesFiltered.append(name)
+      
+    return locationNamesFiltered    
    
 def prepare_folder_and_input_text(files, settings):    
 
@@ -281,7 +282,7 @@ def run_NER_process(files, settings):
         return False, textInfo
 
     else:
-        textInfo = "Process finished. Check result"
+        textInfo = "Process finished."
         return True, textInfo
         
             
