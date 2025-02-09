@@ -217,21 +217,37 @@ class MainWindow(tkinter.Frame):
                                          message=textInfo)
                     return
                 else:
-                    yesnoResult = tkinter.messagebox.askyesno(title="Important Information", \
-                     message=(      "The now opening NER Plugin must to be run before "
-                                    "preparing the file \"04_ToSearchAndReplaceList.csv\".\n\n"
-                                    "So:\n"
-                                    "1. Run the NER Pluging first. Its results will be saved "
-                                    "in the file \"NER_results\\02_Gazetteer_IDs_DRAFT.csv\"\n\n"
-                                    "2. Copy the entries you have approved and selected into "
-                                    "\"04_ToSearchAndReplaceList.csv\"\n\n"
-                                    "3. After having prepared the other mandatory .csv files run TagTool.\n\n\n"
-                                    "Do you wish to continue?"
-                                    ))
-                    if yesnoResult == False:
-                        return
-                    else:
-                        self.set_NER_settings()
+                    self.start_NER()
+
+            
+        def start_NER(self):
+            setNER_Start_Window = tkinter.Toplevel()
+            setNER_Start_Window.geometry('400x300')
+            setNER_Start_Window.title('TagTool_WiZArd run NER')
+            setNER_Start_Window.iconbitmap(self.settings.cwd+"\\Logo.ico")
+
+            infoText = []
+            infoText.append("Following parameters are set:")
+            
+            for x, y in self.settings.NER_Parameters.items():
+                    infoText.append(x + ": " + str(y))
+
+            self.tboxInfo = Text(setNER_Start_Window, height=len(infoText), width=35, background=self.settings.okGreen)
+            self.tboxInfo.configure(font=self.textFont)
+
+            for element in infoText:
+                self.tboxInfo.insert("end", element + "\n")
+            self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
+            self.tboxInfo.config(state='disabled')
+
+            self.buttonRun = ttk.Button(setNER_Start_Window, text = "Run with current parameters", style = "TButton",
+                    command=lambda: self.run_NER_Plugin(setNER_Start_Window))
+            self.buttonRun.grid(sticky="w", pady = 10, padx = 10)
+
+            self.buttonChangeParameter = ttk.Button(setNER_Start_Window, text = "Change parameters", style = "TButton",
+                    command=lambda: self.set_NER_settings(setNER_Start_Window))
+            self.buttonChangeParameter.grid(sticky="w", pady = 10, padx = 10)
+        
 
         def create_MenuBar(self):
             self.menueBarFile = tkinter.Menu(self.menu, tearoff=False)
@@ -388,7 +404,10 @@ class MainWindow(tkinter.Frame):
             self.tboxInfo.grid(sticky = "w", pady = 10, padx = 10)
             self.tboxInfo.config(state='disabled')
 
-        def set_NER_settings(self):
+        def set_NER_settings(self, window):
+
+            window.destroy()
+            
             setNERWindow = tkinter.Toplevel()
             setNERWindow.geometry('600x600')
             setNERWindow.title('TagTool_WiZArd choose NER parameters')
@@ -462,10 +481,10 @@ class MainWindow(tkinter.Frame):
 
         def save_NER_parameters(self, valModel, valTask, valFormats, valThreshold, window):
             if valModel.get() and valTask.get() and valThreshold.get() and valFormats.get():
-                self.settings.NER_ModelIsSet = valModel.get()
-                self.settings.NER_TaskIsSet = valTask.get()
-                self.settings.NER_ThresholdIsSet = valThreshold.get()
-                self.settings.NER_SourceIsSet = valFormats.get()
+                self.settings.NER_Parameters['Model'] = valModel.get()
+                self.settings.NER_Parameters['Task'] = valTask.get()
+                self.settings.NER_Parameters['Threshold'] = valThreshold.get()
+                self.settings.NER_Parameters['Source'] = valFormats.get()
                 self.run_NER_Plugin(window)
                 window.destroy()
             else:

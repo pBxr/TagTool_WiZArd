@@ -73,12 +73,11 @@ class ttwSettings:
                 }
 
         #Set default NER parameters
-        self.NER_ModelIsSet = 'dslim/bert-base-NER'
-        self.NER_TaskIsSet = 'LOC'
-        self.NER_ThresholdIsSet = 0.5
-        self.NER_SourceIsSet = 'md'
+        self.NER_Parameters = dict(Model = 'dslim/bert-base-NER',
+                            Task =  'LOC',
+                            Threshold = 0.5,
+                            Source = 'md')
         
-
         #Set default functions
         self.ttwFunctionsSet = {}
         i = 0

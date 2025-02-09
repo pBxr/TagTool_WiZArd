@@ -33,14 +33,11 @@ class log_NER_Class:
         
         self.logCollector = []
         
-        self.logCollector.append(f"TagToolWiZArd NER plugin Log file: {self.year:4d}-{self.month:02d}-{self.day:02d}, {self.hour:02d}:{self.minute:02d}:{self.second:02d}\n")
-
-        self.logCollector.append("\nChosen NER parameters:\n")
-        self.logCollector.append("Model: " + settings.NER_ModelIsSet + "\n")
-        self.logCollector.append("Task: " + settings.NER_TaskIsSet + "\n")
-        self.logCollector.append("Threshold: " + str(settings.NER_ThresholdIsSet) + "\n")
-        self.logCollector.append("Source: " + settings.NER_SourceIsSet + "\n")
-
+        self.logCollector.append(f"TagToolWiZArd NER plugin Log file: {self.year:4d}-{self.month:02d}-{self.day:02d}, {self.hour:02d}:{self.minute:02d}:{self.second:02d}\n\n")
+        self.logCollector.append("Selected parameters:\n")
+        for x, y in settings.NER_Parameters.items():
+            self.logCollector.append(x + ": " + str(y) + "\n")
+        
         
     def add_to_log(self, logInput):
         
@@ -68,10 +65,8 @@ class log_NER_Class:
 
         with open(self.NERresultPath + "02_Gazetteer_IDs_DRAFT.csv", 'w', encoding="utf8") as fp:
             fp.write(intro + "\n")
-            #print(intro)
             for item in resultForCSVList_sorted:    
                 fp.write(item + "\n")
-                #print(item)
             fp.close()
         
         #Now the complete .json file
@@ -153,10 +148,10 @@ def filter_NER_results(locationNames):
 
     #Check length after deleting all non-alphanumeric characters, words < 3 characters are unlikely
     for name in locationNames:
-        nameStripped = re.sub("[\W\d\s]", "", name) 
+        nameStripped = re.sub("[\\W\\d\\s]", "", name) 
         if len(nameStripped) > 2:
             locationNamesFiltered.append(name)
-      
+    
     return locationNamesFiltered    
    
 def prepare_folder_and_input_text(files, settings):    
@@ -168,7 +163,7 @@ def prepare_folder_and_input_text(files, settings):
         os.makedirs(pathNERresults)
 
     #Put together the pandoc call to convert the .docx file into the selected format and save it
-    pandocParameter = "00_Plain_article_text." + settings.NER_SourceIsSet
+    pandocParameter = "00_Plain_article_text." + settings.NER_Parameters['Source']
 
     pandocCall = "pandoc -o " + "\"" + pathNERresults + "\\" + pandocParameter + "\"" + " " + "\"" + files.projectPath + files.fileName + "\""
 
@@ -179,7 +174,7 @@ def prepare_folder_and_input_text(files, settings):
     #If a structured format like .html is selected, text gets extracted with bs4 and saved as well.
     sourceFilePath = pathNERresults + "\\" + pandocParameter
 
-    if settings.NER_SourceIsSet != 'html':
+    if settings.NER_Parameters['Source'] != 'html':
         with open(sourceFilePath, 'r', encoding="utf8") as fp:
             inputText = fp.read()
             fp.close()
@@ -203,17 +198,13 @@ def prepare_folder_and_input_text(files, settings):
 
 def return_location_names(nerResults, settings, logGenerator):
     
-    logGenerator.add_to_log("\n1. NER result:\n")
-    for result in nerResults:
-        logGenerator.add_to_log(str(result)+"\n")
-    
     #Extract names using B/I span
     listNames = []
     toInsert = ""
 
     for nerResult in reversed(nerResults):
         #Threshold only for the beginning of a location name)
-        if (nerResult['entity'] == "B-LOC") and (float(nerResult['score']) > float(settings.NER_ThresholdIsSet)):
+        if (nerResult['entity'] == "B-LOC") and (float(nerResult['score']) > float(settings.NER_Parameters['Threshold'])):
             toInsert = nerResult['word'] + toInsert
             listNames.append(toInsert)
             toInsert = ""
@@ -249,12 +240,16 @@ def return_location_names(nerResults, settings, logGenerator):
 
     #Remove unlikely elemtents
     filteredLocationNames = filter_NER_results(locationNames)
-       
-    logGenerator.add_to_log("\n2. Filtered entities\n")
+
+    #Add to log   
+    logGenerator.add_to_log("\n1. Filtered entities\n")
     for entry in filteredLocationNames:
         logGenerator.add_to_log(entry +", ")
     logGenerator.add_to_log("\n")
-    
+
+    logGenerator.add_to_log("\n2. Verbose NER result:\n")
+    for result in nerResults:
+        logGenerator.add_to_log(str(result)+"\n")
     return filteredLocationNames
 
 
@@ -263,11 +258,11 @@ def run_NER_process(files, settings):
     logGenerator = log_NER_Class(files, settings)
     
     inputText = prepare_folder_and_input_text(files, settings)
-    
+
     try:
         #Now run NER
-        tokenizer = AutoTokenizer.from_pretrained(settings.NER_ModelIsSet)
-        model = AutoModelForTokenClassification.from_pretrained(settings.NER_ModelIsSet)
+        tokenizer = AutoTokenizer.from_pretrained(settings.NER_Parameters['Model'])
+        model = AutoModelForTokenClassification.from_pretrained(settings.NER_Parameters['Model'])
         nlp = pipeline("ner", model=model, tokenizer=tokenizer)
             
         nerResults = nlp(inputText)
