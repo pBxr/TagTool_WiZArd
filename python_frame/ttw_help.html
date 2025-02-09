@@ -7,15 +7,15 @@
   <title>TagTool_WiZArd Help</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
+      line-height: 1.0;
+      font-family: Calibri;
       font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
     body {
       margin: 0 auto;
-      max-width: 36em;
+      max-width: 60em;
       padding-left: 50px;
       padding-right: 50px;
       padding-top: 50px;
@@ -69,7 +69,7 @@
     }
     ol, ul {
       padding-left: 1.7em;
-      margin-top: 1em;
+      margin-top: 0.5em;
     }
     li > ol, li > ul {
       margin-top: 0;
@@ -153,7 +153,7 @@
 <header id="title-block-header">
 <h1 class="title">TagTool_WiZArd Help</h1>
 </header>
-<h1 id="tagtool_wizard-help">TagTool_WiZArd Help</h1>
+
 <p>v2.1.0</p>
 <h1 class="TOC-Heading" id="contents">Contents</h1>
 <p><a href="#tagtool_wizard-help">TagTool_WiZArd Help 1</a></p>
@@ -240,7 +240,7 @@
 <li><p><strong>Paragraph numbers may be set by mistake in catalog sections or other unusually formatted sections.</strong> In case of too many sections or special formattings, it is not recommended to use the tool but to prepare the MS manually.</p></li>
 </ul>
 <ul>
-<li><p>The tool can process simple tables (for output to .html).</p></li>
+<li><p>The tool can process simple tables.</p></li>
 </ul>
 <ul>
 <li><p><strong>Foreign-language</strong> texts (Greek, Cyrillic) are <strong>no problem, if unicode fonts are used</strong> (Calibri, Noto or similar).</p></li>
@@ -487,20 +487,43 @@
 </ul>
 <h1 id="named-entity-recognition-ner-plugin-option">Named Entity Recognition (NER) Plugin Option</h1>
 <h3 id="requirements-for-using-the-ner-plugin">Requirements for using the NER Plugin</h3>
-<p>The NER Plugin needs a specific environment and various additional libraries with special dependencies. <strong>This plugin therefore is switched off by default</strong> in the release versions to avoid conflicts.</p>
-<p>If you want to test the plugin:</p>
+<p>The NER Plugin needs a specific environment and additional libraries. If you want to test the plugin (tested with Python 3.12):</p>
 <ul>
-<li><p>Prepare your environment carefully, see the README.md file with the complete documentation here: <a href="https://github.com/pBxr/NER_Plugin_for_ttw">https://github.com/pBxr/NER_Plugin_for_ttw</a>.</p></li>
-<li><p>Activate the plugin in the Python source code before re-interpreting the Python files, see the README.md file here: <a href="https://github.com/pBxr/TagTool_WiZArd">https://github.com/pBxr/TagTool_WiZArd</a>.</p></li>
+<li><p>Create an environment: <strong>$ python -m venv &lt;Your_Path/New_Environment_Folder_Name&gt;</strong></p></li>
+<li><p>Acticate it: <strong>$ python -m &lt;Your_Path/New_Environment_Folder_Name&gt;\Scripts\activate</strong></p></li>
+<li><p>Install Transformers: <strong>$ pip install transformers</strong></p></li>
+<li><p>Install Torch: <strong>$ pip install torch</strong></p></li>
 </ul>
-<p>In case of problems when running the plugin check the log.txt file (see below).</p>
+<p>After having activated the environment you can run the usual Python IDLE Shell with following command: <strong>$ python -m idlelib</strong>.  To deactivate the Environment enter <strong>$ python -m &lt;Your_Path/New_Environment_Folder_Name&gt;\Scripts\deactivate</strong>.</p>
+<p>If you press the "Open NER plugin" button, there will be a quick check whether it can be assumed that the necessary environment exists. If the Transformers library is missing the plugin will not open. </p>
 <h3 id="ner-functions">NER functions</h3>
-<p>In this version the default settings (e. g. the model) are predefined an cannot be changed. The focus lies on the extraction of location names.</p>
+<p>In this version the following parameters can be selected:</p>
 <ul>
-<li><p>The plugin gets the plain text from the selected text file and saves it in a folder ("NER_results") in the selected project directory.</p></li>
-<li><p>It extracts a tokenized list of result entries that are beeing re-merged to a list of place names.</p></li>
+<li><p>Models:</p></li>
+<ul>
+<li><p><strong>dslim/bert-base-NER (recommended)</strong></p></li>
+<li><p>alexbrandsen/ArchaeoBERT-NER</p></li>
+</ul>
+<li><p>Tasks:</p></li>
+<ul>
+<li><p>Category is limited to <strong>"Places and Locations" (LOC)</strong> in this test version</p></li>
+</ul>
+<li><p>Threshold:</p></li>
+<ul>
+<li><p>You can choose between 0.5, 0.75 and 0.9. <strong>Recommended threshold is 0.5</strong></p></li>
+</ul>
+<li><p>Source format:</p></li>
+<ul>
+<li><p><strong>Plain Text/Markdown (recommended)</strong>. In this case the file will be converted with pandoc into a .md document to get the plain text</p></li>
+<li><p>HTML. In this case the plain text will be extracted with bs4</strong></p></li>
+</ul>
+</ul>
+<p>How it works:</p>
+<ul>
+<li><p>The plugin gets the plain text from the selected text file and saves it in a <strong>folder ("NER_results")</strong> in the selected project directory.</p></li>
+<li><p>It extracts a tokenized list of result entries that are beeing re-merged to a list of place names and saves it in a log file (see below).</p></li>
 <li><p>The place names are run through the iDAI.gazetteer webservice to identify the locations and extract the gazetteer-IDs.</p></li>
-<li><p>A log file with the tokenized results, a draft for the final .csv list and the complete gazetteer query result as .json file will be saved in the NER_results folder.</p></li>
+<li><p>A <strong>log file ("01.log.txt")</strong> with the tokenized results, a draft for the final .csv list and the complete gazetteer query result as .json file will be saved in the NER_results folder.</p></li>
 </ul>
 <p>That means that <strong>the NER Plugin must to be run before preparing the file "04_ToSearchAndReplaceList.csv":</strong></p>
 <ol type="1">

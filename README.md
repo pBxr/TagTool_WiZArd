@@ -22,13 +22,15 @@ Following features are implemented for the use for the _Archäologischer Anzeige
 
 Beginning with version 1.1.0 the application allows to export also `.xml` files although it needs to be stressed that the `.xml` file is a non-valid intermediate product that will need manual finishing (see `ttw_help.html`).  
 
+Beginning with version v2.1.0 `ttw` comes with a test version of a `Named Entity Recognition (NER)` Plugin option (see below).
+
 Although the use case and the implemented features for the semi-automatic formatting seems to be specific for the journal mentioned above, the application can be customized for other purposes since the design allows to alternate element tags or add functions for new kind of value lists and so on.
 
 ## Mode of operation
 
 At first, the `.docx` file is converted by using pandoc into an `.html` file. The use of pandoc guarantees a uniform standardized and normalized `.html` structure. After finishing the modification with ttw the edited `.html` file can be opened in Microsoft Word and converted into a standard `.docx` for further processing purposes by the copy editor. For further details see `ttw_help.html`.
 
-ttw consists of two components:
+`ttw` consists of two components:
 
 1.) The `Python` framework (`TagTool_WiZArd_Start`):
 - it provides the GUI for all settings and the handling of the application
@@ -42,7 +44,7 @@ ttw consists of two components:
 
 ## Prepare the main files
 
-Note: ttw runs only on Windows. MacOS, Linux and so on are not supported yet.
+Note: `ttw` runs only on Windows. MacOS, Linux and so on are not supported yet.
 
 1.) First, install pandoc on your machine:
 ttw ist tested with pandoc version 2.16.2. Other versions may cause problems. 
@@ -106,35 +108,30 @@ For preparing the `.csv` files see `ttw_help.html`.
 
 ## New in v2.1.0
 
-Starting with v2.1.0 `ttw` comes with a test version of a `Named Entity Recognition (NER)` Plugin option. The NER Plugin needs a specific environment and various additional libraries with special dependencies. This plugin therefore is switched off by default in the release versions to avoid conflicts. If you want to test the plugin:
-- Prepare your environment carefully, see the README.md file with the complete documentation here: https://github.com/pBxr/NER_Plugin_for_ttw.
-- Activate the plugin in the `Python` source code before re-interpreting the Python files. See `TagTool_WiZArd_Start.py` and set the `NER_Plugin_Switch` to `True`.
+Starting with v2.1.0 `ttw` comes with a test version of a `Named Entity Recognition (NER)` Plugin option.
+In this version the focus lies on the extraction of location names unsing the sing the `Hugging Face` `Transformers` pipeline (see https://huggingface.co) and a variant of the `BERT` language model family. It extracts a tokenized list of result entries that are beeing re-merged to a list of place names.
+The place names are run through the `iDAI.gazetteer` webservice to identify the locations and extract the gazetteer-IDs, that ttw needs as `.csv` list to enrich the article file with geographic authority data (see also https://github.com/pBxr/ID_Extractor for ttw).
+A log file with the results, a draft for the final `.csv` list and the complete gazetteer query result as `.json` file will be saved in the NER_results folder.
+
+For more information and the required environment see the see `ttw_help.html` file. 
+
+In this version the following parameters can be selected:
+Models:
+- dslim/bert-base-NER (recommended)
+- alexbrandsen/ArchaeoBERT-NER
+Tasks:
+- Category is limited to "Places and Locations" (LOC) in this test version
+Threshold:
+-You can choose between 0.5, 0.75 and 0.9. Recommended threshold is 0.5
+Source format:
+- Plain Text/Markdown (recommended). In this case the file will be converted with pandoc into a .md document to get the plain text
+- HTML. In this case the plain text will be extracted with bs4
+
+To be done:
 The insufficient quality of the `iDAI.gazetteer` query results was ignored for this first test version (as well as the webservice´s default query limit). To work on filter mechanisms to improve the quality of the result will be a task for forthcoming commits.
-For more information see the "Help" file and especially the documentation here: https://github.com/pBxr/NER_Plugin_for_ttw.
 
-New also:
+New also in v2.1.0:
 - Function to convert tables to XML, implemented with Beautiful Soup (therefore not availabe when using the console version).
-
-## New in v2.0.0
-
-- Starting with v2.0.0 ttw comes with a GUI, based on `Python/tkinter`. Although the `c++` core can still be used as terminal standalone application (`tagtool_v2-1-0.exe`, see above), it is not recommended, because the `Python` framework does several integrity checks. 
-
-Also new to previous versions: 
-- The article file and value lists no longer need to be saved in the same folder with ttw, any directory can be chosen.
-- After starting ttw, all parameters (functions, export format) can be set easily by using the GUI-widgets.
-- ttw does the conversion from `pandoc` to `.html` automatically, so the source file will be a `.docx`.
-- Result files will be saved in the same folder with the article source file. 
-- ttw checks whether the mandatory `.csv` lists exist.
-- ttw also runs some simple integrity checks on the `.csv` lists (see `ttw_help.html`)
-- ttw checks the footnote section for manual paragraph breaks and merges seperated lines highlighting the changes.
-
-## To be done
-
-- Importing article metadata from json
-- Exception handling
-- Implementing the possibility to reload files that were converted with the application already
-- Article languages settings
-- Table conversion to `.xml`
 
 ## Technical remarks and requirements
 
@@ -148,7 +145,36 @@ For the `c++` core:
 - TDM-GCC 9.2.0 32/64bit
 - Tested with following IDE: Embarcadero Dev-C++ 6.3.
 
-## New in v1.3.1
+## See also
+
+- For ttw_webx see https://github.com/pBxr/ttw_WebExtension
+- ID_Extractor (ID_Ex) for extracting IDs and references from `.jats` article files, especially for the above mentioned journals, see https://github.com/pBxr/ID_Extractor
+- Test Environment for a TagTool_WiZArD Named Entity Recognition Plugin, see https://github.com/pBxr/NER_Plugin_for_ttw.
+
+## Version history
+
+### New in v2.0.0
+
+- Starting with v2.0.0 ttw comes with a GUI, based on `Python/tkinter`. Although the `c++` core can still be used as terminal standalone application (`tagtool_v2-1-0.exe`, see above), it is not recommended, because the `Python` framework does several integrity checks. 
+
+Also new to previous versions: 
+- The article file and value lists no longer need to be saved in the same folder with ttw, any directory can be chosen.
+- After starting ttw, all parameters (functions, export format) can be set easily by using the GUI-widgets.
+- ttw does the conversion from `pandoc` to `.html` automatically, so the source file will be a `.docx`.
+- Result files will be saved in the same folder with the article source file. 
+- ttw checks whether the mandatory `.csv` lists exist.
+- ttw also runs some simple integrity checks on the `.csv` lists (see `ttw_help.html`)
+- ttw checks the footnote section for manual paragraph breaks and merges seperated lines highlighting the changes.
+
+#### To be done
+
+- Importing article metadata from json
+- Exception handling
+- Implementing the possibility to reload files that were converted with the application already
+- Article languages settings
+- Table conversion to `.xml`
+
+### New in v1.3.1
 
 - Added a silent mode that can be called with the argument `--silent`. In this case the applications offers no dialogues or any log information, so it can cooperate better with additional features (e. g. the features and `batch` file added by fabfab1)
 - For reasons of clearity a new header file `ttwCustomFunctions` collects functions that don´t belong to the core resp. are needed for special purposes, e. g. in context of a single project or for special feautues (e. g. helping to prepare a special citation style) 
@@ -156,7 +182,7 @@ For the `c++` core:
 - Deleted confirmation dialogue "Please check before running the application: ..."
 - Suppressed function and dialogue for a next run (until ttw is prepared better for re-editing the same content multiple times, see above).
 
-## New in v1.3.0: Prepared for a Web Extension (ttw_webx) to integrate ttw into small closed networks
+### New in v1.3.0: Prepared for a Web Extension (ttw_webx) to integrate ttw into small closed networks
 
 A separate web extension (ttw_webx) can be used optionally to integrate TagTool_WiZArD application starting with v1.3.0 into a web-compatible framework for small closed networks. 
 
@@ -164,9 +190,3 @@ Therefore new in v1.3.0: Additional mode implemented when ttw is called from web
 - Receive temp ID from ttw_webx and enable interaction with temp folders created by ttw_webx (load source files and save ttw results there)
 - Suppress console messages when called web from extension
 - Return help statment for this mode to be received and displayed by ttw_webx
-
-## See also
-
-- For ttw_webx see https://github.com/pBxr/ttw_WebExtension
-- ID_Extractor (ID_Ex) for extracting IDs and references from `.jats` article files, especially for the above mentioned journals, see https://github.com/pBxr/ID_Extractor
-- Test Environment for a TagTool_WiZArD Named Entity Recognition Plugin, see https://github.com/pBxr/NER_Plugin_for_ttw.
