@@ -111,18 +111,22 @@ For preparing the `.csv` files see `ttw_help.html`.
 Starting with v2.1.0 `ttw` comes with a test version of a `Named Entity Recognition (NER)` Plugin option.
 In this version the focus lies on the extraction of location names unsing the sing the `Hugging Face` `Transformers` pipeline (see https://huggingface.co) and a variant of the `BERT` language model family. It extracts a tokenized list of result entries that are beeing re-merged to a list of place names.
 The place names are run through the `iDAI.gazetteer` webservice to identify the locations and extract the gazetteer-IDs, that ttw needs as `.csv` list to enrich the article file with geographic authority data (see also https://github.com/pBxr/ID_Extractor for ttw).
-A log file with the results, a draft for the final `.csv` list and the complete gazetteer query result as `.json` file will be saved in the NER_results folder.
+A log file with the results, a draft for the final `.csv` list and the complete gazetteer query result as `.json` file will be saved in the NER_results session folder.
 
 For more information and the required environment see the see `ttw_help.html` file. 
 
 In this version the following parameters can be selected:
+
 Models:
 - dslim/bert-base-NER (recommended)
 - alexbrandsen/ArchaeoBERT-NER
+
 Tasks:
 - Category is limited to "Places and Locations" (LOC) in this test version
+
 Threshold:
 -You can choose between 0.5, 0.75 and 0.9. Recommended threshold is 0.5
+
 Source format:
 - Plain Text/Markdown (recommended). In this case the file will be converted with pandoc into a .md document to get the plain text
 - HTML. In this case the plain text will be extracted with bs4
