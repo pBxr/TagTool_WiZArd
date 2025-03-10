@@ -101,6 +101,8 @@ class ttwSettings:
         self.ressourcesSuccessful = False
         self.resultSuccessful = False
 
+        self.NERSuccessful = False
+
         self.readyToRun = False
 
         self.expectedResultHtml = ""
@@ -110,7 +112,8 @@ class ttwSettings:
         self.ArticleConversionText = "TagTool conversion"
         self.RessourcesWrittenText = "Ressources written"
         self.resultText = "Final success: No result yet"
-
+        self.NER_ResultBoxMessage = "No result yet"
+        
         self.PandocConversionBG = "#e1e1d0"
         self.ArticleConversionBG = "#e1e1d0"
         self.RessourcesWrittenBG = "#e1e1d0"
@@ -119,6 +122,8 @@ class ttwSettings:
         #Colors
         self.okGreen = "#ccffcc"
         self.colorNeutral = "#e1e1d0"
+
+        self.bgColorNERResultbox = self.colorNeutral
         
     def set_export_format(self, arg, desc):
             self.ttwExportFormatSet = {1 : {'Arg' : arg, 'Description' : desc}}

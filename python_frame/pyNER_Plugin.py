@@ -160,11 +160,8 @@ def filter_NER_results(locationNames):
    
 def prepare_folder_and_input_text(files, settings):    
 
-    #Prepare folder
-    pathNERresults = files.projectPath + "NER_results"
-
-    if not os.path.exists(pathNERresults):
-        os.makedirs(pathNERresults)
+    if not os.path.exists(files.NERresultPath):
+        os.makedirs(files.NERresultPath)
 
     #Put together the pandoc call to convert the .docx file into the selected format and save it
     pandocParameter = "00_Plain_article_text." + settings.NER_Parameters['Source']
@@ -254,6 +251,18 @@ def return_location_names(nerResults, settings, logGenerator):
     logGenerator.add_to_log("\n2. Verbose NER result:\n")
     for result in nerResults:
         logGenerator.add_to_log(str(result)+"\n")
+
+    #Prepare result for message box
+    result = ""
+    for entry in filteredLocationNames:
+        result = result + entry + ", "
+    result = result + "\n\n(See folder \"NER_results\" for verbose result)"
+    settings.NER_ResultBoxMessage = result
+    
+    if len(filteredLocationNames) == 0:
+        settings.NER_ResultBoxMessage = "NER could not find any selected entity"
+        settings.bgColorNERResultbox = "red"
+    settings.NERSuccessful = True
     return filteredLocationNames
 
 
