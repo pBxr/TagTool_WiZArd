@@ -146,6 +146,8 @@ class files:
 
         self.fileName = ""
 
+        self.NERresultPath = ""
+
         #Mandatory Files (values represent the number of mandatory cells for checking process)
         self.mandatoryFiles = {
             "01_MetadataValueList.csv" : 1,\

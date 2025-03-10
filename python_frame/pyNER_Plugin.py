@@ -26,14 +26,18 @@ class log_NER_Class:
         self.year, self.month, self.day = self.actualTime[0:3]
         self.hour, self.minute, self.second = self.actualTime[3:6]
 
-        self.NERresultPath = self.files.projectPath+"NER_results/"
+        #Create session folder for log and NER results
+        timeStamp = (f"{self.year:4d}{self.month:02d}{self.day:02d}_{self.hour:02d}{self.minute:02d}{self.second:02d}_")
+        
+        files.NERresultPath = self.files.projectPath + timeStamp + "NER_results/"
 
-        if not os.path.exists(self.NERresultPath):
-            os.makedirs(self.NERresultPath)
+        if not os.path.exists(files.NERresultPath):
+            os.makedirs(files.NERresultPath)
         
         self.logCollector = []
         
         self.logCollector.append(f"TagToolWiZArd NER plugin Log file: {self.year:4d}-{self.month:02d}-{self.day:02d}, {self.hour:02d}:{self.minute:02d}:{self.second:02d}\n\n")
+        self.logCollector.append(f"File: {files.fileName}\n\n")
         self.logCollector.append("Selected parameters:\n")
         for x, y in settings.NER_Parameters.items():
             self.logCollector.append(x + ": " + str(y) + "\n")
@@ -43,18 +47,18 @@ class log_NER_Class:
         
         self.logCollector.append(logInput)
         
-    def save_log(self):
+    def save_log(self, files):
 
-        with open(self.NERresultPath + "01_log.txt", 'w', encoding="utf8") as fp:
+        with open(files.NERresultPath + "01_log.txt", 'w', encoding="utf8") as fp:
         
             for logEntry in self.logCollector:
                 fp.write(logEntry)
             fp.close()
         
 
-    def save_results(self, resultJSONList, resultForCSVList):
+    def save_results(self, files, resultJSONList, resultForCSVList):
 
-        self.save_log()
+        self.save_log(files)
                 
         #Now the .csv list
         intro=("Place name|Suggested ID\nNote|\"(*NOT LIKELY*)\" means, "
@@ -63,14 +67,14 @@ class log_NER_Class:
     
         resultForCSVList_sorted = sorted(resultForCSVList)
 
-        with open(self.NERresultPath + "02_Gazetteer_IDs_DRAFT.csv", 'w', encoding="utf8") as fp:
+        with open(files.NERresultPath + "02_Gazetteer_IDs_DRAFT.csv", 'w', encoding="utf8") as fp:
             fp.write(intro + "\n")
             for item in resultForCSVList_sorted:    
                 fp.write(item + "\n")
             fp.close()
         
         #Now the complete .json file
-        with open(self.NERresultPath + "03_Gazetteer_result_detailed.json", 'w', encoding="utf8") as fp:
+        with open(files.NERresultPath + "03_Gazetteer_result_detailed.json", 'w', encoding="utf8") as fp:
             resultJSON = json.dumps(resultJSONList,
                           indent=4, sort_keys=False,
                           separators=(',', ': '), ensure_ascii=False)
@@ -165,14 +169,14 @@ def prepare_folder_and_input_text(files, settings):
     #Put together the pandoc call to convert the .docx file into the selected format and save it
     pandocParameter = "00_Plain_article_text." + settings.NER_Parameters['Source']
 
-    pandocCall = "pandoc -o " + "\"" + pathNERresults + "\\" + pandocParameter + "\"" + " " + "\"" + files.projectPath + files.fileName + "\""
+    pandocCall = "pandoc -o " + "\"" + files.NERresultPath + "\\" + pandocParameter + "\"" + " " + "\"" + files.projectPath + files.fileName + "\""
 
     FNULL = open(os.devnull, 'w') #For subprocess
     subprocess.run(pandocCall, stdout=FNULL, stderr=FNULL, shell=False)
 
     #Return the plain text for the pipeline.
     #If a structured format like .html is selected, text gets extracted with bs4 and saved as well.
-    sourceFilePath = pathNERresults + "\\" + pandocParameter
+    sourceFilePath = files.NERresultPath + "\\" + pandocParameter
 
     if settings.NER_Parameters['Source'] != 'html':
         with open(sourceFilePath, 'r', encoding="utf8") as fp:
@@ -187,7 +191,7 @@ def prepare_folder_and_input_text(files, settings):
             inputText = str(text).replace('\n\n','')
             fp.close()
 
-            targetFilePath = pathNERresults + "\\" + "00_Plain_article_from_html.txt"          
+            targetFilePath = files.NERresultPath + "\\" + "00_Plain_article_from_html.txt"          
             with open(targetFilePath, 'w', encoding="utf8") as fp:
                 for line in inputText:
                     fp.write(line)
@@ -270,15 +274,15 @@ def run_NER_process(files, settings):
         #Now extract names, get iDAI.gazetteer entries and save log and results
         extractedLocationNames = return_location_names(nerResults, settings, logGenerator)
         resultJSONList, resultForCSVList = call_gazetteer(extractedLocationNames, logGenerator)
-        logGenerator.save_log()
-        logGenerator.save_results(resultJSONList, resultForCSVList)
+        logGenerator.save_log(files)
+        logGenerator.save_results(files, resultJSONList, resultForCSVList)
         
     except:
         textInfo = ("Some unexpected problem occured while starting the NER pipeline.\n\n"
                     "Check your environment.\n\n"
                     "See \"About\" -> \"Help\" for instructions.\n\n\n")
         logGenerator.add_to_log(textInfo)
-        logGenerator.save_log()
+        logGenerator.save_log(files)
         return False, textInfo
 
     else:
