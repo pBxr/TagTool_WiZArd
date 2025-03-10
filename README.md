@@ -125,7 +125,7 @@ Tasks:
 - Category is limited to "Places and Locations" (LOC) in this test version
 
 Threshold:
--You can choose between 0.5, 0.75 and 0.9. Recommended threshold is 0.5
+- You can choose between 0.5, 0.75 and 0.9. Recommended threshold is 0.5
 
 Source format:
 - Plain Text/Markdown (recommended). In this case the file will be converted with pandoc into a .md document to get the plain text
