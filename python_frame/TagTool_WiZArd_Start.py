@@ -48,12 +48,17 @@ class MainWindow(tkinter.Frame):
         def actualize_widgets(self):
                 self.settings.check_ready_to_run()
                 
-                heightRow1 = 15
+                heightRow1 = 1
+
+                rowNumber = 0
+
+                #FIRST ROW-------------------------------------------------------
+                rowNumber += 1
                 
-                #Article file select box ------First Section-----------------
+                #Article file select box
                 self.groupArticleFileBox = tkinter.LabelFrame(self)
                 self.groupArticleFileBox["text"] = "Files"
-                self.groupArticleFileBox.grid(column = 1, row = 1, rowspan = heightRow1, sticky="nw")
+                self.groupArticleFileBox.grid(column = 1, row = rowNumber, rowspan = heightRow1, sticky="nw")
                 self.tboxArticle = Text(self.groupArticleFileBox, height=4, width=80,
                                         background=self.bgColorTboxArticle)
                 self.tboxArticle.configure(font=self.textFont)
@@ -64,18 +69,24 @@ class MainWindow(tkinter.Frame):
                 #Mandatory file box
                 self.groupMandatoryFilesBox = tkinter.LabelFrame(self)
                 self.groupMandatoryFilesBox["text"] = "Check mandatory files in selected project folder..."
-                self.groupMandatoryFilesBox.grid(column = 2, row = 1, rowspan = heightRow1, padx = 15, sticky="w")
-                self.tboxFiles = Text(self.groupMandatoryFilesBox, height = heightRow1, width= 80,
+                self.groupMandatoryFilesBox.grid(column = 2, row = rowNumber, rowspan = heightRow1, padx = 15, sticky="nw")
+                self.tboxFiles = Text(self.groupMandatoryFilesBox, height = 6, width= 80,
                                       background=self.bgColorTboxFiles)
                 self.tboxFiles.configure(font=self.textFont)
                 self.tboxFiles.grid()
                 self.tboxFiles.insert('end', self.mandatoryFilesBoxMessage)
                 self.tboxFiles.config(state='disabled')
 
+                #Logo
+                canvas = tkinter.Canvas(self, width=80, height=80)
+                canvas.grid(row = rowNumber, column = 3, pady = 5, sticky="ne")
+                self.image = tkinter.PhotoImage(file='Logo.gif')
+                canvas.create_image((2, 2), image=self.image, anchor="nw")
+                
                 #Export format group box
                 self.groupExportFormat = tkinter.LabelFrame(self)
                 self.groupExportFormat["text"] = "Chosen Export Format"
-                self.groupExportFormat.grid(column = 3, row = 1, sticky="nw")
+                self.groupExportFormat.grid(column = 3, row = rowNumber, sticky="sw")
                 self.labelFormat = tkinter.Label(self.groupExportFormat)
                 self.labelFormat["text"] = self.settings.ttwExportFormatSet[1]['Description']
                 if self.settings.xmlExportIsSet:
@@ -84,47 +95,14 @@ class MainWindow(tkinter.Frame):
                         self.labelFormat["fg"] = "black"
                 self.labelFormat.configure(font=self.textFont)
                 self.labelFormat.grid()
-                                
-                #Load file button ------Margin buttons
-                self.buttonLoadFile = ttk.Button(self, text = "Select Article File", style = "TButton",
-                    command=lambda: self.load_files())
-                self.buttonLoadFile["width"] = 20
-                self.buttonLoadFile.grid(column = 3, row = 2, sticky="w")
+                
+                #NEW ROW----------------------------------------------------
+                rowNumber += 1
 
-                #Reset_app button
-                self.buttonResetApp = ttk.Button(self, text = "Reset TagTool", style = "TButton",
-                    command=lambda: self.reset_app())
-                self.buttonResetApp["width"] = 20
-                self.buttonResetApp.grid(column = 3, row = 3, sticky="w")
-
-                #Logo
-                canvas = tkinter.Canvas(self, width=80, height=80)
-                canvas.grid(row=4,column=3, sticky="n")
-                self.image = tkinter.PhotoImage(file='Logo.gif')
-                canvas.create_image((2, 2), image=self.image, anchor="nw")
-
-                #Read to run box
-                self.groupReadyToRun = tkinter.LabelFrame(self)
-                self.groupReadyToRun["text"] = "Ready to run?"
-                self.groupReadyToRun.grid(column = 3, row = 5, sticky="nw")
-                self.signalBox = tkinter.Label(self.groupReadyToRun)
-                self.signalBox["width"] = 17
-                if self.settings.readyToRun == True:
-                    self.signalBox["bg"] = self.settings.okGreen
-                else:
-                    self.signalBox["bg"] = "red"
-                self.signalBox.grid()
-
-                #Run button
-                self.buttonRunApp = ttk.Button(self, text = "Run TagTool", style = "TButton",
-                        command=lambda: self.start_process())
-                self.buttonRunApp["width"] = 20
-                self.buttonRunApp.grid(column = 3, row = 6, sticky="w")
-
-                #Function group box ---------Second section-----------------
+                #Function group box
                 self.groupFunctions = tkinter.LabelFrame(self)
                 self.groupFunctions["text"] = "Chosen Functions"
-                self.groupFunctions.grid(column = 1, row = heightRow1 + 1, columnspan = 2, sticky="w")
+                self.groupFunctions.grid(column = 1, row = rowNumber, columnspan = 2, rowspan = 5, sticky="nw")
                 self.tboxFunctions = Text(self.groupFunctions, height=10, width=163,
                                           background=self.bgColorTboxFunctions)
                 self.tboxFunctions.configure(font=self.textFont)
@@ -134,28 +112,55 @@ class MainWindow(tkinter.Frame):
                         self.tboxFunctions.insert("end", y['Description'] + "\n")
                        
                 self.tboxFunctions.config(state='disabled')
-                
-                #Set functions button ------Margin buttons
+
+                #NEW ROW----------------------------------------------------
+                rowNumber += 1
+
+                #Select article button
+                self.buttonLoadFile = ttk.Button(self, text = "Select Article File", style = "TButton",
+                    command=lambda: self.load_files())
+                self.buttonLoadFile["width"] = 20
+                self.buttonLoadFile.grid(column = 3, row = rowNumber, sticky="nw")                
+
+                #NEW ROW----------------------------------------------------
+                rowNumber += 1
+
+                #Set functions button
                 self.buttonSetFunctions = ttk.Button(self, text = "Change Functions", style = "TButton",
                     command=lambda: self.set_functions())
                 self.buttonSetFunctions["width"] = 20
-                self.buttonSetFunctions.grid(column = 3, row = heightRow1 + 1, sticky="nw")
+                self.buttonSetFunctions.grid(column = 3, row = rowNumber, sticky="nw")
+
+                #NEW ROW----------------------------------------------------
+                rowNumber += 1
 
                 #NER plugin button
                 self.buttonStartNER = ttk.Button(self, text = "Open NER plugin", style = "TButton",
                     command=lambda: self.basic_NER_lib_check())
                 self.buttonStartNER["width"] = 20
-                self.buttonStartNER.grid(column = 3, row = heightRow1 + 2, sticky="nw")
+                self.buttonStartNER.grid(column = 3, row = rowNumber, sticky="nw")
+
+                #NEW ROW----------------------------------------------------
+                rowNumber += 1
+
+                #Reset_app button
+                self.buttonResetApp = ttk.Button(self, text = "Reset TagTool", style = "TButton",
+                    command=lambda: self.reset_app())
+                self.buttonResetApp["width"] = 20
+                self.buttonResetApp.grid(column = 3, row = rowNumber, sticky="nw")
                 
-                #Result box ---------Third section-----------------
+                #NEW ROW---------------------
+                rowNumber += 1
+                
+                #Result box ttw
                 self.groupResult = tkinter.LabelFrame(self)
-                self.groupResult["text"] = "Results"
+                self.groupResult["text"] = "Results TagTool"
                 self.result = Text(self.groupResult, height=10, width=160,
                                           background=self.bgColorTboxFunctions)
                 
                 self.result.configure(font=self.textFont)
                 
-                self.groupResult.grid(column = 1, row = heightRow1 + 2, columnspan = 2, sticky="w")
+                self.groupResult.grid(column = 1, row = rowNumber, columnspan = 2, pady = 10, sticky="nw")
 
                 self.PandocConversion = tkinter.Label(self.groupResult)
                 self.PandocConversion["text"] = self.settings.PandocConversionText
@@ -175,19 +180,55 @@ class MainWindow(tkinter.Frame):
                 self.RessourcesWritten.configure(font=self.textFont)
                 self.RessourcesWritten.grid()
 
+                #Result ttw
                 self.tboxResult = Text(self, height=3, width=80,
                                           background=self.settings.tboxResultBG)
                 self.tboxResult.configure(font=self.textFont)
-                self.tboxResult.grid(column = 1, row = heightRow1 + 3, columnspan = 2, sticky="w")
+                self.tboxResult.grid(column = 1, row = rowNumber, pady = 10, sticky="sw")
                 self.tboxResult.insert("end", self.settings.resultText)
                 self.tboxResult.config(state='disabled')
 
+                #Result NER 
+                self.groupResultNERBox = tkinter.LabelFrame(self)
+                self.groupResultNERBox["text"] = "Results Named Entity Recognition"
+                self.groupResultNERBox.grid(column = 2, row = rowNumber, padx = 15,  pady = 10, sticky="nw")
+                
+                self.resultNER = Text(self.groupResultNERBox, height = 9, width=80,
+                                          background=self.settings.bgColorNERResultbox)
+                
+                self.resultNER.configure(font=self.textFont)
+                self.resultNER.grid()
+                self.resultNER.insert('end', self.settings.NER_ResultBoxMessage)
+                self.resultNER.config(state='disabled')
+
+                #Read to run box
+                self.groupReadyToRun = tkinter.LabelFrame(self)
+                self.groupReadyToRun["text"] = "Ready to run?"
+                self.groupReadyToRun.grid(column = 3, row = rowNumber, pady = 10, sticky="nw")
+                self.signalBox = tkinter.Label(self.groupReadyToRun)
+                self.signalBox["width"] = 17
+                if self.settings.readyToRun == True:
+                    self.signalBox["bg"] = self.settings.okGreen
+                else:
+                    self.signalBox["bg"] = "red"
+                self.signalBox.grid()
+
+                #Run button
+                self.buttonRunApp = ttk.Button(self, text = "Run TagTool", style = "TButton",
+                        command=lambda: self.start_process())
+                self.buttonRunApp["width"] = 20
+                self.buttonRunApp.grid(column = 3, row = rowNumber, pady = 40, sticky="nw")
+                                
+                #NEW ROW---------------------
+                rowNumber += 1
+                
                 #Open browser button
                 self.buttonOpenBrowser = ttk.Button(self, text = "Open Result in Browser", style = "TButton",
                         command=lambda: self.open_browser())
                 self.buttonOpenBrowser["width"] = 25
-                self.buttonOpenBrowser.grid(column = 2, row = heightRow1 + 3, sticky="nw")
-           
+                self.buttonOpenBrowser.grid(column = 1, row = rowNumber, sticky="nw")
+
+ 
         def basic_NER_lib_check(self):
 
                 if NER_Plugin_Switch == False:
@@ -319,10 +360,11 @@ class MainWindow(tkinter.Frame):
                 self.bgColorTboxArticle = self.settings.colorNeutral
                 self.bgColorTboxFiles = self.settings.colorNeutral
                 self.bgColorTboxFunctions = self.settings.okGreen
+                self.bgColorNERResultbox = self.settings.colorNeutral
 
                 self.articleFileBoxMessage = "No files selected\n\n(Menue \"Files\" -> \"Select Article File\" or press button on the right)"
                 self.mandatoryFilesBoxMessage = "No files found\n\n(will be shown automatically when choosing Article File)"
-
+                self.settings.NER_ResultBoxMessage = "No Result yet"
                 file = ""
                 
                 self.settings.reset_settings()
@@ -334,7 +376,9 @@ class MainWindow(tkinter.Frame):
     
             tkinter.messagebox.showinfo(title="Info", \
                                      message=textInfo)
-         
+            if self.settings.NERSuccessful == True:
+                self.settings.bgColorNERResultbox = self.settings.okGreen
+            self.actualize_widgets()
             window.destroy()
 
         def save_functions(self, vals, window):
